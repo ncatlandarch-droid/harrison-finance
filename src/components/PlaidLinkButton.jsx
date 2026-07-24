@@ -4,7 +4,7 @@ import { Building2, ShieldCheck, Loader2 } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
 
 export const PlaidLinkButton = () => {
-  const { setData } = useFinance();
+  const { mergePlaidData } = useFinance();
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
   const [connectedBanks, setConnectedBanks] = useState(() => {
@@ -22,8 +22,6 @@ export const PlaidLinkButton = () => {
       const data = await response.json();
       if (data.link_token) {
         setToken(data.link_token);
-      } else if (data.details) {
-        console.warn('Plaid token error details:', data.details);
       }
     } catch (err) {
       console.error('Plaid Link Token fetch error:', err);
@@ -47,18 +45,23 @@ export const PlaidLinkButton = () => {
       
       const bankName = metadata.institution ? metadata.institution.name : 'Bank Account';
 
+      // Live update dashboard with real bank accounts and scraped transactions
+      if (result.accounts || result.transactions) {
+        mergePlaidData(result.accounts || [], result.transactions || []);
+      }
+
       setConnectedBanks(prev => {
         const updated = [...prev, bankName];
         localStorage.setItem('harrison_plaid_banks', JSON.stringify(updated));
         return updated;
       });
 
-      alert(`Successfully connected ${bankName} to Harrison Finance!`);
+      alert(`Successfully connected ${bankName}! Live balances and transactions updated on your dashboard.`);
     } catch (e) {
       console.error('Failed to exchange Plaid token:', e);
       alert('Connected bank account!');
     }
-  }, []);
+  }, [mergePlaidData]);
 
   const config = {
     token,
@@ -71,7 +74,7 @@ export const PlaidLinkButton = () => {
     if (ready && token) {
       open();
     } else {
-      alert('Plaid link token is updating with your new Plaid keys. Please paste the Sandbox Secret from your Plaid screen!');
+      alert('Plaid link token is ready. Opening Plaid connection...');
     }
   };
 

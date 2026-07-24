@@ -24,6 +24,7 @@ exports.handler = async function(event, context) {
   try {
     const { public_token } = JSON.parse(event.body);
 
+    // 1. Exchange public token for access token
     const tokenResponse = await client.itemPublicTokenExchange({
       public_token: public_token,
     });
@@ -31,9 +32,27 @@ exports.handler = async function(event, context) {
     const accessToken = tokenResponse.data.access_token;
     const itemId = tokenResponse.data.item_id;
 
+    // 2. Fetch real account balances
     const accountsResponse = await client.accountsGet({
       access_token: accessToken,
     });
+
+    // 3. Fetch real transactions (last 30 days)
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30);
+    const endDate = new Date();
+
+    let transactions = [];
+    try {
+      const txnResponse = await client.transactionsGet({
+        access_token: accessToken,
+        start_date: startDate.toISOString().split('T')[0],
+        end_date: endDate.toISOString().split('T')[0],
+      });
+      transactions = txnResponse.data.transactions || [];
+    } catch (txnErr) {
+      console.warn('Transactions get error (falling back to accounts):', txnErr.message);
+    }
 
     return {
       statusCode: 200,
@@ -41,11 +60,12 @@ exports.handler = async function(event, context) {
       body: JSON.stringify({
         access_token: accessToken,
         item_id: itemId,
-        accounts: accountsResponse.data.accounts
+        accounts: accountsResponse.data.accounts,
+        transactions: transactions
       })
     };
   } catch (error) {
-    console.error('Error exchanging public token:', error.response ? error.response.data : error);
+    console.error('Error exchanging public token:', error.response ? error.response.data : error.message);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message })
