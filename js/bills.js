@@ -1,3 +1,4 @@
+  window.Bills = {
   init() {
     this.currentDate = new Date();
     this.render();

@@ -1,3 +1,4 @@
+window.Dashboard = {
   init() {
     this.render();
     this.loadData();

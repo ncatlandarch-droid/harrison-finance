@@ -1,3 +1,4 @@
+  window.Budget = {
   init() {
     this.render();
     this.loadData();

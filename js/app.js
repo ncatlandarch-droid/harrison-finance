@@ -1,4 +1,4 @@
-window.app = {
+window.App = {
   currentSection: 'dashboard',
   currentMemberFilter: 'all',
 
@@ -360,5 +360,5 @@ window.app = {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
-  window.app.init();
+  window.App.init();
 });
