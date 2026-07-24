@@ -5,11 +5,11 @@ import {
   Wallet, 
   Receipt, 
   Target, 
-  PieChart, 
   Settings, 
   ArrowLeftRight,
   ShieldCheck,
-  Building2
+  Building2,
+  Flame
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -19,6 +19,7 @@ export const Sidebar = () => {
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'strategy', label: 'Debt & Spending Strategy', icon: Flame },
     { id: 'bills', label: 'Bills & Allocation', icon: Receipt },
     { id: 'budget', label: 'Budget Tracker', icon: Wallet },
     { id: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
@@ -34,7 +35,7 @@ export const Sidebar = () => {
       padding: '1.5rem 1rem',
       display: 'flex',
       flexDirection: 'column',
-      justify: 'space-between',
+      justifyContent: 'space-between',
       height: '100vh',
       position: 'sticky',
       top: 0
@@ -59,7 +60,7 @@ export const Sidebar = () => {
               Harrison Finance
             </h1>
             <span style={{ fontSize: '0.7rem', color: 'var(--primary-light)', fontWeight: 600, letterSpacing: '0.05em' }}>
-              FAMILY PLATFORM v2.5
+              FAMILY PLATFORM v2.8
             </span>
           </div>
         </div>

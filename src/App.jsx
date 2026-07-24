@@ -3,6 +3,7 @@ import { FinanceProvider, useFinance } from './context/FinanceContext';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
+import { DebtStrategySection } from './components/DebtStrategySection';
 import { BillsSection } from './components/BillsSection';
 import { BudgetSection } from './components/BudgetSection';
 import { TransactionsSection } from './components/TransactionsSection';
@@ -18,6 +19,8 @@ const AppContent = () => {
     switch (activeTab) {
       case 'dashboard':
         return <Dashboard />;
+      case 'strategy':
+        return <DebtStrategySection />;
       case 'bills':
         return <BillsSection />;
       case 'budget':
