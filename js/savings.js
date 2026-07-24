@@ -1,247 +1,210 @@
-window.Savings = {
-  init() {
-    this.render();
-    this.bindEvents();
-    this.loadData();
-  },
-  render() {
-    const section = document.getElementById('section-goals');
-    if (!section) return;
-    
-    section.innerHTML = `
-      <div class="savings-container">
-        <!-- HEADER ROW -->
-        <div class="header-row" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <h2>Savings Goals</h2>
-          <button class="btn btn-primary" id="btn-add-goal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Add Goal
-          </button>
-        </div>
+(function() {
+    const iconTarget = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>`;
+    const iconPlus = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
+    const iconSave = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>`;
 
-        <!-- SUMMARY ROW - 3 stat cards -->
-        <div class="grid-3 summary-stats animate-fade-in-up mb-4">
-          <div class="stat-card card">
-            <span class="stat-title text-muted text-sm">Total Saved</span>
-            <div class="stat-value dm-mono text-2xl font-bold mt-2 text-success" id="savings-total-saved">$0.00</div>
-          </div>
-          <div class="stat-card card">
-            <span class="stat-title text-muted text-sm">Total Target</span>
-            <div class="stat-value dm-mono text-2xl font-bold mt-2" id="savings-total-target">$0.00</div>
-          </div>
-          <div class="stat-card card">
-            <span class="stat-title text-muted text-sm">Overall Progress</span>
-            <div class="stat-value text-2xl font-bold mt-2 text-primary" id="savings-overall-progress">0%</div>
-          </div>
-        </div>
+    function renderSavings() {
+        const container = document.getElementById('section-goals');
+        if (!container) return;
 
-        <!-- GOALS GRID -->
-        <div class="grid-2 goals-grid animate-fade-in-up mt-4" style="animation-delay: 0.1s" id="savings-goals-grid">
-          <!-- Populated by JS -->
-        </div>
-
-        <!-- GOAL CALCULATOR -->
-        <div class="card animate-fade-in-up mt-4" style="animation-delay: 0.2s">
-          <h3 class="mb-4">Goal Calculator</h3>
-          <div class="grid-3 gap-4" style="align-items:end;">
-            <div class="form-group">
-              <label class="text-sm font-bold mb-1 block">Monthly Contribution ($)</label>
-              <input type="number" id="calc-monthly" class="form-input w-full" value="500">
-            </div>
-            <div class="form-group">
-              <label class="text-sm font-bold mb-1 block">Target Amount ($)</label>
-              <input type="number" id="calc-target" class="form-input w-full" value="10000">
-            </div>
-            <div style="background:var(--bg-secondary, #f0fdf4); padding:15px; border-radius:8px; border-left:4px solid var(--success-color, #4ade80);">
-              <div class="text-sm text-muted">You will reach your goal in:</div>
-              <div class="font-bold text-xl mt-1" id="calc-result">20 months</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- ADD FUNDS MODAL -->
-      <dialog id="modal-add-funds" class="modal" style="border:none; border-radius:8px; padding:20px; box-shadow:0 4px 15px rgba(0,0,0,0.2); max-width:350px; width:100%;">
-        <h3 class="mb-4">Add Funds to <span id="add-funds-goal-name" class="text-primary">Goal</span></h3>
-        <form id="form-add-funds">
-          <input type="hidden" id="add-funds-goal-id">
-          <div class="form-group mb-3">
-            <label class="text-sm font-bold mb-1 block">Amount ($)</label>
-            <input type="number" id="add-funds-amount" class="form-input w-full dm-mono text-lg" min="0" step="0.01" required autofocus>
-          </div>
-          <div class="form-group mb-4">
-            <label class="text-sm font-bold mb-1 block">Note (Optional)</label>
-            <input type="text" id="add-funds-note" class="form-input w-full" placeholder="e.g. Bonus, Transfer">
-          </div>
-          <div style="display:flex; justify-content:flex-end; gap:10px;">
-            <button type="button" class="btn" id="btn-cancel-funds">Cancel</button>
-            <button type="submit" class="btn btn-primary" style="background:var(--success-color, #4ade80);">Add Funds</button>
-          </div>
-        </form>
-      </dialog>
-    `;
-  },
-  bindEvents() {
-    const calcMonthly = document.getElementById('calc-monthly');
-    const calcTarget = document.getElementById('calc-target');
-    const calcResult = document.getElementById('calc-result');
-
-    const updateCalc = () => {
-      const m = parseFloat(calcMonthly.value) || 0;
-      const t = parseFloat(calcTarget.value) || 0;
-      if (m > 0 && t > 0) {
-        const months = Math.ceil(t / m);
-        calcResult.textContent = `${months} month${months !== 1 ? 's' : ''}`;
-        
-        // Add minimal animation
-        calcResult.style.opacity = '0';
-        setTimeout(() => {
-          calcResult.style.transition = 'opacity 0.3s ease';
-          calcResult.style.opacity = '1';
-        }, 50);
-      } else {
-        calcResult.textContent = '--';
-      }
-    };
-
-    calcMonthly?.addEventListener('input', updateCalc);
-    calcTarget?.addEventListener('input', updateCalc);
-
-    // Form submission for adding funds
-    const fundsForm = document.getElementById('form-add-funds');
-    if (fundsForm) {
-      fundsForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const amt = parseFloat(document.getElementById('add-funds-amount').value);
-        if (amt > 0) {
-          if (window.App && App.showToast) App.showToast(`Successfully added ${App.formatCurrency(amt)}!`);
-          
-          // Trigger confetti (simulate milestone)
-          if (window.Confetti && window.Confetti.celebrate) {
-            Confetti.celebrate();
-          }
-
-          if (window.App && App.hideModal) App.hideModal('modal-add-funds');
-          else document.getElementById('modal-add-funds').close();
+        let goals = window.Storage.getGoals() || [];
+        if (goals.length === 0) {
+            goals = [
+                { id: window.Storage.generateId(), name: 'Emergency', current: 15000, target: 25000, deadline: '2026-12-31' },
+                { id: window.Storage.generateId(), name: 'Vacation', current: 2000, target: 5000, deadline: '2025-06-01' },
+                { id: window.Storage.generateId(), name: 'Hayden College', current: 10000, target: 50000, deadline: '2030-08-01' },
+                { id: window.Storage.generateId(), name: 'Ava Joy College', current: 8000, target: 50000, deadline: '2032-08-01' }
+            ];
+            goals.forEach(g => window.Storage.addGoal(g));
         }
-      });
+
+        const totalSaved = goals.reduce((sum, g) => sum + (g.current || 0), 0);
+        const totalTarget = goals.reduce((sum, g) => sum + (g.target || 0), 0);
+        const overallProgress = totalTarget > 0 ? (totalSaved / totalTarget) * 100 : 0;
+
+        let html = `
+            <div class="header-action">
+                <h2>${iconTarget} Savings Goals</h2>
+                <button class="btn btn-primary" onclick="window.SavingsModule.showAddModal()">${iconPlus} Add Goal</button>
+            </div>
+            
+            <div class="grid-3 mb-4">
+                <div class="stat-card animate-fade-in-up" style="animation-delay: 0.1s">
+                    <div class="stat-title">Total Saved</div>
+                    <div class="stat-value dm-mono gradient-text">${window.App.formatCurrency(totalSaved)}</div>
+                </div>
+                <div class="stat-card animate-fade-in-up" style="animation-delay: 0.2s">
+                    <div class="stat-title">Total Target</div>
+                    <div class="stat-value dm-mono">${window.App.formatCurrency(totalTarget)}</div>
+                </div>
+                <div class="stat-card animate-fade-in-up" style="animation-delay: 0.3s">
+                    <div class="stat-title">Overall Progress</div>
+                    <div class="progress-bar mt-2"><div class="progress-fill" style="width: ${overallProgress}%"></div></div>
+                    <div class="text-right text-sm dm-mono mt-1">${window.App.formatPercent(overallProgress)}</div>
+                </div>
+            </div>
+
+            <div class="grid-2" id="goals-grid">
+                ${goals.map((g, i) => {
+                    const pct = Math.min(100, ((g.current || 0) / (g.target || 1)) * 100);
+                    return `
+                    <div class="card animate-fade-in-up" style="animation-delay: ${0.1 * i}s">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-lg font-bold">${g.name}</h3>
+                            <button class="btn btn-sm btn-outline" onclick="window.SavingsModule.showAddFundsModal('${g.id}')">Add Funds</button>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="chart-container relative" style="width: 80px; height: 80px;">
+                                <canvas id="goal-chart-${g.id}"></canvas>
+                                <div class="absolute inset-0 flex items-center justify-center dm-mono text-sm">${window.App.formatPercent(pct)}</div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm text-gray-500">Saved</span>
+                                    <span class="dm-mono">${window.App.formatCurrency(g.current)}</span>
+                                </div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm text-gray-500">Target</span>
+                                    <span class="dm-mono">${window.App.formatCurrency(g.target)}</span>
+                                </div>
+                                <div class="text-xs text-gray-400 mt-2">Target Date: ${window.App.formatDate(g.deadline)}</div>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+
+            <div class="card mt-6">
+                <h3 class="text-lg font-bold mb-4">Goal Calculator</h3>
+                <div class="grid-3 gap-4">
+                    <div class="form-group">
+                        <label>Monthly Savings ($)</label>
+                        <input type="number" id="calc-monthly" class="form-input dm-mono" value="500" oninput="window.SavingsModule.updateCalc()">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Amount ($)</label>
+                        <input type="number" id="calc-target" class="form-input dm-mono" value="10000" oninput="window.SavingsModule.updateCalc()">
+                    </div>
+                    <div class="form-group">
+                        <label>Months to Reach</label>
+                        <div id="calc-result" class="text-2xl font-bold gradient-text dm-mono mt-2">20 months</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
+
+        // Render charts
+        setTimeout(() => {
+            goals.forEach(g => {
+                const pct = Math.min(100, ((g.current || 0) / (g.target || 1)) * 100);
+                if (window.Charts && typeof window.Charts.donut === 'function') {
+                    window.Charts.donut(`goal-chart-${g.id}`, {
+                        labels: ['Saved', 'Remaining'],
+                        datasets: [{ data: [pct, 100 - pct], backgroundColor: ['#3b82f6', '#1e293b'] }]
+                    }, { cutout: '75%', plugins: { legend: { display: false } } });
+                }
+            });
+            window.SavingsModule.updateCalc();
+        }, 100);
     }
 
-    document.getElementById('btn-cancel-funds')?.addEventListener('click', () => {
-      const modal = document.getElementById('modal-add-funds');
-      if (window.App && App.hideModal) App.hideModal('modal-add-funds');
-      else modal.close();
-    });
-  },
-  loadData() {
-    this.updateGrid();
-    this.updateStats();
-  },
-  refresh() {
-    this.loadData();
-  },
-  getMockGoals() {
-    return [
-      { id: '1', name: 'Emergency Fund', current: 15000, target: 25000, member: 'family', deadline: '2027-12-31' },
-      { id: '2', name: 'Family Vacation', current: 1250, target: 5000, member: 'family', deadline: '2026-06-01' },
-      { id: '3', name: 'Hayden College Fund', current: 12000, target: 50000, member: 'family', deadline: '2038-08-01' },
-      { id: '4', name: 'Ava Joy College Fund', current: 4000, target: 50000, member: 'family', deadline: '2042-08-01' }
-    ];
-  },
-  updateGrid() {
-    const container = document.getElementById('savings-goals-grid');
-    if (!container || !window.App) return;
-
-    let goals = window.Storage && Storage.getGoals ? Storage.getGoals() : this.getMockGoals();
-    let html = '';
-
-    goals.forEach(g => {
-      const pct = Math.min((g.current / g.target) * 100, 100);
-      const memberColor = App.getMemberColor ? App.getMemberColor(g.member) : '#ccc';
-      
-      html += `
-        <div class="card" style="display:flex; flex-direction:column;">
-          <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:15px;">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div style="background:var(--highlight-bg, #f0f9ff); padding:8px; border-radius:8px; color:var(--primary-color, #3b82f6);">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-              </div>
-              <div>
-                <h3 style="margin:0">${g.name}</h3>
-                <div class="member-badge badge mt-1" style="background-color:${memberColor}20; color:${memberColor}; padding:2px 8px; border-radius:12px; font-size:0.75rem; font-weight:bold; display:inline-block; text-transform:capitalize;">${g.member}</div>
-              </div>
+    function showAddModal() {
+        const html = `
+            <div class="form-group">
+                <label>Goal Name</label>
+                <input type="text" id="goal-name" class="form-input">
             </div>
-            <div>
-              <button class="btn btn-icon" style="background:none; border:none; cursor:pointer; color:var(--text-muted, #666);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg></button>
+            <div class="grid-2 gap-4">
+                <div class="form-group">
+                    <label>Target Amount ($)</label>
+                    <input type="number" id="goal-target" class="form-input dm-mono">
+                </div>
+                <div class="form-group">
+                    <label>Current Amount ($)</label>
+                    <input type="number" id="goal-current" class="form-input dm-mono" value="0">
+                </div>
             </div>
-          </div>
-          
-          <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px; flex-grow:1;">
-            <div>
-              <div class="text-sm text-muted">Saved</div>
-              <div class="dm-mono font-bold text-2xl text-success">${App.formatCurrency(g.current)}</div>
+            <div class="form-group">
+                <label>Target Date</label>
+                <input type="date" id="goal-deadline" class="form-input">
             </div>
-            <div style="text-align:right;">
-              <div class="text-sm text-muted">Target</div>
-              <div class="dm-mono font-bold text-xl">${App.formatCurrency(g.target)}</div>
+        `;
+        const footer = `<button class="btn btn-primary" onclick="window.SavingsModule.saveGoal()">Save Goal</button>`;
+        window.App.showModal('Add Savings Goal', html, footer);
+    }
+
+    function saveGoal() {
+        const name = document.getElementById('goal-name').value;
+        const target = parseFloat(document.getElementById('goal-target').value);
+        const current = parseFloat(document.getElementById('goal-current').value);
+        const deadline = document.getElementById('goal-deadline').value;
+
+        if (!name || isNaN(target) || isNaN(current) || !deadline) {
+            window.App.showToast('Please fill all fields', 'error');
+            return;
+        }
+
+        window.Storage.addGoal({ name, target, current, deadline });
+        window.App.hideModal();
+        window.App.showToast('Goal added successfully!', 'success');
+        renderSavings();
+    }
+
+    function showAddFundsModal(id) {
+        window.App.showModal('Add Funds', `
+            <input type="hidden" id="fund-goal-id" value="${id}">
+            <div class="form-group">
+                <label>Amount to Add ($)</label>
+                <input type="number" id="fund-amount" class="form-input dm-mono">
             </div>
-          </div>
+        `, `<button class="btn btn-primary" onclick="window.SavingsModule.addFunds()">Add Funds</button>`);
+    }
 
-          <div style="position:relative; margin:15px 0 25px 0;">
-            <div class="progress-bar" style="height:12px; border-radius:6px; background:var(--border-color, #eee); overflow:hidden;">
-              <div class="progress-bar-fill" style="height:100%; width:${pct}%; background:var(--primary-color, #3b82f6); transition:width 1s ease;"></div>
-            </div>
-            <!-- Milestone markers -->
-            <div style="position:absolute; top:-2px; left:25%; height:16px; width:2px; background:white; opacity:0.8;"></div>
-            <div style="position:absolute; top:-2px; left:50%; height:16px; width:2px; background:white; opacity:0.8;"></div>
-            <div style="position:absolute; top:-2px; left:75%; height:16px; width:2px; background:white; opacity:0.8;"></div>
-            
-            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted, #666); margin-top:5px; font-weight:bold;">
-              <span>0%</span>
-              <span style="position:absolute; left:25%; transform:translateX(-50%);">25%</span>
-              <span style="position:absolute; left:50%; transform:translateX(-50%);">50%</span>
-              <span style="position:absolute; left:75%; transform:translateX(-50%);">75%</span>
-              <span>100%</span>
-            </div>
-          </div>
+    function addFunds() {
+        const id = document.getElementById('fund-goal-id').value;
+        const amount = parseFloat(document.getElementById('fund-amount').value);
+        if (isNaN(amount) || amount <= 0) return;
 
-          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color, #eee); padding-top:15px;">
-            <div class="text-sm">
-              <div><strong>ETA:</strong> <span class="text-muted">Target date</span></div>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="window.Savings.openAddFunds('${g.id}', '${g.name}')" style="padding:6px 12px; font-size:0.85rem;">
-              + Add Funds
-            </button>
-          </div>
-        </div>
-      `;
-    });
+        let goals = window.Storage.getGoals();
+        let goal = goals.find(g => g.id === id);
+        if (goal) {
+            let oldPct = (goal.current / goal.target) * 100;
+            goal.current += amount;
+            let newPct = (goal.current / goal.target) * 100;
+            window.Storage.updateGoal(id, { current: goal.current });
+            window.App.hideModal();
+            renderSavings();
 
-    container.innerHTML = html;
-  },
-  updateStats() {
-    let goals = window.Storage && Storage.getGoals ? Storage.getGoals() : this.getMockGoals();
-    let totalSaved = 0;
-    let totalTarget = 0;
+            if (newPct >= 100 && oldPct < 100) {
+                window.Confetti.celebrate();
+                window.App.showToast('Goal reached! Incredible!', 'success');
+            } else if (newPct >= 50 && oldPct < 50) {
+                window.Confetti.fire({ particleCount: 50 });
+                window.App.showToast('Halfway there! Keep it up!', 'success');
+            } else {
+                window.App.showToast('Funds added successfully', 'success');
+            }
+        }
+    }
 
-    goals.forEach(g => {
-      totalSaved += g.current;
-      totalTarget += g.target;
-    });
+    function updateCalc() {
+        const monthly = parseFloat(document.getElementById('calc-monthly')?.value || 0);
+        const target = parseFloat(document.getElementById('calc-target')?.value || 0);
+        const res = document.getElementById('calc-result');
+        if (res && monthly > 0 && target > 0) {
+            const months = Math.ceil(target / monthly);
+            res.textContent = `${months} month${months !== 1 ? 's' : ''}`;
+        }
+    }
 
-    const pct = totalTarget > 0 ? (totalSaved / totalTarget) * 100 : 0;
-
-    if (document.getElementById('savings-total-saved')) document.getElementById('savings-total-saved').textContent = window.App ? App.formatCurrency(totalSaved) : `$${totalSaved}`;
-    if (document.getElementById('savings-total-target')) document.getElementById('savings-total-target').textContent = window.App ? App.formatCurrency(totalTarget) : `$${totalTarget}`;
-    if (document.getElementById('savings-overall-progress')) document.getElementById('savings-overall-progress').textContent = `${Math.round(pct)}%`;
-  },
-  openAddFunds(id, name) {
-    document.getElementById('add-funds-goal-id').value = id;
-    document.getElementById('add-funds-goal-name').textContent = name;
-    document.getElementById('form-add-funds').reset();
+    window.SavingsModule = { render: renderSavings, showAddModal, saveGoal, showAddFundsModal, addFunds, updateCalc };
     
-    const modal = document.getElementById('modal-add-funds');
-    if (window.App && App.showModal) App.showModal('modal-add-funds');
-    else modal.showModal();
-  }
-};
+    // Auto-render if on load the section is visible or requested
+    document.addEventListener('DOMContentLoaded', () => {
+        if(document.getElementById('section-goals')) {
+            window.SavingsModule.render();
+        }
+    });
+
+})();

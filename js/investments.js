@@ -1,256 +1,149 @@
-window.Investments = {
-  init() {
-    this.render();
-    this.bindEvents();
-    this.loadData();
-  },
+(function() {
+    const iconBriefcase = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>`;
 
-  render() {
-    const section = document.getElementById('section-invest');
-    if (!section) return;
+    function renderInvestments() {
+        const container = document.getElementById('section-invest');
+        if (!container) return;
 
-    section.innerHTML = `
-      <div class="header-row">
-        <h2 class="gradient-text">Investments & Retirement</h2>
-        <button id="btn-add-investment" class="btn btn-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          Add Account
-        </button>
-      </div>
+        let investments = window.Storage.getInvestments() || [];
+        if (investments.length === 0) {
+            investments = [
+                { id: '1', name: 'BMO Alto Savings', balance: 84904, type: 'Savings', memberId: 'erin', rate: 4.0, contribution: 0 },
+                { id: '2', name: 'Chris 401(k)', balance: 45000, type: 'Retirement', memberId: 'chris', rate: 7.0, contribution: 500 },
+                { id: '3', name: 'Erin 401(k)', balance: 12000, type: 'Retirement', memberId: 'erin', rate: 7.0, contribution: 100 },
+                { id: '4', name: 'Robinhood', balance: 5000, type: 'Brokerage', memberId: 'erin', rate: 8.0, contribution: 50 }
+            ];
+            // Mock adding them to storage if needed
+        }
 
-      <div class="grid-4" style="margin-bottom: 2rem;">
-        <div class="card stat-card animate-fade-in-up" style="animation-delay: 0.1s;">
-          <h4 class="text-muted">Total Portfolio</h4>
-          <h2 id="inv-total" class="dm-mono gradient-text">$0.00</h2>
-        </div>
-        <div class="card stat-card animate-fade-in-up" style="animation-delay: 0.2s;">
-          <h4 class="text-muted">Monthly Contributions</h4>
-          <h2 id="inv-contrib" class="dm-mono">$650.00</h2>
-        </div>
-        <div class="card stat-card animate-fade-in-up" style="animation-delay: 0.3s;">
-          <h4 class="text-muted">BMO Alto Savings</h4>
-          <h2 class="dm-mono text-success">$84,904.00</h2>
-          <span class="badge" style="margin-top: 0.5rem">4% APY</span>
-        </div>
-        <div class="card stat-card animate-fade-in-up" style="animation-delay: 0.4s;">
-          <h4 class="text-muted">Proj. Retirement Income</h4>
-          <h2 class="dm-mono" style="color: var(--primary)">$12,406/mo</h2>
-          <span class="text-muted" style="font-size: 0.8rem">At age 67</span>
-        </div>
-      </div>
+        const totalBalance = investments.reduce((s, i) => s + (i.balance || 0), 0);
+        const totalContrib = investments.reduce((s, i) => s + (i.contribution || 0), 0);
+        const bmoAlto = investments.find(i => i.name.includes('BMO'))?.balance || 84904;
 
-      <div class="grid-2" style="margin-bottom: 2rem;">
-        <div class="card animate-fade-in-up">
-          <h3>Asset Allocation</h3>
-          <div class="chart-container" style="height: 300px;">
-            <canvas id="chart-inv-donut"></canvas>
-          </div>
-        </div>
-        <div class="card animate-fade-in-up">
-          <h3>Monthly Contributions</h3>
-          <div class="chart-container" style="height: 300px;">
-            <canvas id="chart-inv-contrib"></canvas>
-          </div>
-        </div>
-      </div>
+        // Projections
+        const chrisAge = new Date().getFullYear() - 1980; // mock age calculation
+        const erinAge = new Date().getFullYear() - 1987;
+        const chrisPension = 3991;
+        const chrisSS = 2689;
+        const erinPension = 2542;
+        const erinSS = 2000;
+        const projectedIncome = chrisPension + chrisSS + erinPension + erinSS;
 
-      <!-- Retirement Planner -->
-      <div class="card animate-fade-in-up" style="margin-bottom: 2rem;">
-        <h2 style="margin-bottom: 1.5rem; text-align: center;">Harrison Family Retirement Planner</h2>
-        
-        <div class="grid-2">
-          <!-- Chris -->
-          <div style="background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-              <div class="avatar-circle" style="background: ${App.getMemberColor('chris')}">C</div>
-              <h3>Chris's Retirement</h3>
+        let html = `
+            <div class="header-action">
+                <h2>${iconBriefcase} Investments & Retirement</h2>
+                <button class="btn btn-primary">+ Add Account</button>
             </div>
-            
-            <ul style="list-style: none; padding: 0; margin: 0; line-height: 2;">
-              <li style="display: flex; justify-content: space-between;"><span>Retirement Age:</span> <strong class="dm-mono">67 (2047)</strong></li>
-              <li style="display: flex; justify-content: space-between;"><span>TSERS Pension:</span> <strong class="dm-mono text-success">$3,991/mo</strong></li>
-              <li style="display: flex; justify-content: space-between;"><span>Social Security (at 67):</span> <strong class="dm-mono text-success">$2,689/mo</strong></li>
-              <li style="display: flex; justify-content: space-between;"><span>401(k) Projection:</span> <strong class="dm-mono">~$2,000/mo</strong></li>
-              <hr style="border-color: var(--border); margin: 0.5rem 0;" />
-              <li style="display: flex; justify-content: space-between; font-size: 1.2rem;"><span>Total Projected:</span> <strong class="dm-mono text-primary">$8,680/mo</strong></li>
-            </ul>
-          </div>
 
-          <!-- Erin -->
-          <div style="background: rgba(255,255,255,0.02); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border);">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-              <div class="avatar-circle" style="background: ${App.getMemberColor('erin')}">E</div>
-              <h3>Erin's Retirement</h3>
+            <div class="grid-4 mb-6">
+                <div class="stat-card animate-fade-in-up">
+                    <div class="stat-title">Total Portfolio</div>
+                    <div class="stat-value dm-mono gradient-text">${window.App.formatCurrency(totalBalance)}</div>
+                </div>
+                <div class="stat-card animate-fade-in-up" style="animation-delay: 0.1s">
+                    <div class="stat-title">Monthly Contrib.</div>
+                    <div class="stat-value dm-mono">${window.App.formatCurrency(totalContrib)}</div>
+                </div>
+                <div class="stat-card animate-fade-in-up" style="animation-delay: 0.2s">
+                    <div class="stat-title">BMO Alto (4%)</div>
+                    <div class="stat-value dm-mono text-green-400">${window.App.formatCurrency(bmoAlto)}</div>
+                </div>
+                <div class="stat-card animate-fade-in-up" style="animation-delay: 0.3s">
+                    <div class="stat-title">Projected Retirement /mo</div>
+                    <div class="stat-value dm-mono text-purple-400">${window.App.formatCurrency(projectedIncome)}</div>
+                </div>
             </div>
-            
-            <ul style="list-style: none; padding: 0; margin: 0; line-height: 2;">
-              <li style="display: flex; justify-content: space-between;"><span>Retirement Age:</span> <strong class="dm-mono">55 (2042)</strong></li>
-              <li style="display: flex; justify-content: space-between;"><span>TSERS Pension:</span> <strong class="dm-mono text-success">$2,542/mo</strong></li>
-              <li style="display: flex; justify-content: space-between;"><span>Bridge Income (BMO):</span> <strong class="dm-mono text-warning">2042-2049</strong></li>
-              <li style="display: flex; justify-content: space-between;"><span>401k/Investments:</span> <strong class="dm-mono">~$450/mo</strong></li>
-              <hr style="border-color: var(--border); margin: 0.5rem 0;" />
-              <li style="display: flex; justify-content: space-between; font-size: 1.2rem;"><span>Total Projected (Pre-SS):</span> <strong class="dm-mono text-primary">$2,992/mo</strong></li>
-            </ul>
-          </div>
-        </div>
 
-        <div style="margin-top: 2rem;">
-          <h4>Combined Summary (At age 67)</h4>
-          <div class="data-table" style="margin-top: 1rem;">
-            <table>
-              <thead><tr><th>Source</th><th>Monthly</th><th>Annual</th><th>Notes</th></tr></thead>
-              <tbody>
-                <tr><td>Chris Pension</td><td class="dm-mono">$3,991</td><td class="dm-mono">$47,900</td><td></td></tr>
-                <tr><td>Chris SS</td><td class="dm-mono">$2,689</td><td class="dm-mono">$32,268</td><td></td></tr>
-                <tr><td>Chris 401k Draw</td><td class="dm-mono">~$2,000</td><td class="dm-mono">~$24,000</td><td>4% safe withdrawal</td></tr>
-                <tr><td>Erin Pension</td><td class="dm-mono">$2,542</td><td class="dm-mono">$30,500</td><td>Starts 2042</td></tr>
-                <tr><td>Erin SS</td><td class="dm-mono">$2,218</td><td class="dm-mono">$26,616</td><td>Assuming taking at 67</td></tr>
-                <tr><td>Rental Income (Goal)</td><td class="dm-mono">$750</td><td class="dm-mono">$9,000</td><td>Est. average</td></tr>
-                <tr style="font-weight: bold; background: rgba(255,255,255,0.05);">
-                  <td>TOTAL</td><td class="dm-mono text-success">$14,190</td><td class="dm-mono text-success">$170,284</td><td>Combined projection</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- What-if Calculator -->
-      <div class="card animate-fade-in-up" style="margin-bottom: 2rem;">
-        <h3>What-If Retirement Calculator</h3>
-        <p class="text-muted" style="margin-bottom: 1.5rem;">Adjust inputs to see how compound growth affects your portfolio.</p>
-        
-        <div class="grid-2">
-          <div>
-            <div class="form-group">
-              <label>Current Savings ($)</label>
-              <input type="number" id="calc-savings" class="form-input" value="100000" />
+            <div class="grid-2 mb-6">
+                <div class="card animate-fade-in-up">
+                    <h3 class="text-lg font-bold mb-4">Compound Growth (Next 25 Yrs)</h3>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="invest-growth-chart"></canvas>
+                    </div>
+                </div>
+                <div class="card animate-fade-in-up">
+                    <h3 class="text-lg font-bold mb-4">Investment Accounts</h3>
+                    <div class="space-y-4">
+                        ${investments.map(inv => `
+                            <div class="flex justify-between items-center p-3 bg-gray-800 rounded-lg">
+                                <div>
+                                    <div class="font-bold flex items-center gap-2">
+                                        <span class="member-badge" style="background-color: ${window.App.getMemberColor(inv.memberId)}">${window.App.getInitials(inv.memberId)}</span>
+                                        ${inv.name}
+                                    </div>
+                                    <div class="text-sm text-gray-400">${inv.type} • ${inv.rate}% Return</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="dm-mono text-lg">${window.App.formatCurrency(inv.balance)}</div>
+                                    <div class="dm-mono text-sm text-green-400">+${window.App.formatCurrency(inv.contribution)}/mo</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-              <label>Monthly Contribution ($)</label>
-              <input type="number" id="calc-contrib" class="form-input" value="650" />
+
+            <div class="card animate-fade-in-up">
+                <h3 class="text-xl font-bold mb-6 gradient-text">Retirement Planner (Combined ~${window.App.formatCurrency(projectedIncome)}/mo)</h3>
+                <div class="grid-2 gap-8">
+                    <div class="p-4 border border-gray-700 rounded-lg">
+                        <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+                            <span class="avatar-circle" style="background-color: ${window.App.getMemberColor('chris')}">C</span> Chris (Retire 2047, Age 67)
+                        </h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between"><span class="text-gray-400">TSERS Pension:</span><span class="dm-mono text-green-400">$3,991/mo</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Social Security:</span><span class="dm-mono text-green-400">$2,689/mo</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">401(k) Contrib:</span><span class="dm-mono">$500/mo</span></div>
+                        </div>
+                    </div>
+                    <div class="p-4 border border-gray-700 rounded-lg">
+                        <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
+                            <span class="avatar-circle" style="background-color: ${window.App.getMemberColor('erin')}">E</span> Erin (Retire 2042, Age 55)
+                        </h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between"><span class="text-gray-400">TSERS Pension:</span><span class="dm-mono text-green-400">$2,542/mo</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">Social Security:</span><span class="dm-mono text-green-400">$1,557 - $2,750/mo</span></div>
+                            <div class="flex justify-between"><span class="text-gray-400">401(k) / RH:</span><span class="dm-mono">$150/mo</span></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-              <label>Expected Return (%)</label>
-              <input type="number" id="calc-return" class="form-input" value="7" />
-            </div>
-            <div class="grid-2">
-              <div class="form-group">
-                <label>Current Age</label>
-                <input type="number" id="calc-age" class="form-input" value="46" />
-              </div>
-              <div class="form-group">
-                <label>Retire Age</label>
-                <input type="number" id="calc-retire" class="form-input" value="67" />
-              </div>
-            </div>
-          </div>
-          
-          <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 2rem;">
-            <h4 class="text-muted">Projected Balance</h4>
-            <h1 id="calc-result" class="dm-mono text-success" style="font-size: 3rem; margin: 1rem 0;">$0</h1>
-            <p>Provides <strong id="calc-draw" class="dm-mono text-primary">$0/mo</strong> (4% rule)</p>
-          </div>
-        </div>
-      </div>
+        `;
+        container.innerHTML = html;
 
-      <!-- Compound Growth Chart -->
-      <div class="card animate-fade-in-up">
-        <h3>Projected Growth</h3>
-        <div class="chart-container" style="height: 400px;">
-          <canvas id="chart-inv-growth"></canvas>
-        </div>
-      </div>
-    `;
-  },
+        setTimeout(() => {
+            if(window.Charts) {
+                // Mock compound growth calculation
+                let labels = [];
+                let data = [];
+                let current = totalBalance;
+                for(let i=0; i<=25; i++) {
+                    labels.push(new Date().getFullYear() + i);
+                    data.push(current);
+                    current = (current + (totalContrib * 12)) * 1.07;
+                }
+                
+                window.Charts.line('invest-growth-chart', {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Projected Portfolio Value',
+                        data: data,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                });
+            }
+        }, 100);
+    }
 
-  bindEvents() {
-    const inputs = ['calc-savings', 'calc-contrib', 'calc-return', 'calc-age', 'calc-retire'];
-    inputs.forEach(id => {
-      document.getElementById(id)?.addEventListener('input', () => this.updateCalculator());
-    });
-
-    document.getElementById('btn-add-investment')?.addEventListener('click', () => {
-      App.showToast('Add Investment modal triggered');
-    });
-  },
-
-  loadData() {
-    this.renderCharts();
-    this.updateCalculator();
+    window.InvestmentsModule = { render: renderInvestments };
     
-    // Animate total
-    const totalEl = document.getElementById('inv-total');
-    if (totalEl) totalEl.textContent = App.formatCurrency(150000); // placeholder total
-  },
-
-  updateCalculator() {
-    const savings = parseFloat(document.getElementById('calc-savings')?.value || 0);
-    const contrib = parseFloat(document.getElementById('calc-contrib')?.value || 0);
-    const retRate = parseFloat(document.getElementById('calc-return')?.value || 0) / 100;
-    const age = parseInt(document.getElementById('calc-age')?.value || 0);
-    const retire = parseInt(document.getElementById('calc-retire')?.value || 0);
-
-    const years = retire - age;
-    if (years <= 0) return;
-
-    let balance = savings;
-    const monthlyRate = retRate / 12;
-    const months = years * 12;
-
-    for (let i = 0; i < months; i++) {
-      balance = (balance + contrib) * (1 + monthlyRate);
-    }
-
-    const draw = (balance * 0.04) / 12;
-
-    document.getElementById('calc-result').textContent = App.formatCurrency(balance);
-    document.getElementById('calc-draw').textContent = App.formatCurrency(draw);
-  },
-
-  renderCharts() {
-    if (!window.Charts) return;
-
-    // Asset Allocation Donut
-    window.Charts.donut('chart-inv-donut', [
-      { label: 'Chris 401k', value: 45000, color: App.getMemberColor('chris') },
-      { label: 'Erin 401k', value: 12000, color: App.getMemberColor('erin') },
-      { label: 'BMO Alto', value: 84904, color: 'hsl(180, 70%, 50%)' },
-      { label: 'Robinhood', value: 8000, color: 'hsl(140, 70%, 50%)' }
-    ], { showLegend: true });
-
-    // Contributions Bar
-    window.Charts.bar('chart-inv-contrib', {
-      labels: ['Chris 401k', 'Erin 401k', 'Robinhood'],
-      datasets: [{
-        label: 'Monthly ($)',
-        values: [500, 100, 50],
-        color: 'hsl(220, 80%, 60%)'
-      }]
+    document.addEventListener('DOMContentLoaded', () => {
+        if(document.getElementById('section-invest')) {
+            window.InvestmentsModule.render();
+        }
     });
 
-    // Growth Timeline
-    const labels = [];
-    const values = [];
-    let bal = 150000;
-    for (let y = 0; y <= 20; y++) {
-      labels.push(new Date().getFullYear() + y);
-      values.push(bal);
-      bal = (bal + 650 * 12) * 1.07;
-    }
-
-    window.Charts.line('chart-inv-growth', {
-      labels: labels,
-      datasets: [{
-        label: 'Projected Total',
-        values: values,
-        color: 'hsl(150, 70%, 50%)',
-        fill: true
-      }]
-    }, { smooth: true, showDots: false });
-  },
-
-  refresh() {
-    this.loadData();
-  }
-};
+})();

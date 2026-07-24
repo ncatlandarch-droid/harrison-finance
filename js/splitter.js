@@ -1,156 +1,127 @@
-window.Splitter = {
-  init() {
-    this.render();
-    this.bindEvents();
-    this.loadData();
-  },
+(function() {
+    const iconUsers = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>`;
 
-  render() {
-    const section = document.getElementById('section-split');
-    if (!section) return;
+    function renderSplitter() {
+        const container = document.getElementById('section-split');
+        if (!container) return;
 
-    section.innerHTML = `
-      <div class="header-row">
-        <h2 class="gradient-text">Expense Splitter</h2>
-        <button id="btn-add-expense" class="btn btn-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          Add Shared Expense
-        </button>
-      </div>
+        let expenses = window.Storage.getSharedExpenses() || [];
+        if (expenses.length === 0) {
+            expenses = [
+                { id: '1', date: '2024-07-20', description: 'Groceries', amount: 150.00, paidBy: 'chris', splits: { chris: 75, erin: 75 }, method: 'Equal' },
+                { id: '2', date: '2024-07-22', description: 'Internet Bill', amount: 80.00, paidBy: 'erin', splits: { chris: 40, erin: 40 }, method: 'Equal' }
+            ];
+        }
 
-      <div class="grid-3" id="split-balances" style="margin-bottom: 2rem;">
-        <!-- Balance cards populated here -->
-      </div>
+        // Calculate balances
+        let balances = { chris: 0, erin: 0, barbara: 0 };
+        expenses.forEach(ex => {
+            balances[ex.paidBy] += ex.amount; // they paid this much
+            for (let member in ex.splits) {
+                balances[member] -= ex.splits[member]; // they owe this much
+            }
+        });
 
-      <div class="card animate-fade-in-up" style="margin-bottom: 2rem; animation-delay: 0.1s;">
-        <h3>Settlement Summary</h3>
-        <div id="split-settlements"></div>
-      </div>
+        const settleOwe = balances.chris > balances.erin ? 
+            `Erin owes Chris <span class="dm-mono font-bold text-green-400">${window.App.formatCurrency(balances.chris - balances.erin)}</span>` : 
+            `Chris owes Erin <span class="dm-mono font-bold text-green-400">${window.App.formatCurrency(balances.erin - balances.chris)}</span>`;
 
-      <div class="card animate-fade-in-up" style="animation-delay: 0.2s;">
-        <h3>Shared Expenses</h3>
-        <div id="split-expenses-list"></div>
-      </div>
-    `;
-  },
+        let html = `
+            <div class="header-action">
+                <h2>${iconUsers} Expense Splitter</h2>
+                <button class="btn btn-primary" onclick="window.SplitterModule.showAddExpenseModal()">+ Add Expense</button>
+            </div>
 
-  bindEvents() {
-    document.getElementById('btn-add-expense')?.addEventListener('click', () => {
-      App.showToast('Add Shared Expense modal triggered');
-      // logic for opening modal
-    });
-  },
+            <div class="grid-3 mb-6">
+                <div class="card animate-fade-in-up text-center">
+                    <h3 class="font-bold text-gray-400 mb-2">Chris Balance</h3>
+                    <div class="text-3xl dm-mono ${balances.chris >= 0 ? 'text-green-400' : 'text-red-400'}">
+                        ${window.App.formatCurrency(Math.abs(balances.chris))} ${balances.chris >= 0 ? '(Owed)' : '(Owes)'}
+                    </div>
+                </div>
+                <div class="card animate-fade-in-up text-center" style="animation-delay: 0.1s">
+                    <h3 class="font-bold text-gray-400 mb-2">Erin Balance</h3>
+                    <div class="text-3xl dm-mono ${balances.erin >= 0 ? 'text-green-400' : 'text-red-400'}">
+                        ${window.App.formatCurrency(Math.abs(balances.erin))} ${balances.erin >= 0 ? '(Owed)' : '(Owes)'}
+                    </div>
+                </div>
+                <div class="card animate-fade-in-up flex flex-col justify-center items-center" style="animation-delay: 0.2s; background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.3);">
+                    <h3 class="text-lg font-bold mb-2">Settlement</h3>
+                    <div class="text-lg mb-4 text-center">${settleOwe}</div>
+                    <button class="btn btn-sm" style="background: var(--primary); color: white;">Settle Up</button>
+                </div>
+            </div>
 
-  loadData() {
-    this.renderBalances();
-    this.renderSettlements();
-    this.renderExpenses();
-  },
-
-  renderBalances() {
-    const container = document.getElementById('split-balances');
-    if (!container || !window.Storage) return;
-
-    // This is a simplified balance logic for presentation
-    const adults = ['barbara', 'chris', 'erin'];
-    let html = '';
-    
-    // Mock balances since we don't have full data populated
-    const mockBalances = { barbara: -150, chris: 300, erin: -150 };
-
-    adults.forEach((id, idx) => {
-      const bal = mockBalances[id] || 0;
-      const isOwed = bal > 0;
-      const isNeutral = bal === 0;
-      
-      html += `
-        <div class="card stat-card animate-fade-in-up" style="animation-delay: ${idx * 0.1}s">
-          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-            <div class="avatar-circle" style="background: ${App.getMemberColor(id)}">${id.charAt(0).toUpperCase()}</div>
-            <h3>${id.charAt(0).toUpperCase() + id.slice(1)}</h3>
-          </div>
-          <div style="display: flex; flex-direction: column;">
-            <span class="text-muted">${isNeutral ? 'Settled up' : (isOwed ? 'Gets back' : 'Owes')}</span>
-            <h2 class="dm-mono ${isNeutral ? '' : (isOwed ? 'text-success' : 'text-danger')}">
-              ${isNeutral ? '$0.00' : App.formatCurrency(Math.abs(bal))}
-            </h2>
-          </div>
-        </div>
-      `;
-    });
-
-    container.innerHTML = html;
-  },
-
-  renderSettlements() {
-    const container = document.getElementById('split-settlements');
-    if (!container) return;
-
-    // Mock settlements
-    const settlements = [
-      { from: 'barbara', to: 'chris', amount: 150 },
-      { from: 'erin', to: 'chris', amount: 150 }
-    ];
-
-    if (settlements.length === 0) {
-      container.innerHTML = '<div class="empty-state">Everyone is settled up! 🎉</div>';
-      return;
+            <div class="card animate-fade-in-up" style="animation-delay: 0.3s">
+                <h3 class="text-lg font-bold mb-4">Recent Shared Expenses</h3>
+                <div class="data-table">
+                    <div class="grid grid-cols-5 gap-4 font-bold text-gray-400 border-b border-gray-700 pb-2 mb-2">
+                        <div>Date</div>
+                        <div class="col-span-2">Description</div>
+                        <div>Paid By</div>
+                        <div class="text-right">Amount</div>
+                    </div>
+                    ${expenses.map(ex => `
+                        <div class="grid grid-cols-5 gap-4 py-3 border-b border-gray-800 items-center">
+                            <div class="text-sm">${window.App.formatDate(ex.date)}</div>
+                            <div class="col-span-2 font-bold">${ex.description} <span class="badge ml-2">${ex.method}</span></div>
+                            <div><span class="member-badge" style="background-color: ${window.App.getMemberColor(ex.paidBy)}">${window.App.getInitials(ex.paidBy)}</span></div>
+                            <div class="text-right dm-mono">${window.App.formatCurrency(ex.amount)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
     }
 
-    let html = '<div class="list-group">';
-    settlements.forEach(s => {
-      html += `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid var(--border);">
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span class="member-badge" style="background: ${App.getMemberColor(s.from)}">${s.from}</span>
-            <span>owes</span>
-            <span class="member-badge" style="background: ${App.getMemberColor(s.to)}">${s.to}</span>
-            <span class="dm-mono" style="font-weight: bold; margin-left: 0.5rem;">${App.formatCurrency(s.amount)}</span>
-          </div>
-          <button class="btn btn-sm" onclick="App.showToast('Marked as settled')">Settle</button>
-        </div>
-      `;
-    });
-    html += '</div>';
-    
-    container.innerHTML = html;
-  },
-
-  renderExpenses() {
-    const container = document.getElementById('split-expenses-list');
-    if (!container || !window.Storage) return;
-
-    const expenses = window.Storage.getSharedExpenses ? window.Storage.getSharedExpenses() : [];
-    
-    if (expenses.length === 0) {
-      container.innerHTML = `<div class="empty-state">No shared expenses yet. Add one to get started!</div>`;
-      return;
+    function showAddExpenseModal() {
+        const members = window.Storage.getMembers() || [{id:'chris', name:'Chris'}, {id:'erin', name:'Erin'}, {id:'barbara', name:'Barbara'}];
+        const html = `
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="split-desc" class="form-input">
+            </div>
+            <div class="grid-2 gap-4">
+                <div class="form-group">
+                    <label>Amount ($)</label>
+                    <input type="number" id="split-amt" class="form-input dm-mono">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="split-date" class="form-input" value="${new Date().toISOString().split('T')[0]}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Paid By</label>
+                <select id="split-paidby" class="form-input">
+                    ${members.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Split Method</label>
+                <select id="split-method" class="form-input">
+                    <option value="Equal">Equal (50/50)</option>
+                    <option value="Custom">Custom</option>
+                </select>
+            </div>
+        `;
+        window.App.showModal('Add Shared Expense', html, `<button class="btn btn-primary" onclick="window.SplitterModule.saveExpense()">Add Expense</button>`);
     }
 
-    let html = '<div class="data-table"><table><thead><tr><th>Date</th><th>Description</th><th>Paid By</th><th>Amount</th><th>Method</th><th></th></tr></thead><tbody>';
-    
-    expenses.forEach(exp => {
-      html += `
-        <tr>
-          <td>${App.formatDate(exp.date)}</td>
-          <td>${exp.description}</td>
-          <td><span class="member-badge" style="background:${App.getMemberColor(exp.paidBy)}">${exp.paidBy}</span></td>
-          <td class="dm-mono">${App.formatCurrency(exp.amount)}</td>
-          <td><span class="badge">${exp.splitMethod}</span></td>
-          <td>
-            <button class="btn btn-sm" style="color: var(--danger)" onclick="App.showToast('Delete not implemented')">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-            </button>
-          </td>
-        </tr>
-      `;
-    });
-    
-    html += '</tbody></table></div>';
-    container.innerHTML = html;
-  },
+    function saveExpense() {
+        // mock save
+        window.App.hideModal();
+        window.App.showToast('Expense added', 'success');
+        renderSplitter();
+    }
 
-  refresh() {
-    this.loadData();
-  }
-};
+    window.SplitterModule = { render: renderSplitter, showAddExpenseModal, saveExpense };
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        if(document.getElementById('section-split')) {
+            window.SplitterModule.render();
+        }
+    });
+
+})();

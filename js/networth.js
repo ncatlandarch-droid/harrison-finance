@@ -1,239 +1,183 @@
-window.NetWorth = {
-  init() {
-    this.render();
-    this.bindEvents();
-    this.loadData();
-  },
+(function() {
+    const iconTrendingUp = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`;
+    const iconCamera = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>`;
 
-  render() {
-    const section = document.getElementById('section-networth');
-    if (!section) return;
+    function renderNetWorth() {
+        const container = document.getElementById('section-networth');
+        if (!container) return;
 
-    section.innerHTML = `
-      <div class="header-row">
-        <h2 class="gradient-text">Net Worth</h2>
-        <div class="header-actions">
-          <button id="btn-take-snapshot" class="btn btn-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-            Take Snapshot
-          </button>
-        </div>
-      </div>
+        const assets = window.Storage.getTotalAssets();
+        const liabilities = window.Storage.getTotalLiabilities();
+        const netWorth = assets - liabilities;
 
-      <div class="card hero-stat animate-fade-in-up" style="text-align: center; padding: 3rem;">
-        <h3 style="color: var(--text-muted);">Current Net Worth</h3>
-        <h1 id="nw-total" class="dm-mono gradient-text" style="font-size: 4rem; margin: 1rem 0;">$0.00</h1>
-        <div class="grid-2" style="max-width: 600px; margin: 0 auto; text-align: left;">
-          <div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-              <span>Assets</span>
-              <span id="nw-assets" class="dm-mono text-success">$0.00</span>
+        let accounts = window.Storage.getAccounts() || [];
+        if (accounts.length === 0) {
+            accounts = [
+                { id: window.Storage.generateId(), name: 'BoA Joint Checking', type: 'asset', balance: 1130.94, memberId: 'joint' },
+                { id: window.Storage.generateId(), name: "Barbara's Checking", type: 'asset', balance: 2722.64, memberId: 'barbara' },
+                { id: window.Storage.generateId(), name: 'BMO Alto Savings', type: 'asset', balance: 84904.00, memberId: 'erin' },
+                { id: window.Storage.generateId(), name: 'Chris 401(k)', type: 'asset', balance: 45000.00, memberId: 'chris' },
+                { id: window.Storage.generateId(), name: 'Mortgage', type: 'liability', balance: 150000.00, memberId: 'joint' }
+            ];
+            accounts.forEach(a => window.Storage.addAccount(a));
+        }
+
+        const assetAccounts = accounts.filter(a => a.type === 'asset');
+        const liabilityAccounts = accounts.filter(a => a.type === 'liability');
+
+        let html = `
+            <div class="header-action">
+                <h2>${iconTrendingUp} Net Worth</h2>
+                <button class="btn btn-primary" onclick="window.NetWorthModule.takeSnapshot()">${iconCamera} Snapshot</button>
             </div>
-            <div class="progress-bar"><div class="progress-bar-fill bg-success" style="width: 100%;"></div></div>
-          </div>
-          <div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-              <span>Liabilities</span>
-              <span id="nw-liabilities" class="dm-mono text-danger">$0.00</span>
+            
+            <div class="card text-center mb-6 py-10 animate-fade-in-up">
+                <div class="text-gray-400 text-lg uppercase tracking-wider mb-2">Total Net Worth</div>
+                <div class="text-6xl font-bold gradient-text dm-mono mb-6">${window.App.formatCurrency(netWorth)}</div>
+                
+                <div class="flex justify-center gap-8 max-w-lg mx-auto">
+                    <div class="flex-1 text-right">
+                        <div class="text-sm text-gray-500">Assets</div>
+                        <div class="text-xl text-green-400 dm-mono">${window.App.formatCurrency(assets)}</div>
+                    </div>
+                    <div class="w-px bg-gray-700"></div>
+                    <div class="flex-1 text-left">
+                        <div class="text-sm text-gray-500">Liabilities</div>
+                        <div class="text-xl text-red-400 dm-mono">${window.App.formatCurrency(liabilities)}</div>
+                    </div>
+                </div>
             </div>
-            <div class="progress-bar"><div class="progress-bar-fill bg-danger" style="width: 100%;"></div></div>
-          </div>
-        </div>
-      </div>
 
-      <div class="grid-2" style="margin-top: 2rem;">
-        <div class="card animate-fade-in-up" style="animation-delay: 0.1s;">
-          <h3>Assets vs Liabilities</h3>
-          <div class="chart-container">
-            <canvas id="chart-nw-bar"></canvas>
-          </div>
-        </div>
-        <div class="card animate-fade-in-up" style="animation-delay: 0.2s;">
-          <h3>Asset Allocation</h3>
-          <div class="chart-container">
-            <canvas id="chart-nw-donut"></canvas>
-          </div>
-        </div>
-      </div>
+            <div class="grid-2 mb-6">
+                <div class="card animate-fade-in-up" style="animation-delay: 0.1s">
+                    <h3 class="text-lg font-bold mb-4">Asset Allocation</h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="nw-allocation-chart"></canvas>
+                    </div>
+                </div>
+                <div class="card animate-fade-in-up" style="animation-delay: 0.2s">
+                    <h3 class="text-lg font-bold mb-4">Net Worth History</h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="nw-history-chart"></canvas>
+                    </div>
+                </div>
+            </div>
 
-      <div class="card animate-fade-in-up" style="margin-top: 2rem; animation-delay: 0.3s;">
-        <h3>Net Worth Over Time</h3>
-        <div class="chart-container">
-          <canvas id="chart-nw-timeline"></canvas>
-        </div>
-      </div>
+            <div class="grid-2">
+                <div class="card animate-fade-in-up" style="animation-delay: 0.3s">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-green-400">Assets</h3>
+                        <button class="btn btn-sm btn-outline" onclick="window.NetWorthModule.showAddAccountModal('asset')">+ Add</button>
+                    </div>
+                    <div class="data-table">
+                        ${assetAccounts.map(a => `
+                            <div class="flex justify-between items-center py-2 border-b border-gray-800 last:border-0">
+                                <div class="flex items-center gap-2">
+                                    <span class="member-badge" style="background-color: ${window.App.getMemberColor(a.memberId)}">${window.App.getInitials(a.memberId)}</span>
+                                    <span>${a.name}</span>
+                                </div>
+                                <span class="dm-mono text-green-400">${window.App.formatCurrency(a.balance)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
 
-      <div class="card animate-fade-in-up" style="margin-top: 2rem; animation-delay: 0.4s;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <h3>Accounts List</h3>
-          <button id="btn-add-account" class="btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Add Account
-          </button>
-        </div>
-        <div id="nw-accounts-list"></div>
-      </div>
+                <div class="card animate-fade-in-up" style="animation-delay: 0.4s">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-red-400">Liabilities</h3>
+                        <button class="btn btn-sm btn-outline" onclick="window.NetWorthModule.showAddAccountModal('liability')">+ Add</button>
+                    </div>
+                    <div class="data-table">
+                        ${liabilityAccounts.map(a => `
+                            <div class="flex justify-between items-center py-2 border-b border-gray-800 last:border-0">
+                                <div class="flex items-center gap-2">
+                                    <span class="member-badge" style="background-color: ${window.App.getMemberColor(a.memberId)}">${window.App.getInitials(a.memberId)}</span>
+                                    <span>${a.name}</span>
+                                </div>
+                                <span class="dm-mono text-red-400">${window.App.formatCurrency(a.balance)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
 
-      <div class="grid-3" id="nw-member-breakdown" style="margin-top: 2rem;">
-        <!-- Member cards go here -->
-      </div>
-    `;
-  },
+        setTimeout(() => {
+            if(window.Charts) {
+                if(assetAccounts.length > 0) {
+                    window.Charts.donut('nw-allocation-chart', {
+                        labels: assetAccounts.map(a => a.name),
+                        datasets: [{ data: assetAccounts.map(a => a.balance) }]
+                    }, { cutout: '60%' });
+                }
 
-  bindEvents() {
-    document.getElementById('btn-take-snapshot')?.addEventListener('click', () => {
-      this.takeSnapshot();
-    });
-
-    document.getElementById('btn-add-account')?.addEventListener('click', () => {
-      // Logic to open add account modal
-      App.showToast('Add account modal triggered (to be implemented)');
-    });
-  },
-
-  loadData() {
-    if (!window.Storage) return;
-    
-    const assets = window.Storage.getTotalAssets() || 0;
-    const liabilities = window.Storage.getTotalLiabilities() || 0;
-    const netWorth = window.Storage.getNetWorth() || 0;
-
-    this.animateValue('nw-total', netWorth);
-    this.animateValue('nw-assets', assets);
-    this.animateValue('nw-liabilities', liabilities);
-
-    this.renderCharts();
-    this.renderAccountsList();
-    this.renderMemberBreakdown();
-  },
-
-  animateValue(id, target) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    
-    // Simple counter animation
-    const duration = 1000;
-    const steps = 30;
-    const stepTime = Math.abs(Math.floor(duration / steps));
-    let current = 0;
-    const increment = target / steps;
-    
-    const timer = setInterval(() => {
-      current += increment;
-      if ((increment > 0 && current >= target) || (increment < 0 && current <= target)) {
-        current = target;
-        clearInterval(timer);
-      }
-      el.textContent = App.formatCurrency(current);
-    }, stepTime);
-  },
-
-  renderCharts() {
-    if (!window.Charts || !window.Storage) return;
-
-    // Assets vs Liabilities
-    window.Charts.horizontalBar('chart-nw-bar', [
-      { label: 'Assets', value: window.Storage.getTotalAssets() || 0, color: 'hsl(140, 70%, 50%)' },
-      { label: 'Liabilities', value: window.Storage.getTotalLiabilities() || 0, color: 'hsl(350, 70%, 50%)' }
-    ]);
-
-    // Asset Allocation
-    const accounts = window.Storage.getAccounts() || [];
-    const types = {};
-    accounts.forEach(a => {
-      if (a.balance > 0) {
-        types[a.type] = (types[a.type] || 0) + a.balance;
-      }
-    });
-    
-    const donutData = Object.entries(types).map(([type, val], idx) => ({
-      label: type,
-      value: val,
-      color: `hsl(${idx * 60 + 200}, 70%, 50%)`
-    }));
-
-    window.Charts.donut('chart-nw-donut', donutData, { showLegend: true });
-
-    // Net Worth Timeline
-    const snapshots = window.Storage.getSnapshots() || [];
-    if (snapshots.length > 0) {
-      const timelineData = {
-        labels: snapshots.map(s => App.formatDate(s.date)),
-        datasets: [{
-          label: 'Net Worth',
-          values: snapshots.map(s => s.netWorth),
-          color: 'hsl(250, 70%, 60%)',
-          fill: true
-        }]
-      };
-      window.Charts.line('chart-nw-timeline', timelineData, { smooth: true, showDots: true });
-    }
-  },
-
-  renderAccountsList() {
-    const container = document.getElementById('nw-accounts-list');
-    if (!container || !window.Storage) return;
-
-    const accounts = window.Storage.getAccounts() || [];
-    if (accounts.length === 0) {
-      container.innerHTML = `<div class="empty-state">No accounts found. Add one to start tracking your net worth!</div>`;
-      return;
+                const snaps = window.Storage.getSnapshots() || [];
+                if(snaps.length > 0) {
+                    window.Charts.line('nw-history-chart', {
+                        labels: snaps.map(s => window.App.formatDate(s.date)),
+                        datasets: [{
+                            label: 'Net Worth',
+                            data: snaps.map(s => s.netWorth),
+                            borderColor: '#8b5cf6',
+                            tension: 0.4
+                        }]
+                    });
+                }
+            }
+        }, 100);
     }
 
-    let html = '<div class="data-table"><table><thead><tr><th>Name</th><th>Institution</th><th>Member</th><th style="text-align:right">Balance</th></tr></thead><tbody>';
+    function showAddAccountModal(type) {
+        const members = window.Storage.getMembers() || [];
+        const html = `
+            <input type="hidden" id="acc-type" value="${type}">
+            <div class="form-group">
+                <label>Account Name</label>
+                <input type="text" id="acc-name" class="form-input">
+            </div>
+            <div class="form-group">
+                <label>Balance ($)</label>
+                <input type="number" id="acc-balance" class="form-input dm-mono">
+            </div>
+            <div class="form-group">
+                <label>Owner</label>
+                <select id="acc-member" class="form-input">
+                    <option value="joint">Joint</option>
+                    ${members.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+                </select>
+            </div>
+        `;
+        window.App.showModal('Add ' + (type === 'asset' ? 'Asset' : 'Liability'), html, `<button class="btn btn-primary" onclick="window.NetWorthModule.saveAccount()">Save</button>`);
+    }
+
+    function saveAccount() {
+        const type = document.getElementById('acc-type').value;
+        const name = document.getElementById('acc-name').value;
+        const balance = parseFloat(document.getElementById('acc-balance').value);
+        const memberId = document.getElementById('acc-member').value;
+
+        if(!name || isNaN(balance)) return;
+
+        window.Storage.addAccount({ type, name, balance, memberId });
+        window.App.hideModal();
+        window.App.showToast('Account added', 'success');
+        renderNetWorth();
+    }
+
+    function takeSnapshot() {
+        window.Storage.addSnapshot();
+        window.App.showToast('Snapshot saved!', 'success');
+        window.Confetti.fire();
+        renderNetWorth();
+    }
+
+    window.NetWorthModule = { render: renderNetWorth, showAddAccountModal, saveAccount, takeSnapshot };
     
-    accounts.forEach(acc => {
-      html += `
-        <tr>
-          <td>${acc.name} <span class="badge">${acc.type}</span></td>
-          <td>${acc.institution}</td>
-          <td><span class="member-badge" style="background:${App.getMemberColor(acc.memberId)}">${acc.memberId}</span></td>
-          <td class="dm-mono" style="text-align:right; color: ${acc.balance >= 0 ? 'var(--text)' : 'var(--danger)'}">${App.formatCurrency(acc.balance)}</td>
-        </tr>
-      `;
+    document.addEventListener('DOMContentLoaded', () => {
+        if(document.getElementById('section-networth')) {
+            window.NetWorthModule.render();
+        }
     });
-    
-    html += '</tbody></table></div>';
-    container.innerHTML = html;
-  },
 
-  renderMemberBreakdown() {
-    const container = document.getElementById('nw-member-breakdown');
-    if (!container || !window.Storage) return;
-
-    const members = window.Storage.getMembers() || {};
-    const adults = ['barbara', 'chris', 'erin'].filter(id => members[id]);
-    
-    let html = '';
-    adults.forEach(id => {
-      const memAccounts = window.Storage.getAccountsByMember(id) || [];
-      const memNetWorth = memAccounts.reduce((sum, a) => sum + (a.balance || 0), 0);
-      
-      html += `
-        <div class="card stat-card" style="border-top: 4px solid ${App.getMemberColor(id)}">
-          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-            <div class="avatar-circle" style="background: ${App.getMemberColor(id)}">${id.charAt(0).toUpperCase()}</div>
-            <h3>${id.charAt(0).toUpperCase() + id.slice(1)}</h3>
-          </div>
-          <h2 class="dm-mono">${App.formatCurrency(memNetWorth)}</h2>
-          <p class="text-muted" style="margin-top: 0.5rem;">${memAccounts.length} accounts</p>
-        </div>
-      `;
-    });
-    
-    container.innerHTML = html;
-  },
-
-  takeSnapshot() {
-    if (!window.Storage) return;
-    
-    window.Storage.addSnapshot();
-    App.showToast('Snapshot saved successfully!');
-    if (window.Confetti) Confetti.celebrate();
-    this.loadData();
-  },
-
-  refresh() {
-    this.loadData();
-  }
-};
+})();

@@ -3,8 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Harrison Finance - Family Financial Planning App">
-  <title>Harrison Finance | Family Financial Planning</title>
+  <meta name="description" content="Harrison Finance - Premium Family Financial Planning App">
+  <title>Harrison Finance | v1.0</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💎</text></svg>">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
   <link rel="stylesheet" href="css/index.css">
   <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/components.css">
@@ -12,18 +22,41 @@
 </head>
 <body>
 
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-content">
+      <svg class="loading-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2L2 12l10 10 10-10L12 2z"/>
+        <path d="M12 2v20"/>
+        <path d="M2 12h20"/>
+      </svg>
+      <div class="loading-text">Harrison Finance</div>
+    </div>
+  </div>
+
   <nav id="sidebar">
     <div class="logo-area">
-      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-        <defs>
-          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="var(--primary-light)" />
-            <stop offset="100%" stop-color="var(--accent-pink)" />
-          </linearGradient>
-        </defs>
-      </svg>
-      <span class="gradient-text">Harrison Finance</span>
+      <div class="logo-top">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2L2 12l10 10 10-10L12 2z"/>
+          <path d="M12 2v20"/>
+          <path d="M2 12h20"/>
+          <defs>
+            <linearGradient id="gradient-primary" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="var(--primary-light)" />
+              <stop offset="100%" stop-color="var(--primary-dark)" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="gradient-text font-bold text-lg">Harrison Finance</span>
+        <span class="version-badge">v1.0</span>
+      </div>
+      
+      <div class="family-avatars mt-4">
+        <div class="avatar-circle member-b" title="Barbara">B</div>
+        <div class="avatar-circle member-c" title="Chris">C</div>
+        <div class="avatar-circle member-e" title="Erin">E</div>
+      </div>
     </div>
     
     <div class="nav-links">
@@ -39,9 +72,9 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
         <span>Bills</span>
       </a>
-      <a href="#" data-section="goals" class="nav-link">
+      <a href="#" data-section="savings" class="nav-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-        <span>Goals</span>
+        <span>Savings</span>
       </a>
       <a href="#" data-section="networth" class="nav-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
@@ -59,39 +92,69 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
         <span>Debts</span>
       </a>
+      <a href="#" data-section="import" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        <span>Import CSV</span>
+      </a>
+      
+      <div class="nav-divider"></div>
+      
       <a href="#" data-section="settings" class="nav-link settings-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         <span>Settings</span>
       </a>
     </div>
+
+    <div class="sidebar-footer mt-4">
+      <div class="total-balance-summary">
+        <div class="text-sm text-secondary">Total Balance</div>
+        <div class="text-xl font-bold font-mono" id="sidebar-total-balance">$0.00</div>
+      </div>
+    </div>
   </nav>
 
   <main id="main-content">
     <header id="top-bar">
-      <div>
-        <h1 id="page-title" class="gradient-text">Dashboard</h1>
-        <div id="date-display" class="text-secondary"></div>
+      <div class="top-bar-left">
+        <h1 id="page-title" class="gradient-text text-3xl font-bold">Dashboard</h1>
+        <div id="date-display" class="text-secondary text-sm subtitle mt-2"></div>
       </div>
-      <div id="member-filters" class="member-filters">
-        <!-- Will be populated by JS -->
+      <div class="top-bar-right">
+        <div class="greeting font-bold mr-4" id="greeting-text">Good afternoon, Chris</div>
+        <div class="quick-actions flex gap-sm">
+          <button id="btn-import-csv" class="btn btn-outline" onclick="app.navigate('import')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Import CSV
+          </button>
+          <button id="btn-add-transaction" class="btn btn-primary" onclick="app.openTransactionModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Transaction
+          </button>
+        </div>
       </div>
     </header>
+    
+    <div id="member-filters" class="member-filters mt-4 mb-4 flex gap-sm">
+      <button class="member-badge active" data-member="all"><span class="dot all-dot"></span> All</button>
+      <button class="member-badge" data-member="barbara"><span class="dot b-dot"></span> Barbara</button>
+      <button class="member-badge" data-member="chris"><span class="dot c-dot"></span> Chris</button>
+      <button class="member-badge" data-member="erin"><span class="dot e-dot"></span> Erin</button>
+    </div>
 
     <section id="section-dashboard" class="app-section active stagger-children">
-      <h2>Welcome Home</h2>
-      <!-- Dashboard content -->
+      <h2 class="section-header hidden">Dashboard</h2>
+      <div id="dashboard-content"></div>
     </section>
 
-    <section id="section-budget" class="app-section stagger-children">
-      <h2>Budget</h2>
-    </section>
-    <section id="section-bills" class="app-section stagger-children"><h2>Bills</h2></section>
-    <section id="section-goals" class="app-section stagger-children"><h2>Goals</h2></section>
-    <section id="section-networth" class="app-section stagger-children"><h2>Net Worth</h2></section>
-    <section id="section-split" class="app-section stagger-children"><h2>Split</h2></section>
-    <section id="section-invest" class="app-section stagger-children"><h2>Invest</h2></section>
-    <section id="section-debts" class="app-section stagger-children"><h2>Debts</h2></section>
-    <section id="section-settings" class="app-section stagger-children"><h2>Settings</h2></section>
+    <section id="section-budget" class="app-section stagger-children"><h2 class="section-header hidden">Budget</h2><div id="budget-content"></div></section>
+    <section id="section-bills" class="app-section stagger-children"><h2 class="section-header hidden">Bills</h2><div id="bills-content"></div></section>
+    <section id="section-savings" class="app-section stagger-children"><h2 class="section-header hidden">Savings</h2><div id="savings-content"></div></section>
+    <section id="section-networth" class="app-section stagger-children"><h2 class="section-header hidden">Net Worth</h2><div id="networth-content"></div></section>
+    <section id="section-split" class="app-section stagger-children"><h2 class="section-header hidden">Split</h2><div id="split-content"></div></section>
+    <section id="section-invest" class="app-section stagger-children"><h2 class="section-header hidden">Investments</h2><div id="invest-content"></div></section>
+    <section id="section-debts" class="app-section stagger-children"><h2 class="section-header hidden">Debts</h2><div id="debts-content"></div></section>
+    <section id="section-import" class="app-section stagger-children"><h2 class="section-header hidden">Import CSV</h2><div id="import-content"></div></section>
+    <section id="section-settings" class="app-section stagger-children"><h2 class="section-header hidden">Settings</h2><div id="settings-content"></div></section>
   </main>
 
   <div id="modal-overlay" class="modal-overlay hidden">
@@ -104,18 +167,43 @@
 
   <div id="toast-container" class="toast-container"></div>
 
-  <button id="fab" class="fab" title="Quick Add">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
-      <line x1="12" y1="5" x2="12" y2="19"></line>
-      <line x1="5" y1="12" x2="19" y2="12"></line>
-    </svg>
-  </button>
+  <div id="fab-container" class="fab-container">
+    <div id="fab-menu" class="fab-menu hidden">
+      <button class="fab-item" onclick="app.handleFabAction('transaction')" title="Add Transaction">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      </button>
+      <button class="fab-item" onclick="app.handleFabAction('bill')" title="Add Bill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+      </button>
+      <button class="fab-item" onclick="app.handleFabAction('snapshot')" title="Take Snapshot">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+      </button>
+      <button class="fab-item" onclick="app.handleFabAction('import')" title="Import CSV">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      </button>
+    </div>
+    <button id="fab" class="fab" title="Quick Actions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </button>
+  </div>
 
   <div id="confetti-container"></div>
 
   <script src="js/storage.js"></script>
   <script src="js/charts.js"></script>
   <script src="js/confetti.js"></script>
+  <script src="js/csv-import.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/budget.js"></script>
+  <script src="js/bills.js"></script>
+  <script src="js/savings.js"></script>
+  <script src="js/networth.js"></script>
+  <script src="js/splitter.js"></script>
+  <script src="js/investments.js"></script>
+  <script src="js/debts.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

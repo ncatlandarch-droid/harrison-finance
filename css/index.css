@@ -1,6 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
+  font-size: clamp(14px, 1vw + 10px, 16px);
+  
+  --font-ui: 'Outfit', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  
   /* Primary */
   --primary: hsl(250, 85%, 60%);
   --primary-light: hsl(250, 85%, 75%);
@@ -30,6 +35,11 @@
   --bg-glass-hover: rgba(255, 255, 255, 0.08);
   --border-glass: rgba(255, 255, 255, 0.08);
   --border-glass-hover: rgba(255, 255, 255, 0.15);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  --gradient-warm: linear-gradient(135deg, var(--accent-pink), var(--accent-orange));
+  --gradient-cool: linear-gradient(135deg, var(--accent-blue), var(--secondary));
   
   /* Text */
   --text-primary: hsl(0, 0%, 95%);
@@ -66,9 +76,13 @@
   --color-barbara: hsl(280, 70%, 60%);
   --color-chris: hsl(250, 85%, 60%);
   --color-erin: hsl(340, 85%, 60%);
-  --color-hayden: hsl(170, 75%, 45%);
-  --color-ava: hsl(45, 95%, 55%);
   --color-family: hsl(200, 85%, 55%);
+  
+  /* Member Gradients */
+  --grad-barbara: linear-gradient(135deg, hsl(280, 70%, 70%), hsl(280, 70%, 50%));
+  --grad-chris: linear-gradient(135deg, hsl(250, 85%, 70%), hsl(250, 85%, 50%));
+  --grad-erin: linear-gradient(135deg, hsl(340, 85%, 70%), hsl(340, 85%, 50%));
+  --grad-family: linear-gradient(135deg, hsl(200, 85%, 65%), hsl(200, 85%, 45%));
 }
 
 *, *::before, *::after {
@@ -82,7 +96,7 @@ html {
 }
 
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-ui);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.5;
@@ -90,12 +104,42 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.dm-mono {
-  font-family: 'DM Mono', monospace;
-}
+/* Typography utilities */
+.font-mono, .dm-mono { font-family: var(--font-mono); }
+.font-ui { font-family: var(--font-ui); }
+.font-bold { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+.font-medium { font-weight: 500; }
+.font-normal { font-weight: 400; }
+
+.text-sm { font-size: 0.875rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+
+/* Spacing utilities */
+.mt-2 { margin-top: var(--space-sm); }
+.mt-4 { margin-top: var(--space-md); }
+.mb-2 { margin-bottom: var(--space-sm); }
+.mb-4 { margin-bottom: var(--space-md); }
+
+/* Flex utilities */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
 
 .gradient-text {
-  background: linear-gradient(135deg, var(--primary-light), var(--accent-pink));
+  background: var(--gradient-warm);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
