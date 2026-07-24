@@ -1,0 +1,28 @@
+# Sensitive financial documents - NEVER commit these
+Statements/
+*.pdf
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Node (if we add packages later)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.bak
