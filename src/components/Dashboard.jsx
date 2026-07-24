@@ -5,36 +5,21 @@ import {
   Receipt, 
   PiggyBank, 
   AlertTriangle, 
-  ArrowUpRight, 
-  Sparkles,
-  ShieldAlert,
   HeartHandshake,
-  CreditCard,
   Building,
-  CheckCircle2
+  Car,
+  Baby,
+  Smile
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  ResponsiveContainer, 
-  Cell, 
-  PieChart, 
-  Pie 
-} from 'recharts';
 
 export const Dashboard = () => {
   const { 
-    members, 
     totalIncome, 
     barbaraTotalExpenses, 
-    jointBillsTotal,
-    totalFixedBills, 
-    totalVariableBudgets,
-    realNetSurplus,
+    erinTotalExpenses,
     barbaraNetRemaining,
+    erinNetRemaining,
+    chrisNetRemaining,
     data 
   } = useFinance();
 
@@ -73,132 +58,163 @@ export const Dashboard = () => {
               <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.5rem 0.85rem', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.82rem' }}>
                 Aug 2029 Reset Rate: <strong style={{ color: 'var(--danger)' }}>15.30%</strong> • 30-Yr Interest: <strong>$227,000</strong>
               </div>
-              <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.5rem 0.85rem', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.82rem', color: 'var(--primary-light)' }}>
-                Target Strategy: Refinance or Payoff before Aug 2029
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 1. REAL TOP STAT CARDS */}
-      <div className="grid-4">
+      {/* 1. INDIVIDUAL FAMILY EARNER CARDS */}
+      <div className="grid-3">
         
-        {/* Stat 1: Barbara's Total Monthly Income */}
-        <div className="card card-glow" style={{ borderTop: '4px solid var(--accent-purple)' }}>
+        {/* Barbara Card */}
+        <div className="card card-glow" style={{ borderTop: '4px solid #a855f7' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Barbara's Monthly Income</span>
-            <div style={{ background: 'rgba(168, 85, 247, 0.2)', padding: '6px', borderRadius: '8px' }}>
-              <TrendingUp size={20} color="var(--accent-purple)" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#a855f7', color: '#fff', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>B</div>
+              <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>Barbara</span>
             </div>
+            <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#a855f7' }}>OPM Pension</span>
           </div>
-          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff' }}>
-            $5,645.84
-          </div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            OPM Pension Direct Deposit
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.75rem' }}>
+            <div className="flex-between" style={{ fontSize: '0.88rem' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Income:</span>
+              <span className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>$5,645.84</span>
+            </div>
+            <div className="flex-between" style={{ fontSize: '0.88rem' }}>
+              <span style={{ color: 'var(--text-muted)' }}>11 Itemized Bills:</span>
+              <span className="font-mono" style={{ fontWeight: 700, color: 'var(--danger)' }}>{fmt(barbaraTotalExpenses)}</span>
+            </div>
+            <div className="flex-between" style={{ fontSize: '0.95rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-color)' }}>
+              <span style={{ fontWeight: 700, color: '#fff' }}>Net Surplus:</span>
+              <span className="font-mono" style={{ fontWeight: 800, color: 'var(--success)' }}>{fmt(barbaraNetRemaining)}</span>
+            </div>
           </div>
         </div>
 
-        {/* Stat 2: Barbara's Itemized Monthly Expenses */}
-        <div className="card card-glow" style={{ borderTop: '4px solid var(--danger)' }}>
+        {/* Erin Card */}
+        <div className="card card-glow" style={{ borderTop: '4px solid #ec4899' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Barbara's Total Expenses</span>
-            <div style={{ background: 'var(--danger-glow)', padding: '6px', borderRadius: '8px' }}>
-              <Receipt size={20} color="var(--danger)" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#ec4899', color: '#fff', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>E</div>
+              <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>Erin</span>
             </div>
+            <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.2)', color: '#ec4899' }}>UNCG Salary</span>
           </div>
-          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--danger)' }}>
-            {fmt(barbaraTotalExpenses)}
-          </div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            11 Itemized Bills & Debt Payments
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.75rem' }}>
+            <div className="flex-between" style={{ fontSize: '0.88rem' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Income:</span>
+              <span className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>$2,500.00</span>
+            </div>
+            <div className="flex-between" style={{ fontSize: '0.88rem' }}>
+              <span style={{ color: 'var(--text-muted)' }}>9 Itemized Bills:</span>
+              <span className="font-mono" style={{ fontWeight: 700, color: 'var(--danger)' }}>{fmt(erinTotalExpenses)}</span>
+            </div>
+            <div className="flex-between" style={{ fontSize: '0.95rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-color)' }}>
+              <span style={{ fontWeight: 700, color: '#fff' }}>Net Surplus:</span>
+              <span className="font-mono" style={{ fontWeight: 800, color: 'var(--success)' }}>{fmt(erinNetRemaining)}</span>
+            </div>
           </div>
         </div>
 
-        {/* Stat 3: Barbara's Net Monthly Remaining */}
-        <div className="card card-glow" style={{ borderTop: '4px solid var(--success)' }}>
+        {/* Chris Card */}
+        <div className="card card-glow" style={{ borderTop: '4px solid #6366f1' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Barbara's Net Remaining</span>
-            <div style={{ background: 'var(--success-glow)', padding: '6px', borderRadius: '8px' }}>
-              <PiggyBank size={20} color="var(--success)" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#6366f1', color: '#fff', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>C</div>
+              <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>Chris</span>
             </div>
+            <span className="badge" style={{ background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8' }}>NC A&T State</span>
           </div>
-          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--success)' }}>
-            {fmt(barbaraNetRemaining)}
-          </div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--success)', marginTop: '0.5rem' }}>
-            Actual Surplus after all $4.8k expenses
-          </div>
-        </div>
 
-        {/* Stat 4: Total Household Combined Income */}
-        <div className="card card-glow" style={{ borderTop: '4px solid var(--primary-light)' }}>
-          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Combined Household</span>
-            <div style={{ background: 'var(--primary-glow)', padding: '6px', borderRadius: '8px' }}>
-              <Building size={20} color="var(--primary-light)" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.75rem' }}>
+            <div className="flex-between" style={{ fontSize: '0.88rem' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Salary + Transfer:</span>
+              <span className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>$7,546.27</span>
             </div>
-          </div>
-          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff' }}>
-            {fmt(totalIncome)}
-          </div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            Barbara ($5.6k) + Chris ($4.5k) + Erin ($2.5k)
+            <div className="flex-between" style={{ fontSize: '0.88rem' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Joint Bills + Insurance:</span>
+              <span className="font-mono" style={{ fontWeight: 700, color: 'var(--danger)' }}>$3,021.80</span>
+            </div>
+            <div className="flex-between" style={{ fontSize: '0.95rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-color)' }}>
+              <span style={{ fontWeight: 700, color: '#fff' }}>Net Surplus:</span>
+              <span className="font-mono" style={{ fontWeight: 800, color: 'var(--success)' }}>{fmt(chrisNetRemaining)}</span>
+            </div>
           </div>
         </div>
 
       </div>
 
-      {/* 2. BARBARA'S ITEMIZED MONTHLY EXPENSE BREAKDOWN */}
-      <div className="card card-glow">
-        <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
-          <div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <HeartHandshake size={22} color="var(--accent-purple)" />
-              <span>Barbara's Exact Monthly Expense Breakdown</span>
-            </h3>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Itemized monthly liabilities totaling <strong>$4,837.24 / month</strong>.
-            </p>
-          </div>
-          <span className="badge badge-danger font-mono" style={{ fontSize: '0.9rem' }}>
-            Total: {fmt(barbaraTotalExpenses)} / mo
-          </span>
-        </div>
-
-        <div className="grid-2">
-          {data.barbaraExpenses.map(item => (
-            <div key={item.id} style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '0.9rem 1.15rem',
-              background: 'rgba(0, 0, 0, 0.25)',
-              borderRadius: 'var(--radius-md)',
-              border: item.name === 'Figure' ? '1px solid rgba(239, 68, 68, 0.5)' : '1px solid var(--border-color)'
-            }}>
-              <div>
-                <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                  <span>{item.description}</span>
-                  {item.name === 'Figure' && <span className="badge badge-danger" style={{ fontSize: '0.65rem' }}>HELOC 9.75%</span>}
-                </div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-                  Vendor: {item.name} • {item.category}
-                </div>
-                {item.notes && (
-                  <div style={{ fontSize: '0.74rem', color: 'var(--warning)', marginTop: '0.2rem' }}>
-                    {item.notes}
-                  </div>
-                )}
-              </div>
-
-              <div className="font-mono" style={{ fontSize: '1.15rem', fontWeight: 800, color: item.name === 'Figure' || item.name === 'PenFed' ? 'var(--danger)' : '#fff' }}>
-                {fmt(item.amount)}
-              </div>
+      {/* 2. ERIN & BARBARA ITEMIZED EXPENSE TABLES (SIDE-BY-SIDE) */}
+      <div className="grid-2">
+        
+        {/* Barbara's Expenses Table */}
+        <div className="card">
+          <div className="flex-between" style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
+            <div>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Barbara's Itemized Bills</h3>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>11 Bills • $4,837.24 Total</span>
             </div>
-          ))}
+            <span className="badge badge-danger">OPM Paid</span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {data.barbaraExpenses.map(item => (
+              <div key={item.id} style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '0.6rem 0.85rem',
+                background: 'rgba(0,0,0,0.2)',
+                borderRadius: 'var(--radius-md)',
+                fontSize: '0.88rem'
+              }}>
+                <div>
+                  <div style={{ fontWeight: 600, color: '#fff' }}>{item.description}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{item.name}</div>
+                </div>
+                <div className="font-mono" style={{ fontWeight: 700, color: item.name === 'Figure' ? 'var(--danger)' : '#fff' }}>
+                  {fmt(item.amount)}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
+
+        {/* Erin's Expenses Table */}
+        <div className="card">
+          <div className="flex-between" style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
+            <div>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Erin's Itemized Bills</h3>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>9 Bills • $1,569.00 Total</span>
+            </div>
+            <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.2)', color: '#ec4899' }}>UNCG Paid</span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {data.erinExpenses.map(item => (
+              <div key={item.id} style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '0.6rem 0.85rem',
+                background: 'rgba(0,0,0,0.2)',
+                borderRadius: 'var(--radius-md)',
+                fontSize: '0.88rem'
+              }}>
+                <div>
+                  <div style={{ fontWeight: 600, color: '#fff' }}>{item.description}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{item.name} • {item.category}</div>
+                </div>
+                <div className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>
+                  {fmt(item.amount)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
     </div>

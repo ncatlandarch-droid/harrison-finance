@@ -1,5 +1,5 @@
 export const INITIAL_DATA = {
-  version: '2.6-barbara-exact',
+  version: '2.7-erin-exact',
   family: {
     members: [
       { id: 'barbara', name: 'Barbara', role: 'Parent', color: '#a855f7', income: 5645.84, employer: 'OPM Pension' },
@@ -30,7 +30,19 @@ export const INITIAL_DATA = {
     { id: 'barb-10', description: 'Spectrum Cell Phone', name: 'Spectrum', amount: 20.00, category: 'Utilities', paidBy: 'barbara' },
     { id: 'barb-11', description: 'Rocket Money', name: 'Rocket', amount: 10.00, category: 'Services', paidBy: 'barbara' }
   ],
-  // Household Shared & Household Bills
+  // Erin's Exact Itemized Bills ($1,569.00 / mo)
+  erinExpenses: [
+    { id: 'erin-1', description: 'Groceries', name: 'Groceries', amount: 550.00, category: 'Food', paidBy: 'erin' },
+    { id: 'erin-2', description: 'Car Payment', name: 'Auto Loan', amount: 500.00, category: 'Transportation', paidBy: 'erin' },
+    { id: 'erin-3', description: 'Hayden Transportation', name: 'Transportation', amount: 200.00, category: 'Kids & Family', paidBy: 'erin' },
+    { id: 'erin-4', description: 'Hayden School Lunch', name: 'School Lunch', amount: 80.00, category: 'Kids & Family', paidBy: 'erin' },
+    { id: 'erin-5', description: 'Ava Diapers, Wipes & Care', name: 'Baby Care', amount: 75.00, category: 'Kids & Family', paidBy: 'erin' },
+    { id: 'erin-6', description: 'Car Insurance', name: 'Auto Insurance', amount: 62.00, category: 'Insurance', paidBy: 'erin' },
+    { id: 'erin-7', description: 'Dog Insurance', name: 'Pet Insurance', amount: 52.00, category: 'Insurance', paidBy: 'erin' },
+    { id: 'erin-8', description: 'Cell Phone', name: 'Mobile Phone', amount: 40.00, category: 'Utilities', paidBy: 'erin' },
+    { id: 'erin-9', description: 'Netflix Streaming', name: 'Netflix', amount: 10.00, category: 'Entertainment', paidBy: 'erin' }
+  ],
+  // Household Shared Bills (Chris Account)
   bills: [
     { id: 'b1', name: 'Mortgage Payment', amount: 1800.00, dueDay: 1, category: 'Housing', paidBy: 'joint', status: 'upcoming' },
     { id: 'b2', name: 'Duke Energy (Electricity)', amount: 285.00, dueDay: 5, category: 'Utilities', paidBy: 'joint', status: 'upcoming' },
@@ -38,9 +50,7 @@ export const INITIAL_DATA = {
     { id: 'b4', name: 'City of Greensboro Water', amount: 175.62, dueDay: 10, category: 'Utilities', paidBy: 'joint', status: 'upcoming' },
     { id: 'b5', name: 'American Home Shield Warranty', amount: 200.00, dueDay: 12, category: 'Housing', paidBy: 'joint', status: 'upcoming' },
     { id: 'b6', name: 'GEICO Auto Insurance', amount: 312.19, dueDay: 15, category: 'Insurance', paidBy: 'joint', status: 'upcoming' },
-    { id: 'b7', name: 'Primerica Life Insurance', amount: 145.00, dueDay: 1, category: 'Insurance', paidBy: 'chris', status: 'upcoming' },
-    { id: 'b8', name: 'Nationwide Pet Insurance', amount: 89.00, dueDay: 15, category: 'Insurance', paidBy: 'erin', status: 'upcoming' },
-    { id: 'b9', name: 'Dental & Vision Supplemental', amount: 192.00, dueDay: 15, category: 'Insurance', paidBy: 'erin', status: 'upcoming' }
+    { id: 'b7', name: 'Primerica Life Insurance', amount: 145.00, dueDay: 1, category: 'Insurance', paidBy: 'chris', status: 'upcoming' }
   ],
   budgets: [
     { id: 'bg1', category: 'Home & Utilities', limit: 2550.00, spent: 2549.61, memberId: 'family', icon: 'Home' },
