@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { usePlaidLink } from 'react-plaid-link';
-import { Building2, ShieldCheck, CheckCircle2, Loader2 } from 'lucide-react';
+import { Building2, ShieldCheck, Loader2 } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
 
 export const PlaidLinkButton = () => {
@@ -15,7 +15,6 @@ export const PlaidLinkButton = () => {
     }
   });
 
-  // Fetch Link Token from Netlify function or local endpoint
   const createLinkToken = async () => {
     setLoading(true);
     try {
@@ -23,9 +22,11 @@ export const PlaidLinkButton = () => {
       const data = await response.json();
       if (data.link_token) {
         setToken(data.link_token);
+      } else if (data.details) {
+        console.warn('Plaid token error details:', data.details);
       }
     } catch (err) {
-      console.error('Plaid Link Token error:', err);
+      console.error('Plaid Link Token fetch error:', err);
     } finally {
       setLoading(false);
     }
@@ -46,7 +47,6 @@ export const PlaidLinkButton = () => {
       
       const bankName = metadata.institution ? metadata.institution.name : 'Bank Account';
 
-      // Save connected bank
       setConnectedBanks(prev => {
         const updated = [...prev, bankName];
         localStorage.setItem('harrison_plaid_banks', JSON.stringify(updated));
@@ -56,7 +56,7 @@ export const PlaidLinkButton = () => {
       alert(`Successfully connected ${bankName} to Harrison Finance!`);
     } catch (e) {
       console.error('Failed to exchange Plaid token:', e);
-      alert('Connected bank to Harrison Finance!');
+      alert('Connected bank account!');
     }
   }, []);
 
@@ -67,12 +67,20 @@ export const PlaidLinkButton = () => {
 
   const { open, ready } = usePlaidLink(config);
 
+  const handleClick = () => {
+    if (ready && token) {
+      open();
+    } else {
+      alert('Plaid link token is updating with your new Plaid keys. Please paste the Sandbox Secret from your Plaid screen!');
+    }
+  };
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
       <button 
         className="btn btn-primary"
-        onClick={() => ready && open()}
-        disabled={!ready || loading}
+        onClick={handleClick}
+        disabled={loading}
         style={{
           background: 'linear-gradient(135deg, #10b981, #059669)',
           boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)',

@@ -1,16 +1,15 @@
+functionsDirectory = "C:\\Users\\Chris\\Desktop\\WEBSITES\\12. Harrison Finance\\netlify\\functions"
+functionsDirectoryOrigin = "default"
 plugins = []
 headers = []
 redirects = []
-
-[functions]
-
-[functions."*"]
 
 [build]
 publish = "C:\\Users\\Chris\\Desktop\\WEBSITES\\12. Harrison Finance\\dist"
 publishOrigin = "ui"
 commandOrigin = "ui"
 command = "npm run build"
+functions = "C:\\Users\\Chris\\Desktop\\WEBSITES\\12. Harrison Finance\\netlify\\functions"
 
 [build.environment]
 
@@ -25,3 +24,7 @@ command = "npm run build"
 [build.processing.js]
 
 [build.services]
+
+[functions]
+
+[functions."*"]
