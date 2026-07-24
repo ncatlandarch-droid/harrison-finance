@@ -1,6 +1,11 @@
-window.Bills = {
   init() {
     this.currentDate = new Date();
+    this.render();
+    this.loadData();
+    this.bindEvents();
+  },
+  
+  refresh() {
     this.render();
     this.loadData();
     this.bindEvents();
@@ -17,9 +22,9 @@ window.Bills = {
           <h2 class="text-3xl font-bold">Bills & Payments</h2>
           <div class="flex-align-center gap-5">
             <div class="flex-align-center gap-3 bg-card p-2" style="border-radius: 24px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
-              <button class="btn btn-icon btn-sm" style="border-radius: 50%;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
-              <span class="font-bold px-3">July 2026</span>
-              <button class="btn btn-icon btn-sm" style="border-radius: 50%;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
+              <button class="btn btn-icon btn-sm" id="btn-prev-month" style="border-radius: 50%;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
+              <span class="font-bold px-3" id="bills-month-display">July 2026</span>
+              <button class="btn btn-icon btn-sm" id="btn-next-month" style="border-radius: 50%;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
             </div>
             <button class="btn btn-primary flex-align-center gap-2 px-4 py-2" id="btn-add-bill">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -117,18 +122,26 @@ window.Bills = {
     const container = document.getElementById('bills-list-container');
     if (!container) return;
 
-    const formatFn = window.App && window.App.formatCurrency ? window.App.formatCurrency : (v) => '$' + v.toFixed(2);
+    const formatFn = window.app && window.app.formatCurrency ? window.app.formatCurrency : (v) => '$' + v.toFixed(2);
 
-    const bills = [
-      { id: 1, name: 'Mortgage', amount: 1800, due: 27, member: 'Family', autopay: true, paid: false },
-      { id: 2, name: 'Duke Energy', amount: 150, due: 15, member: 'Barbara', autopay: false, paid: false },
-      { id: 3, name: 'Internet', amount: 80, due: 5, member: 'Chris', autopay: true, paid: true },
-      { id: 4, name: 'Car Insurance', amount: 220, due: 1, member: 'Family', autopay: true, paid: true }
-    ];
+    let bills = window.Storage.getBills() || [];
+    if (bills.length === 0) {
+      bills = [
+        { id: 1, name: 'Mortgage', amount: 1800, due: 27, member: 'Family', autopay: true, paid: false },
+        { id: 2, name: 'Duke Energy', amount: 150, due: 15, member: 'Barbara', autopay: false, paid: false },
+        { id: 3, name: 'Internet', amount: 80, due: 5, member: 'Chris', autopay: true, paid: true },
+        { id: 4, name: 'Car Insurance', amount: 220, due: 1, member: 'Family', autopay: true, paid: true }
+      ];
+    }
+    
+    // Sort by due day
+    bills.sort((a,b) => (a.dueDay || a.due || 1) - (b.dueDay || b.due || 1));
 
     container.innerHTML = bills.map(bill => {
       const statusColor = bill.paid ? 'var(--success)' : 'var(--warning)';
       const checkIcon = bill.paid ? '<polyline points="20 6 9 17 4 12"></polyline>' : '';
+      const dueDay = bill.dueDay || bill.due || 1;
+      const member = bill.member || bill.memberId || 'Family';
 
       return `
         <div class="bill-row flex-between align-center p-4" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); background: var(--bg-card); transition: all 0.3s; box-shadow: var(--shadow-sm);" onmouseover="this.style.borderColor='var(--primary)'; this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.borderColor='var(--border-color)'; this.style.boxShadow='var(--shadow-sm)'">
@@ -139,13 +152,13 @@ window.Bills = {
             <div>
               <p class="font-bold text-lg mb-1" style="${bill.paid ? 'color: var(--text-muted);' : ''}">${bill.name}</p>
               <div class="flex-align-center gap-3">
-                <span class="text-sm font-bold ${bill.paid ? 'text-muted' : 'text-main'}">Due: Jul ${bill.due}</span>
+                <span class="text-sm font-bold ${bill.paid ? 'text-muted' : 'text-main'}">Due: ${this.currentDate.toLocaleString('default', {month:'short'})} ${dueDay}</span>
                 ${bill.autopay ? '<span class="badge text-xs font-bold" style="background: rgba(59,130,246,0.1); color: var(--primary); padding: 4px 8px;">AutoPay</span>' : ''}
               </div>
             </div>
           </div>
           <div class="text-right flex-align-center gap-5">
-            <span class="badge text-sm font-bold" style="background: var(--bg-secondary); padding: 6px 12px;">${bill.member}</span>
+            <span class="badge text-sm font-bold" style="background: var(--bg-secondary); padding: 6px 12px;">${member}</span>
             <p class="font-mono font-bold text-xl" style="${bill.paid ? 'text-decoration: line-through; color: var(--text-muted); opacity: 0.7;' : 'color: var(--text-main);'}">${formatFn(bill.amount)}</p>
           </div>
         </div>
@@ -160,47 +173,77 @@ window.Bills = {
         const isPaid = e.currentTarget.style.background !== 'transparent' && e.currentTarget.style.background !== '';
         
         if (window.Confetti && !isPaid) window.Confetti.celebrate();
-        if (window.App && window.App.showToast) {
-          window.App.showToast(isPaid ? 'Marked as unpaid' : 'Bill marked as paid!', isPaid ? 'info' : 'success');
+        if (window.app && window.app.showToast) {
+          window.app.showToast(isPaid ? 'Marked as unpaid' : 'Bill marked as paid!', isPaid ? 'info' : 'success');
         }
         
-        // Simple visual toggle
-        e.currentTarget.style.background = isPaid ? 'transparent' : 'var(--success)';
-        e.currentTarget.style.borderColor = isPaid ? 'var(--warning)' : 'var(--success)';
-        e.currentTarget.innerHTML = isPaid ? '' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-        
-        const row = e.currentTarget.closest('.bill-row');
-        const nameP = row.querySelector('p.text-lg');
-        const amountP = row.querySelector('p.font-mono');
-        const dueSpan = row.querySelector('span.text-sm');
-
-        if (isPaid) {
-          nameP.style.color = 'var(--text-main)';
-          amountP.style.textDecoration = 'none';
-          amountP.style.color = 'var(--text-main)';
-          amountP.style.opacity = '1';
-          dueSpan.classList.remove('text-muted');
-          dueSpan.classList.add('text-main');
-        } else {
-          nameP.style.color = 'var(--text-muted)';
-          amountP.style.textDecoration = 'line-through';
-          amountP.style.color = 'var(--text-muted)';
-          amountP.style.opacity = '0.7';
-          dueSpan.classList.remove('text-main');
-          dueSpan.classList.add('text-muted');
+        // Update in Storage
+        if (window.Storage) {
+          window.Storage.updateBill(id, { paid: !isPaid });
         }
+        
+        this.renderBillsList();
       });
     });
+    
+    // Also update month display
+    const monthDisplay = document.getElementById('bills-month-display');
+    if (monthDisplay) {
+      monthDisplay.textContent = this.currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+    }
   },
 
   bindEvents() {
     const btnAdd = document.getElementById('btn-add-bill');
     if (btnAdd) {
       btnAdd.addEventListener('click', () => {
-        if (window.App && window.App.showModal) {
-          window.App.showModal('Add Bill', '<p class="p-4 text-center text-muted">Bill form implementation pending.</p>', '<button class="btn btn-secondary" onclick="window.App.hideModal()">Cancel</button><button class="btn btn-primary" onclick="window.App.hideModal()">Save Bill</button>');
+        if (window.app && window.app.showModal) {
+          window.app.showModal(
+            'Add Bill', 
+            `<form id="add-bill-form">
+               <div class="form-group mb-3">
+                 <label class="form-label text-sm text-secondary">Bill Name</label>
+                 <input type="text" class="form-input w-full" id="bill-name" required>
+               </div>
+               <div class="form-group mb-3">
+                 <label class="form-label text-sm text-secondary">Amount ($)</label>
+                 <input type="number" class="form-input w-full" id="bill-amount" required>
+               </div>
+               <div class="form-group mb-3">
+                 <label class="form-label text-sm text-secondary">Due Day of Month</label>
+                 <input type="number" class="form-input w-full" id="bill-due" min="1" max="31" required>
+               </div>
+             </form>`, 
+            `<button class="btn btn-secondary" onclick="window.app.hideModal()">Cancel</button>
+             <button class="btn btn-primary" onclick="window.Bills.saveBill()">Save Bill</button>`
+          );
         }
       });
+    }
+    
+    document.getElementById('btn-prev-month')?.addEventListener('click', () => {
+      this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+      this.refresh();
+    });
+    document.getElementById('btn-next-month')?.addEventListener('click', () => {
+      this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+      this.refresh();
+    });
+  },
+
+  saveBill() {
+    if (window.Storage) {
+      window.Storage.addBill({
+        name: document.getElementById('bill-name').value,
+        amount: parseFloat(document.getElementById('bill-amount').value),
+        dueDay: parseInt(document.getElementById('bill-due').value, 10),
+        paid: false
+      });
+      if (window.app) {
+        window.app.hideModal();
+        window.app.showToast('Bill added successfully', 'success');
+      }
+      this.refresh();
     }
   }
 };

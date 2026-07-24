@@ -4,7 +4,7 @@
     function renderDebts() {
         const container = document.getElementById('section-debts');
         if (!container) return;
-
+        
         let debts = window.Storage.getDebts() || [];
         if (debts.length === 0) {
             // Empty state celebration if no debts!
@@ -19,7 +19,7 @@
             container.innerHTML = `
                 <div class="header-action">
                     <h2>${iconShield} Debt Reduction</h2>
-                    <button class="btn btn-primary">+ Add Debt</button>
+                    <button class="btn btn-primary" onclick="window.Debts.showAddDebtModal()">+ Add Debt</button>
                 </div>
                 <div class="empty-state card text-center py-20 animate-fade-in-up">
                     <div class="text-6xl mb-4">🎉</div>
@@ -39,7 +39,7 @@
         let html = `
             <div class="header-action">
                 <h2>${iconShield} Debt Reduction</h2>
-                <button class="btn btn-primary">+ Add Debt</button>
+                <button class="btn btn-primary" onclick="window.Debts.showAddDebtModal()">+ Add Debt</button>
             </div>
 
             <div class="grid-4 mb-6">
@@ -64,11 +64,11 @@
             <div class="grid-2">
                 <div class="card animate-fade-in-up">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-bold">Strategy: Avalanche</h3>
-                        <div class="badge bg-purple-900 text-purple-200">Saves Most Money</div>
+                        <h3 class="text-lg font-bold">Strategy: ${this.strategy === 'avalanche' ? 'Avalanche' : 'Snowball'}</h3>
+                        <button class="btn btn-sm btn-outline" onclick="window.Debts.toggleStrategy()">Switch to ${this.strategy === 'avalanche' ? 'Snowball' : 'Avalanche'}</button>
                     </div>
                     <div class="space-y-4">
-                        ${debts.sort((a,b) => b.rate - a.rate).map((d, i) => `
+                        ${(this.strategy === 'avalanche' ? debts.sort((a,b) => b.rate - a.rate) : debts.sort((a,b) => a.balance - b.balance)).map((d, i) => `
                             <div class="flex justify-between items-center p-3 bg-gray-800 rounded-lg border-l-4 ${i===0 ? 'border-purple-500' : 'border-gray-600'}">
                                 <div>
                                     <div class="font-bold">${d.name}</div>
@@ -113,12 +113,59 @@
         }, 100);
     }
 
-    window.DebtsModule = { render: renderDebts };
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        if(document.getElementById('section-debts')) {
-            window.DebtsModule.render();
+    function toggleStrategy() {
+        this.strategy = this.strategy === 'avalanche' ? 'snowball' : 'avalanche';
+        this.refresh();
+    }
+
+    function showAddDebtModal() {
+        window.app.showModal(
+            'Add Debt',
+            `<form id="add-debt-form">
+                <div class="form-group mb-3">
+                    <label class="form-label text-sm text-secondary">Debt Name</label>
+                    <input type="text" class="form-input w-full" id="debt-name" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label text-sm text-secondary">Balance ($)</label>
+                    <input type="number" class="form-input w-full" id="debt-balance" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label text-sm text-secondary">Interest Rate (%)</label>
+                    <input type="number" step="0.1" class="form-input w-full" id="debt-rate" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label class="form-label text-sm text-secondary">Minimum Payment ($)</label>
+                    <input type="number" class="form-input w-full" id="debt-min" required>
+                </div>
+            </form>`,
+            `<button class="btn btn-secondary" onclick="window.app.hideModal()">Cancel</button>
+             <button class="btn btn-primary" onclick="window.Debts.saveDebt()">Save</button>`
+        );
+    }
+
+    function saveDebt() {
+        if (window.Storage) {
+            window.Storage.addDebt({
+                name: document.getElementById('debt-name').value,
+                balance: parseFloat(document.getElementById('debt-balance').value),
+                rate: parseFloat(document.getElementById('debt-rate').value),
+                minPayment: parseFloat(document.getElementById('debt-min').value)
+            });
+            window.app.hideModal();
+            window.app.showToast('Debt added', 'success');
+            renderDebts.call(window.Debts);
         }
-    });
+    }
+
+    window.Debts = { 
+        strategy: 'avalanche',
+        init: function() { this.render(); }, 
+        refresh: function() { this.render(); }, 
+        render: renderDebts,
+        toggleStrategy,
+        showAddDebtModal,
+        saveDebt
+    };
 
 })();

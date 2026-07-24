@@ -29,7 +29,7 @@
         let html = `
             <div class="header-action">
                 <h2>${iconUsers} Expense Splitter</h2>
-                <button class="btn btn-primary" onclick="window.SplitterModule.showAddExpenseModal()">+ Add Expense</button>
+                <button class="btn btn-primary" onclick="window.Splitter.showAddExpenseModal()">+ Add Expense</button>
             </div>
 
             <div class="grid-3 mb-6">
@@ -106,7 +106,7 @@
                 </select>
             </div>
         `;
-        window.App.showModal('Add Shared Expense', html, `<button class="btn btn-primary" onclick="window.SplitterModule.saveExpense()">Add Expense</button>`);
+        window.App.showModal('Add Shared Expense', html, `<button class="btn btn-primary" onclick="window.Splitter.saveExpense()">Add Expense</button>`);
     }
 
     function saveExpense() {
@@ -116,12 +116,6 @@
         renderSplitter();
     }
 
-    window.SplitterModule = { render: renderSplitter, showAddExpenseModal, saveExpense };
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        if(document.getElementById('section-split')) {
-            window.SplitterModule.render();
-        }
-    });
+    window.Splitter = { init: renderSplitter, refresh: renderSplitter, render: renderSplitter, showAddExpenseModal, saveExpense };
 
 })();

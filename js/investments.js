@@ -138,12 +138,6 @@
         }, 100);
     }
 
-    window.InvestmentsModule = { render: renderInvestments };
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        if(document.getElementById('section-invest')) {
-            window.InvestmentsModule.render();
-        }
-    });
+    window.Investments = { init: renderInvestments, refresh: renderInvestments, render: renderInvestments };
 
 })();

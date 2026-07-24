@@ -25,7 +25,7 @@
         let html = `
             <div class="header-action">
                 <h2>${iconTarget} Savings Goals</h2>
-                <button class="btn btn-primary" onclick="window.SavingsModule.showAddModal()">${iconPlus} Add Goal</button>
+                <button class="btn btn-primary" onclick="window.Savings.showAddModal()">${iconPlus} Add Goal</button>
             </div>
             
             <div class="grid-3 mb-4">
@@ -51,7 +51,7 @@
                     <div class="card animate-fade-in-up" style="animation-delay: ${0.1 * i}s">
                         <div class="flex justify-between items-center mb-3">
                             <h3 class="text-lg font-bold">${g.name}</h3>
-                            <button class="btn btn-sm btn-outline" onclick="window.SavingsModule.showAddFundsModal('${g.id}')">Add Funds</button>
+                            <button class="btn btn-sm btn-outline" onclick="window.Savings.showAddFundsModal('${g.id}')">Add Funds</button>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="chart-container relative" style="width: 80px; height: 80px;">
@@ -79,11 +79,11 @@
                 <div class="grid-3 gap-4">
                     <div class="form-group">
                         <label>Monthly Savings ($)</label>
-                        <input type="number" id="calc-monthly" class="form-input dm-mono" value="500" oninput="window.SavingsModule.updateCalc()">
+                        <input type="number" id="calc-monthly" class="form-input dm-mono" value="500" oninput="window.Savings.updateCalc()">
                     </div>
                     <div class="form-group">
                         <label>Target Amount ($)</label>
-                        <input type="number" id="calc-target" class="form-input dm-mono" value="10000" oninput="window.SavingsModule.updateCalc()">
+                        <input type="number" id="calc-target" class="form-input dm-mono" value="10000" oninput="window.Savings.updateCalc()">
                     </div>
                     <div class="form-group">
                         <label>Months to Reach</label>
@@ -105,7 +105,7 @@
                     }, { cutout: '75%', plugins: { legend: { display: false } } });
                 }
             });
-            window.SavingsModule.updateCalc();
+            window.Savings.updateCalc();
         }, 100);
     }
 
@@ -130,7 +130,7 @@
                 <input type="date" id="goal-deadline" class="form-input">
             </div>
         `;
-        const footer = `<button class="btn btn-primary" onclick="window.SavingsModule.saveGoal()">Save Goal</button>`;
+        const footer = `<button class="btn btn-primary" onclick="window.Savings.saveGoal()">Save Goal</button>`;
         window.App.showModal('Add Savings Goal', html, footer);
     }
 
@@ -158,7 +158,7 @@
                 <label>Amount to Add ($)</label>
                 <input type="number" id="fund-amount" class="form-input dm-mono">
             </div>
-        `, `<button class="btn btn-primary" onclick="window.SavingsModule.addFunds()">Add Funds</button>`);
+        `, `<button class="btn btn-primary" onclick="window.Savings.addFunds()">Add Funds</button>`);
     }
 
     function addFunds() {
@@ -198,13 +198,6 @@
         }
     }
 
-    window.SavingsModule = { render: renderSavings, showAddModal, saveGoal, showAddFundsModal, addFunds, updateCalc };
-    
-    // Auto-render if on load the section is visible or requested
-    document.addEventListener('DOMContentLoaded', () => {
-        if(document.getElementById('section-goals')) {
-            window.SavingsModule.render();
-        }
-    });
+    window.Savings = { init: renderSavings, refresh: renderSavings, render: renderSavings, showAddModal, saveGoal, showAddFundsModal, addFunds, updateCalc };
 
 })();

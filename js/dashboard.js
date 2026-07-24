@@ -1,8 +1,12 @@
-window.Dashboard = {
   init() {
     this.render();
     this.loadData();
     this.bindEvents();
+  },
+  
+  refresh() {
+    this.render();
+    this.loadData();
   },
   
   render() {
@@ -150,7 +154,7 @@ window.Dashboard = {
           <div id="recent-activity-list" class="empty-state text-center p-5">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin: 0 auto 1rem;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             <p class="text-muted mb-4">No transactions yet — import your BoA CSV to get started!</p>
-            <button class="btn btn-primary" onclick="window.App && window.App.navigateTo('settings')">Import Data</button>
+            <button class="btn btn-primary" onclick="window.app && window.app.navigate('import')">Import Data</button>
           </div>
         </div>
 

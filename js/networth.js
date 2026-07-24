@@ -28,7 +28,7 @@
         let html = `
             <div class="header-action">
                 <h2>${iconTrendingUp} Net Worth</h2>
-                <button class="btn btn-primary" onclick="window.NetWorthModule.takeSnapshot()">${iconCamera} Snapshot</button>
+                <button class="btn btn-primary" onclick="window.NetWorth.takeSnapshot()">${iconCamera} Snapshot</button>
             </div>
             
             <div class="card text-center mb-6 py-10 animate-fade-in-up">
@@ -67,7 +67,7 @@
                 <div class="card animate-fade-in-up" style="animation-delay: 0.3s">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold text-green-400">Assets</h3>
-                        <button class="btn btn-sm btn-outline" onclick="window.NetWorthModule.showAddAccountModal('asset')">+ Add</button>
+                        <button class="btn btn-sm btn-outline" onclick="window.NetWorth.showAddAccountModal('asset')">+ Add</button>
                     </div>
                     <div class="data-table">
                         ${assetAccounts.map(a => `
@@ -85,7 +85,7 @@
                 <div class="card animate-fade-in-up" style="animation-delay: 0.4s">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold text-red-400">Liabilities</h3>
-                        <button class="btn btn-sm btn-outline" onclick="window.NetWorthModule.showAddAccountModal('liability')">+ Add</button>
+                        <button class="btn btn-sm btn-outline" onclick="window.NetWorth.showAddAccountModal('liability')">+ Add</button>
                     </div>
                     <div class="data-table">
                         ${liabilityAccounts.map(a => `
@@ -148,7 +148,7 @@
                 </select>
             </div>
         `;
-        window.App.showModal('Add ' + (type === 'asset' ? 'Asset' : 'Liability'), html, `<button class="btn btn-primary" onclick="window.NetWorthModule.saveAccount()">Save</button>`);
+        window.App.showModal('Add ' + (type === 'asset' ? 'Asset' : 'Liability'), html, `<button class="btn btn-primary" onclick="window.NetWorth.saveAccount()">Save</button>`);
     }
 
     function saveAccount() {
@@ -172,12 +172,6 @@
         renderNetWorth();
     }
 
-    window.NetWorthModule = { render: renderNetWorth, showAddAccountModal, saveAccount, takeSnapshot };
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        if(document.getElementById('section-networth')) {
-            window.NetWorthModule.render();
-        }
-    });
+    window.NetWorth = { init: renderNetWorth, refresh: renderNetWorth, render: renderNetWorth, showAddAccountModal, saveAccount, takeSnapshot };
 
 })();

@@ -33,9 +33,10 @@ window.app = {
     
     // Initialize modules
     const modules = [
-      window.Dashboard, window.Budget, window.Bills, 
+      window.Dashboard, window.Trends, window.Budget, window.Bills, 
       window.Savings, window.NetWorth, window.Splitter, 
-      window.Investments, window.Debts, window.CSVImport
+      window.Investments, window.Debts, window.CSVImport,
+      window.Podcast, window.Settings
     ];
     modules.forEach(mod => {
       if (mod && typeof mod.init === 'function') {
@@ -87,6 +88,7 @@ window.app = {
     // Call refresh on the active module if it has one
     const map = {
       'dashboard': window.Dashboard,
+      'trends': window.Trends,
       'budget': window.Budget,
       'bills': window.Bills,
       'savings': window.Savings,
@@ -94,7 +96,8 @@ window.app = {
       'split': window.Splitter,
       'invest': window.Investments,
       'debts': window.Debts,
-      'import': window.CSVImport
+      'import': window.CSVImport,
+      'settings': window.Settings
     };
     const mod = map[this.currentSection];
     if (mod && typeof mod.refresh === 'function') {
@@ -125,7 +128,7 @@ window.app = {
       }
       // Simple section switching (Alt+1 to Alt+9) to avoid interfering with inputs
       if (e.altKey && e.key >= '1' && e.key <= '9') {
-        const sections = ['dashboard', 'budget', 'bills', 'savings', 'networth', 'split', 'invest', 'debts', 'import'];
+        const sections = ['dashboard', 'trends', 'budget', 'bills', 'savings', 'networth', 'split', 'invest', 'debts', 'import'];
         const index = parseInt(e.key) - 1;
         if (sections[index]) this.navigate(sections[index]);
       }
@@ -138,10 +141,18 @@ window.app = {
     document.getElementById('modal-body').innerHTML = bodyHTML;
     document.getElementById('modal-footer').innerHTML = footerHTML;
     overlay.classList.remove('hidden');
+    
+    // Setup overlay click to close
+    overlay.onclick = (e) => {
+      if (e.target === overlay) {
+        this.hideModal();
+      }
+    };
   },
 
   hideModal() {
     document.getElementById('modal-overlay').classList.add('hidden');
+    document.getElementById('modal-overlay').onclick = null;
   },
 
   showToast(message, type = 'info') {
@@ -265,10 +276,86 @@ window.app = {
   openTransactionModal() {
     this.showModal(
       'Add Transaction',
-      `<p>Transaction form goes here (placeholder).</p>`,
+      `<form id="add-txn-form">
+        <div class="form-group mb-3">
+          <label class="form-label text-sm text-secondary">Date</label>
+          <input class="form-input w-full" type="date" id="txn-date" required value="${new Date().toISOString().split('T')[0]}">
+        </div>
+        <div class="form-group mb-3">
+          <label class="form-label text-sm text-secondary">Description</label>
+          <input class="form-input w-full" type="text" id="txn-desc" required placeholder="e.g. Groceries">
+        </div>
+        <div class="form-group mb-3">
+          <label class="form-label text-sm text-secondary">Amount</label>
+          <input class="form-input w-full" type="number" id="txn-amount" step="0.01" required placeholder="0.00">
+        </div>
+        <div class="form-group mb-3">
+          <label class="form-label text-sm text-secondary">Type</label>
+          <select class="form-input w-full" id="txn-type">
+            <option value="debit">Expense (Debit)</option>
+            <option value="credit">Income (Credit)</option>
+          </select>
+        </div>
+        <div class="form-group mb-3">
+          <label class="form-label text-sm text-secondary">Category</label>
+          <select class="form-input w-full" id="txn-category">
+            <option value="Groceries">Groceries</option>
+            <option value="Dining">Dining</option>
+            <option value="Housing">Housing</option>
+            <option value="Transportation">Transportation</option>
+            <option value="Utilities">Utilities</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Income">Income</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group mb-3">
+          <label class="form-label text-sm text-secondary">Member</label>
+          <select class="form-input w-full" id="txn-member">
+            <option value="all">Shared</option>
+            <option value="barbara">Barbara</option>
+            <option value="chris">Chris</option>
+            <option value="erin">Erin</option>
+          </select>
+        </div>
+      </form>`,
       `<button class="btn btn-outline" onclick="app.hideModal()">Cancel</button>
-       <button class="btn btn-primary" onclick="app.hideModal(); app.showToast('Transaction added', 'success')">Save</button>`
+       <button class="btn btn-primary" onclick="app.saveTransaction()">Save</button>`
     );
+  },
+
+  saveTransaction() {
+    const form = document.getElementById('add-txn-form');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    
+    let amount = parseFloat(document.getElementById('txn-amount').value);
+    const type = document.getElementById('txn-type').value;
+    if (type === 'debit' && amount > 0) amount = -amount;
+    if (type === 'credit' && amount < 0) amount = Math.abs(amount);
+    
+    const txn = {
+      id: 'txn_' + Date.now(),
+      date: document.getElementById('txn-date').value,
+      description: document.getElementById('txn-desc').value,
+      amount: amount,
+      category: document.getElementById('txn-category').value,
+      member: document.getElementById('txn-member').value
+    };
+    
+    if (window.Storage && typeof Storage.addTransaction === 'function') {
+      Storage.addTransaction(txn);
+      this.hideModal();
+      this.showToast('Transaction added', 'success');
+      this.refreshCurrentSection();
+      if(window.Dashboard && this.currentSection !== 'dashboard') {
+         // Optionally update sidebar total balance
+      }
+    } else {
+      this.showToast('Storage module not found', 'error');
+    }
   }
 };
 

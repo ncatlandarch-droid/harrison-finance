@@ -75,7 +75,7 @@
             <div id="import-preview-section" class="card hidden animate-fade-in-up">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-bold">Preview Transactions</h3>
-                    <button class="btn btn-primary" onclick="window.ImportModule.importAll()">Import All to Ledger</button>
+                    <button class="btn btn-primary" onclick="window.CSVImport.importAll()">Import All to Ledger</button>
                 </div>
                 <div class="data-table" id="import-preview-table">
                     <!-- Populated by JS -->
@@ -144,7 +144,7 @@
                         <span class="badge ${txn.category === 'Uncategorized' ? 'bg-gray-700 text-gray-300' : 'bg-blue-900 text-blue-200'}">${txn.category}</span>
                     </div>
                     <div class="col-span-2">
-                        <select class="form-input py-1 text-xs" onchange="window.ImportModule.updateAssign(${index}, this.value)">
+                        <select class="form-input py-1 text-xs" onchange="window.CSVImport.updateAssign(${index}, this.value)">
                             ${members.map(m => `<option value="${m.id}" ${m.id === 'joint' ? 'selected' : ''}>${m.name}</option>`).join('')}
                         </select>
                     </div>
@@ -172,7 +172,9 @@
         // trigger budget update if needed
     }
 
-    window.ImportModule = { 
+    window.CSVImport = { 
+        init: renderImportUI,
+        refresh: renderImportUI,
         render: renderImportUI, 
         parseCSV, 
         parseBOAStatement, 
@@ -180,11 +182,5 @@
         updateAssign,
         importAll
     };
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        if(document.getElementById('section-import')) {
-            window.ImportModule.render();
-        }
-    });
 
 })();

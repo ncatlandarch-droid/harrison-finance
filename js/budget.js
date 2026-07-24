@@ -1,5 +1,10 @@
-window.Budget = {
   init() {
+    this.render();
+    this.loadData();
+    this.bindEvents();
+  },
+  
+  refresh() {
     this.render();
     this.loadData();
     this.bindEvents();
@@ -15,15 +20,15 @@ window.Budget = {
         <div class="flex-between align-center mb-6 animate-fade-in-up">
           <h2 class="text-3xl font-bold">Budget Tracker</h2>
           <div class="flex-align-center gap-4">
-            <select class="form-select bg-card text-main font-bold" style="border-radius: var(--radius-md); padding: 0.6rem 1rem; border: 1px solid var(--border-color);">
-              <option>July 2026</option>
-              <option>June 2026</option>
+            <select id="budget-month-select" class="form-select bg-card text-main font-bold" style="border-radius: var(--radius-md); padding: 0.6rem 1rem; border: 1px solid var(--border-color);">
+              <option value="jul">July 2026</option>
+              <option value="jun">June 2026</option>
             </select>
-            <div class="pill-nav flex-align-center bg-card p-1" style="border-radius: 24px; border: 1px solid var(--border-color);">
-              <button class="btn btn-sm active" style="border-radius: 20px; min-width: 60px;">All</button>
-              <button class="btn btn-sm" style="border-radius: 20px; min-width: 80px;">Barbara</button>
-              <button class="btn btn-sm" style="border-radius: 20px; min-width: 70px;">Chris</button>
-              <button class="btn btn-sm" style="border-radius: 20px; min-width: 70px;">Erin</button>
+            <div id="budget-member-filters" class="pill-nav flex-align-center bg-card p-1" style="border-radius: 24px; border: 1px solid var(--border-color);">
+              <button class="btn btn-sm active" data-member="All" style="border-radius: 20px; min-width: 60px;">All</button>
+              <button class="btn btn-sm" data-member="Barbara" style="border-radius: 20px; min-width: 80px;">Barbara</button>
+              <button class="btn btn-sm" data-member="Chris" style="border-radius: 20px; min-width: 70px;">Chris</button>
+              <button class="btn btn-sm" data-member="Erin" style="border-radius: 20px; min-width: 70px;">Erin</button>
             </div>
             <button class="btn btn-primary flex-align-center gap-2" id="btn-add-budget">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -57,6 +62,7 @@ window.Budget = {
   },
   
   loadData() {
+    this.currentFilter = 'All';
     this.renderCategories();
   },
 
@@ -66,7 +72,7 @@ window.Budget = {
 
     const formatFn = window.App && window.App.formatCurrency ? window.App.formatCurrency : (v) => '$' + v.toFixed(2);
 
-    const categories = [
+    let categories = [
       { name: 'Groceries', limit: 1200, spent: 850, member: 'Family', icon: '<path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>' },
       { name: 'Dining Out', limit: 400, spent: 380, member: 'Chris', icon: '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>' },
       { name: 'Utilities', limit: 450, spent: 200, member: 'Barbara', icon: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>' },
@@ -74,6 +80,10 @@ window.Budget = {
       { name: 'Entertainment', limit: 300, spent: 50, member: 'Erin', icon: '<circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line>' },
       { name: 'Shopping', limit: 500, spent: 100, member: 'Barbara', icon: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>' }
     ];
+
+    if (this.currentFilter && this.currentFilter !== 'All') {
+      categories = categories.filter(c => c.member === this.currentFilter || c.member === 'Family');
+    }
 
     container.innerHTML = categories.map((cat) => {
       const pct = (cat.spent / cat.limit) * 100;
@@ -120,10 +130,58 @@ window.Budget = {
     const btnAdd = document.getElementById('btn-add-budget');
     if (btnAdd) {
       btnAdd.addEventListener('click', () => {
-        if (window.App && window.App.showModal) {
-          window.App.showModal('Add Budget Category', '<p class="text-muted p-4 text-center">Category creation form will be implemented in the next iteration.</p>', '<button class="btn btn-secondary" onclick="window.App.hideModal()">Cancel</button><button class="btn btn-primary" onclick="window.App.hideModal()">Save Category</button>');
+        if (window.app && window.app.showModal) {
+          window.app.showModal(
+            'Add Budget Category', 
+            `<form id="add-budget-form">
+               <div class="form-group mb-3">
+                 <label class="form-label text-sm text-secondary">Category Name</label>
+                 <input type="text" class="form-input w-full" id="budget-cat-name" required>
+               </div>
+               <div class="form-group mb-3">
+                 <label class="form-label text-sm text-secondary">Monthly Limit</label>
+                 <input type="number" class="form-input w-full" id="budget-cat-limit" required>
+               </div>
+               <div class="form-group mb-3">
+                 <label class="form-label text-sm text-secondary">Assigned Member</label>
+                 <select class="form-input w-full" id="budget-cat-member">
+                   <option value="Family">Family / Joint</option>
+                   <option value="Barbara">Barbara</option>
+                   <option value="Chris">Chris</option>
+                   <option value="Erin">Erin</option>
+                 </select>
+               </div>
+             </form>`,
+            `<button class="btn btn-outline" onclick="window.app.hideModal()">Cancel</button>
+             <button class="btn btn-primary" onclick="window.Budget.saveCategory()">Save Category</button>`
+          );
         }
       });
+    }
+
+    const monthSelect = document.getElementById('budget-month-select');
+    if (monthSelect) {
+      monthSelect.addEventListener('change', () => {
+        this.renderCategories();
+      });
+    }
+
+    const memberFilters = document.querySelectorAll('#budget-member-filters button');
+    memberFilters.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        memberFilters.forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        this.currentFilter = e.target.getAttribute('data-member');
+        this.renderCategories();
+      });
+    });
+  },
+
+  saveCategory() {
+    // Mock save
+    if (window.app && window.app.hideModal) {
+      window.app.hideModal();
+      window.app.showToast('Budget category saved successfully', 'success');
     }
   }
 };

@@ -9,7 +9,7 @@
   -webkit-backdrop-filter: blur(20px);
   transition: var(--transition);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .card::before {
@@ -20,6 +20,8 @@
   background: var(--gradient-primary);
   opacity: 0;
   transition: var(--transition);
+  border-top-left-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-xl);
 }
 
 .card:hover {
@@ -49,6 +51,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-md);
+  flex-wrap: wrap;
+  min-height: 80px;
 }
 
 .stat-icon {
@@ -77,10 +81,12 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 2px;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .stat-value {
-  font-size: var(--text-2xl);
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
   font-weight: 600;
   font-family: var(--font-mono);
 }
