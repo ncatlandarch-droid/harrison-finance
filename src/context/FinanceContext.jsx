@@ -37,6 +37,10 @@ export const FinanceProvider = ({ children }) => {
   const erinTotalExpenses = data.erinExpenses.reduce((sum, e) => sum + e.amount, 0);
   const chrisTotalExpenses = data.chrisExpenses.reduce((sum, c) => sum + c.amount, 0);
 
+  // Calculate Real Scraped Plaid Bank Spending
+  const scrapedPlaidTxns = data.transactions.filter(t => t.id.startsWith('pt_') || t.source === 'Plaid');
+  const totalScrapedBankSpending = scrapedPlaidTxns.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+
   // Member Surpluses
   const barbaraNetRemaining = 5645.84 - barbaraTotalExpenses;
   const erinNetRemaining = 2500.00 - erinTotalExpenses;
@@ -44,7 +48,10 @@ export const FinanceProvider = ({ children }) => {
 
   // Combined Household Surplus
   const totalCombinedExpenses = barbaraTotalExpenses + erinTotalExpenses + chrisTotalExpenses;
-  const totalCombinedSurplus = (totalBaseIncome + 3000.00) - totalCombinedExpenses;
+  const totalCombinedSurplus = (totalBaseIncome + 3000.00) - (totalScrapedBankSpending > 0 ? (totalScrapedBankSpending + barbaraTotalExpenses + erinTotalExpenses) : totalCombinedExpenses);
+
+  // Live Net Worth from Accounts
+  const totalLiquidityBalance = data.accounts.reduce((sum, a) => sum + (a.balance || 0), 0);
 
   // Merge Real Plaid Bank Accounts & Auto-Scraped Transactions
   const mergePlaidData = (plaidAccounts = [], plaidTxns = []) => {
@@ -53,19 +60,20 @@ export const FinanceProvider = ({ children }) => {
       const updatedAccounts = [...prev.accounts];
       plaidAccounts.forEach(pa => {
         const existingIdx = updatedAccounts.findIndex(a => a.name.toLowerCase().includes(pa.name.toLowerCase()) || a.institution.toLowerCase().includes(pa.name.toLowerCase()));
+        const liveBal = pa.balances.current ?? pa.balances.available ?? 0;
         if (existingIdx >= 0) {
           updatedAccounts[existingIdx] = {
             ...updatedAccounts[existingIdx],
-            balance: pa.balances.current || pa.balances.available || updatedAccounts[existingIdx].balance
+            balance: liveBal
           };
         } else {
-          updatedAccounts.push({
+          updatedAccounts.unshift({
             id: 'plaid_' + pa.account_id,
             name: pa.official_name || pa.name,
             type: pa.type === 'depository' ? 'Checking' : pa.type,
             memberId: 'chris',
             institution: pa.subtype || 'Connected Bank',
-            balance: pa.balances.current || pa.balances.available || 0
+            balance: liveBal
           });
         }
       });
@@ -94,11 +102,12 @@ export const FinanceProvider = ({ children }) => {
           description: name,
           amount: amount,
           category: category,
-          type: amount > 0 ? 'income' : 'debit'
+          type: amount > 0 ? 'income' : 'debit',
+          source: 'Plaid'
         };
       });
 
-      const combinedTxns = [...mappedTxns, ...prev.transactions];
+      const combinedTxns = [...mappedTxns, ...prev.transactions.filter(t => !t.id.startsWith('pt_'))];
 
       return {
         ...prev,
@@ -129,11 +138,13 @@ export const FinanceProvider = ({ children }) => {
       barbaraTotalExpenses,
       erinTotalExpenses,
       chrisTotalExpenses,
+      totalScrapedBankSpending,
       barbaraNetRemaining,
       erinNetRemaining,
       chrisNetRemaining,
       totalCombinedExpenses,
       totalCombinedSurplus,
+      totalLiquidityBalance,
       mergePlaidData,
       addTransaction
     }}>

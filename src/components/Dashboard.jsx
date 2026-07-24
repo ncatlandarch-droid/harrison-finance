@@ -5,12 +5,13 @@ import {
   Receipt, 
   PiggyBank, 
   AlertTriangle, 
-  HeartHandshake,
   Building,
-  UserCheck,
+  CreditCard,
+  CheckCircle2,
+  ShieldCheck,
   Zap,
-  ShoppingBag,
-  Sparkles
+  ArrowDownCircle,
+  ArrowUpCircle
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -19,15 +20,20 @@ export const Dashboard = () => {
     barbaraTotalExpenses, 
     erinTotalExpenses,
     chrisTotalExpenses,
+    totalScrapedBankSpending,
     barbaraNetRemaining,
     erinNetRemaining,
     chrisNetRemaining,
     totalCombinedExpenses,
     totalCombinedSurplus,
+    totalLiquidityBalance,
     data 
   } = useFinance();
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const isPlaidConnected = data.transactions.some(t => t.id.startsWith('pt_') || t.source === 'Plaid') || data.accounts.some(a => a.id.startsWith('plaid_'));
+  const plaidAccounts = data.accounts.filter(a => a.id.startsWith('plaid_'));
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -62,42 +68,135 @@ export const Dashboard = () => {
               <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.5rem 0.85rem', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.82rem' }}>
                 Aug 2029 Reset Rate: <strong style={{ color: 'var(--danger)' }}>15.30%</strong> • 30-Yr Interest: <strong>$227,000</strong>
               </div>
-              <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.5rem 0.85rem', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.82rem', color: 'var(--primary-light)' }}>
-                Target Strategy: Refinance or Payoff before Aug 2029
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 1. OVERALL FAMILY HOUSEHOLD SUMMARY ROW */}
-      <div className="grid-3">
-        <div className="card card-glow" style={{ borderTop: '4px solid var(--success)' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Combined Family Income</span>
-          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff', marginTop: '0.4rem' }}>
-            {fmt(totalBaseIncome)}
-          </div>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Barbara ($5.6k) + Chris ($4.5k) + Erin ($2.5k)</span>
-        </div>
-
-        <div className="card card-glow" style={{ borderTop: '4px solid var(--danger)' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Combined Family Expenses</span>
-          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--danger)', marginTop: '0.4rem' }}>
-            {fmt(totalCombinedExpenses)}
-          </div>
-          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Barbara ($4.8k) + Erin ($1.5k) + Chris ($4.3k)</span>
-        </div>
-
+      {/* 1. DYNAMIC DASHBOARD HERO STAT CARDS (UPDATES WITH LIVE PLAID DATA) */}
+      <div className="grid-4">
+        
+        {/* Stat 1: Live Bank Liquidity */}
         <div className="card card-glow" style={{ borderTop: '4px solid var(--primary-light)' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Real Net Family Surplus</span>
-          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--success)', marginTop: '0.4rem' }}>
+          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Live Bank Liquidity</span>
+            <div style={{ background: 'var(--primary-glow)', padding: '6px', borderRadius: '8px' }}>
+              <Building size={20} color="var(--primary-light)" />
+            </div>
+          </div>
+          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff' }}>
+            {fmt(totalLiquidityBalance)}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.5rem', fontSize: '0.78rem', color: 'var(--success)' }}>
+            <ShieldCheck size={14} />
+            <span>{isPlaidConnected ? 'Plaid Live Bank Sync Active' : 'Combined Liquidity & Savings'}</span>
+          </div>
+        </div>
+
+        {/* Stat 2: Scraped Bank Spending / Fixed Bills */}
+        <div className="card card-glow" style={{ borderTop: '4px solid var(--danger)' }}>
+          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+              {totalScrapedBankSpending > 0 ? 'Scraped Bank Spending' : 'Fixed Monthly Bills'}
+            </span>
+            <div style={{ background: 'var(--danger-glow)', padding: '6px', borderRadius: '8px' }}>
+              <Receipt size={20} color="var(--danger)" />
+            </div>
+          </div>
+          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--danger)' }}>
+            {fmt(totalScrapedBankSpending > 0 ? totalScrapedBankSpending : totalCombinedExpenses)}
+          </div>
+          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+            {totalScrapedBankSpending > 0 ? 'Auto-scraped from connected bank' : '34 Itemized Family Commitments'}
+          </div>
+        </div>
+
+        {/* Stat 3: Real Net Monthly Surplus */}
+        <div className="card card-glow" style={{ borderTop: '4px solid var(--success)' }}>
+          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Real Net Surplus</span>
+            <div style={{ background: 'var(--success-glow)', padding: '6px', borderRadius: '8px' }}>
+              <PiggyBank size={20} color="var(--success)" />
+            </div>
+          </div>
+          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--success)' }}>
             {fmt(totalCombinedSurplus)}
           </div>
-          <span style={{ fontSize: '0.78rem', color: 'var(--success)' }}>Actual Net Surplus after ALL 34 Itemized Bills</span>
+          <div style={{ fontSize: '0.78rem', color: 'var(--success)', marginTop: '0.5rem' }}>
+            Actual Surplus after all expenses
+          </div>
+        </div>
+
+        {/* Stat 4: Combined Base Income */}
+        <div className="card card-glow" style={{ borderTop: '4px solid #a855f7' }}>
+          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Combined Income</span>
+            <div style={{ background: 'rgba(168, 85, 247, 0.2)', padding: '6px', borderRadius: '8px' }}>
+              <TrendingUp size={20} color="#a855f7" />
+            </div>
+          </div>
+          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff' }}>
+            {fmt(totalBaseIncome)}
+          </div>
+          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+            Barbara ($5.6k) + Chris ($4.5k) + Erin ($2.5k)
+          </div>
+        </div>
+
+      </div>
+
+      {/* 2. REAL AUTO-SCRAPED BANK TRANSACTIONS FEED */}
+      <div className="card card-glow">
+        <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Zap size={22} color="var(--success)" />
+              <span>Real Live Scraped Bank Activity ({data.transactions.length} items)</span>
+            </h3>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Auto-scraped from your connected bank accounts and auto-categorized into your spending plan.
+            </p>
+          </div>
+          <span className="badge badge-success">
+            {isPlaidConnected ? 'Plaid Live Stream Active' : 'Bank Feed Ready'}
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+          {data.transactions.slice(0, 8).map(txn => {
+            const isIncome = txn.type === 'income' || txn.amount > 0;
+            return (
+              <div key={txn.id} style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '0.75rem 1rem',
+                background: 'rgba(0,0,0,0.25)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-color)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                  {isIncome ? (
+                    <ArrowUpCircle size={22} color="var(--success)" />
+                  ) : (
+                    <ArrowDownCircle size={22} color="var(--text-muted)" />
+                  )}
+                  <div>
+                    <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>{txn.description}</div>
+                    <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>{txn.date} • {txn.category}</div>
+                  </div>
+                </div>
+
+                <div className="font-mono" style={{ fontWeight: 800, fontSize: '1.05rem', color: isIncome ? 'var(--success)' : '#fff' }}>
+                  {isIncome ? '+' : '-'}{fmt(txn.amount)}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* 2. INDIVIDUAL FAMILY EARNER CARDS */}
+      {/* 3. INDIVIDUAL FAMILY EARNER CARDS */}
       <div className="grid-3">
         
         {/* Barbara Card */}
@@ -175,110 +274,6 @@ export const Dashboard = () => {
               <span style={{ fontWeight: 700, color: '#fff' }}>Net Surplus:</span>
               <span className="font-mono" style={{ fontWeight: 800, color: 'var(--success)' }}>{fmt(chrisNetRemaining)}</span>
             </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* 3. ITEMIZED EXPENSE TABLES FOR ALL THREE MEMBERS */}
-      <div className="grid-3">
-        
-        {/* Barbara's Expenses Table */}
-        <div className="card">
-          <div className="flex-between" style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
-            <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Barbara's Bills</h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>11 Items • $4,837.24 / mo</span>
-            </div>
-            <span className="badge badge-danger">OPM</span>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {data.barbaraExpenses.map(item => (
-              <div key={item.id} style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '0.55rem 0.75rem',
-                background: 'rgba(0,0,0,0.2)',
-                borderRadius: 'var(--radius-md)',
-                fontSize: '0.82rem'
-              }}>
-                <div>
-                  <div style={{ fontWeight: 600, color: '#fff' }}>{item.description}</div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.name}</div>
-                </div>
-                <div className="font-mono" style={{ fontWeight: 700, color: item.name === 'Figure' ? 'var(--danger)' : '#fff' }}>
-                  {fmt(item.amount)}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Erin's Expenses Table */}
-        <div className="card">
-          <div className="flex-between" style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
-            <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Erin's Bills</h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>9 Items • $1,569.00 / mo</span>
-            </div>
-            <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.2)', color: '#ec4899' }}>UNCG</span>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {data.erinExpenses.map(item => (
-              <div key={item.id} style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '0.55rem 0.75rem',
-                background: 'rgba(0,0,0,0.2)',
-                borderRadius: 'var(--radius-md)',
-                fontSize: '0.82rem'
-              }}>
-                <div>
-                  <div style={{ fontWeight: 600, color: '#fff' }}>{item.description}</div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.name}</div>
-                </div>
-                <div className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>
-                  {fmt(item.amount)}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Chris's Expenses Table */}
-        <div className="card">
-          <div className="flex-between" style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
-            <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Chris's Bills</h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>14 Items • $4,311.62 / mo</span>
-            </div>
-            <span className="badge" style={{ background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8' }}>NC A&T</span>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {data.chrisExpenses.map(item => (
-              <div key={item.id} style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '0.55rem 0.75rem',
-                background: 'rgba(0,0,0,0.2)',
-                borderRadius: 'var(--radius-md)',
-                fontSize: '0.82rem'
-              }}>
-                <div>
-                  <div style={{ fontWeight: 600, color: '#fff' }}>{item.description}</div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.name}</div>
-                </div>
-                <div className="font-mono" style={{ fontWeight: 700, color: item.amount >= 1000 ? 'var(--warning)' : '#fff' }}>
-                  {fmt(item.amount)}
-                </div>
-              </div>
-            ))}
           </div>
         </div>
 
