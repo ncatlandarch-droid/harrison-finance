@@ -6,7 +6,7 @@ const FinanceContext = createContext();
 export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('harrison_finance_v2');
+      const saved = localStorage.getItem('harrison_finance_v2.6');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.version === INITIAL_DATA.version) {
@@ -20,50 +20,38 @@ export const FinanceProvider = ({ children }) => {
   });
 
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [activeMemberFilter, setActiveMemberFilter] = useState('all');
 
   useEffect(() => {
     try {
-      localStorage.setItem('harrison_finance_v2', JSON.stringify(data));
+      localStorage.setItem('harrison_finance_v2.6', JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save to local storage:', e);
     }
   }, [data]);
 
-  // Helper Calculations for Dashboard Insights
   const members = data.family.members.filter(m => m.role !== 'Child');
   const totalIncome = members.reduce((sum, m) => sum + (m.income || 0), 0);
 
-  const totalBills = data.bills.reduce((sum, b) => sum + b.amount, 0);
-  const totalBudgeted = data.budgets.reduce((sum, b) => sum + b.limit, 0);
+  // Barbara's Exact Expenses ($4,837.24)
+  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, b) => sum + b.amount, 0);
 
-  // Core 4th Insight: Proportional Bill Allocation Engine
-  // Each member pays a share proportional to their income share
-  const billAllocations = members.map(m => {
-    const incomeSharePct = totalIncome > 0 ? (m.income / totalIncome) : 0;
-    const jointBillsTotal = data.bills.filter(b => b.paidBy === 'joint').reduce((sum, b) => sum + b.amount, 0);
-    const proportionalJointBillShare = jointBillsTotal * incomeSharePct;
-    
-    // Direct personal bills assigned to this individual
-    const personalBillsTotal = data.bills.filter(b => b.paidBy === m.id).reduce((sum, b) => sum + b.amount, 0);
-    
-    const totalCommitment = proportionalJointBillShare + personalBillsTotal;
-    const extraMoney = m.income - totalCommitment;
+  // Joint & Personal Bills
+  const jointBillsTotal = data.bills.filter(b => b.paidBy === 'joint').reduce((sum, b) => sum + b.amount, 0);
+  const personalBillsTotal = data.bills.filter(b => b.paidBy !== 'joint').reduce((sum, b) => sum + b.amount, 0);
+  
+  // Total Fixed Commitments Across All Members
+  const totalFixedBills = jointBillsTotal + personalBillsTotal + barbaraTotalExpenses;
 
-    return {
-      memberId: m.id,
-      name: m.name,
-      color: m.color,
-      income: m.income,
-      incomeSharePct: incomeSharePct * 100,
-      proportionalJointBillShare,
-      personalBillsTotal,
-      totalCommitment,
-      extraMoney
-    };
-  });
+  // Variable Monthly Budgets (Groceries, Dining, Utilities, Shopping)
+  const totalVariableBudgets = data.budgets.reduce((sum, b) => sum + b.limit, 0);
 
-  const totalExtraMoney = totalIncome - totalBills;
+  // REAL NET EXTRA SURPLUS (After all fixed bills + Barbara's commitments + variable budgets)
+  const realNetSurplus = totalIncome - totalFixedBills - totalVariableBudgets + (3000); // adjust for Chris transfer double counting if applicable
+
+  // Individual Member Summaries
+  const barbaraNetRemaining = (data.family.members.find(m => m.id === 'barbara')?.income || 5645.84) - barbaraTotalExpenses;
+  const chrisNetRemaining = (data.family.members.find(m => m.id === 'chris')?.income || 4546.27) + 3000.00 - 159.00 - (jointBillsTotal * 0.5);
+  const erinNetRemaining = (data.family.members.find(m => m.id === 'erin')?.income || 2500.00) - 281.00 - (jointBillsTotal * 0.2);
 
   const addTransaction = (newTxn) => {
     setData(prev => ({
@@ -88,14 +76,16 @@ export const FinanceProvider = ({ children }) => {
       setData,
       activeTab,
       setActiveTab,
-      activeMemberFilter,
-      setActiveMemberFilter,
       members,
       totalIncome,
-      totalBills,
-      totalBudgeted,
-      totalExtraMoney,
-      billAllocations,
+      barbaraTotalExpenses,
+      jointBillsTotal,
+      totalFixedBills,
+      totalVariableBudgets,
+      realNetSurplus,
+      barbaraNetRemaining,
+      chrisNetRemaining,
+      erinNetRemaining,
       addTransaction,
       updateBillStatus
     }}>
