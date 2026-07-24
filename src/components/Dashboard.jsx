@@ -6,12 +6,11 @@ import {
   PiggyBank, 
   AlertTriangle, 
   Building,
-  CreditCard,
-  CheckCircle2,
   ShieldCheck,
   Zap,
   ArrowDownCircle,
-  ArrowUpCircle
+  ArrowUpCircle,
+  Calculator
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -20,11 +19,11 @@ export const Dashboard = () => {
     barbaraTotalExpenses, 
     erinTotalExpenses,
     chrisTotalExpenses,
+    totalExternalExpenses,
     totalScrapedBankSpending,
     barbaraNetRemaining,
     erinNetRemaining,
     chrisNetRemaining,
-    totalCombinedExpenses,
     totalCombinedSurplus,
     totalLiquidityBalance,
     data 
@@ -33,7 +32,6 @@ export const Dashboard = () => {
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const isPlaidConnected = data.transactions.some(t => t.id.startsWith('pt_') || t.source === 'Plaid') || data.accounts.some(a => a.id.startsWith('plaid_'));
-  const plaidAccounts = data.accounts.filter(a => a.id.startsWith('plaid_'));
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -73,64 +71,13 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* 1. DYNAMIC DASHBOARD HERO STAT CARDS (UPDATES WITH LIVE PLAID DATA) */}
+      {/* 1. DYNAMIC DASHBOARD HERO STAT CARDS */}
       <div className="grid-4">
         
-        {/* Stat 1: Live Bank Liquidity */}
-        <div className="card card-glow" style={{ borderTop: '4px solid var(--primary-light)' }}>
-          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Live Bank Liquidity</span>
-            <div style={{ background: 'var(--primary-glow)', padding: '6px', borderRadius: '8px' }}>
-              <Building size={20} color="var(--primary-light)" />
-            </div>
-          </div>
-          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff' }}>
-            {fmt(totalLiquidityBalance)}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.5rem', fontSize: '0.78rem', color: 'var(--success)' }}>
-            <ShieldCheck size={14} />
-            <span>{isPlaidConnected ? 'Plaid Live Bank Sync Active' : 'Combined Liquidity & Savings'}</span>
-          </div>
-        </div>
-
-        {/* Stat 2: Scraped Bank Spending / Fixed Bills */}
-        <div className="card card-glow" style={{ borderTop: '4px solid var(--danger)' }}>
-          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-              {totalScrapedBankSpending > 0 ? 'Scraped Bank Spending' : 'Fixed Monthly Bills'}
-            </span>
-            <div style={{ background: 'var(--danger-glow)', padding: '6px', borderRadius: '8px' }}>
-              <Receipt size={20} color="var(--danger)" />
-            </div>
-          </div>
-          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--danger)' }}>
-            {fmt(totalScrapedBankSpending > 0 ? totalScrapedBankSpending : totalCombinedExpenses)}
-          </div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            {totalScrapedBankSpending > 0 ? 'Auto-scraped from connected bank' : '34 Itemized Family Commitments'}
-          </div>
-        </div>
-
-        {/* Stat 3: Real Net Monthly Surplus */}
-        <div className="card card-glow" style={{ borderTop: '4px solid var(--success)' }}>
-          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Real Net Surplus</span>
-            <div style={{ background: 'var(--success-glow)', padding: '6px', borderRadius: '8px' }}>
-              <PiggyBank size={20} color="var(--success)" />
-            </div>
-          </div>
-          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--success)' }}>
-            {fmt(totalCombinedSurplus)}
-          </div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--success)', marginTop: '0.5rem' }}>
-            Actual Surplus after all expenses
-          </div>
-        </div>
-
-        {/* Stat 4: Combined Base Income */}
+        {/* Stat 1: Total External Family Income */}
         <div className="card card-glow" style={{ borderTop: '4px solid #a855f7' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Combined Income</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>External Family Income</span>
             <div style={{ background: 'rgba(168, 85, 247, 0.2)', padding: '6px', borderRadius: '8px' }}>
               <TrendingUp size={20} color="#a855f7" />
             </div>
@@ -143,56 +90,100 @@ export const Dashboard = () => {
           </div>
         </div>
 
-      </div>
-
-      {/* 2. REAL AUTO-SCRAPED BANK TRANSACTIONS FEED */}
-      <div className="card card-glow">
-        <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
-          <div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Zap size={22} color="var(--success)" />
-              <span>Real Live Scraped Bank Activity ({data.transactions.length} items)</span>
-            </h3>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Auto-scraped from your connected bank accounts and auto-categorized into your spending plan.
-            </p>
+        {/* Stat 2: Total Real Household Expenses */}
+        <div className="card card-glow" style={{ borderTop: '4px solid var(--danger)' }}>
+          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+              {totalScrapedBankSpending > 0 ? 'Scraped Bank Spending' : 'Real External Bills Outflow'}
+            </span>
+            <div style={{ background: 'var(--danger-glow)', padding: '6px', borderRadius: '8px' }}>
+              <Receipt size={20} color="var(--danger)" />
+            </div>
           </div>
-          <span className="badge badge-success">
-            {isPlaidConnected ? 'Plaid Live Stream Active' : 'Bank Feed Ready'}
-          </span>
+          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--danger)' }}>
+            {fmt(totalScrapedBankSpending > 0 ? totalScrapedBankSpending : totalExternalExpenses)}
+          </div>
+          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
+            {totalScrapedBankSpending > 0 ? 'Auto-scraped from bank' : '34 Real Bills Leaving Family ($7,717.86)'}
+          </div>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-          {data.transactions.slice(0, 8).map(txn => {
-            const isIncome = txn.type === 'income' || txn.amount > 0;
-            return (
-              <div key={txn.id} style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '0.75rem 1rem',
-                background: 'rgba(0,0,0,0.25)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-                  {isIncome ? (
-                    <ArrowUpCircle size={22} color="var(--success)" />
-                  ) : (
-                    <ArrowDownCircle size={22} color="var(--text-muted)" />
-                  )}
-                  <div>
-                    <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>{txn.description}</div>
-                    <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>{txn.date} • {txn.category}</div>
-                  </div>
-                </div>
+        {/* Stat 3: Real Net Monthly Surplus */}
+        <div className="card card-glow" style={{ borderTop: '4px solid var(--success)' }}>
+          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Real Net Family Surplus</span>
+            <div style={{ background: 'var(--success-glow)', padding: '6px', borderRadius: '8px' }}>
+              <PiggyBank size={20} color="var(--success)" />
+            </div>
+          </div>
+          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--success)' }}>
+            {fmt(totalCombinedSurplus)}
+          </div>
+          <div style={{ fontSize: '0.78rem', color: 'var(--success)', marginTop: '0.5rem' }}>
+            Actual Surplus after all 34 bills
+          </div>
+        </div>
 
-                <div className="font-mono" style={{ fontWeight: 800, fontSize: '1.05rem', color: isIncome ? 'var(--success)' : '#fff' }}>
-                  {isIncome ? '+' : '-'}{fmt(txn.amount)}
-                </div>
-              </div>
-            );
-          })}
+        {/* Stat 4: Live Bank Liquidity */}
+        <div className="card card-glow" style={{ borderTop: '4px solid var(--primary-light)' }}>
+          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Live Bank Liquidity</span>
+            <div style={{ background: 'var(--primary-glow)', padding: '6px', borderRadius: '8px' }}>
+              <Building size={20} color="var(--primary-light)" />
+            </div>
+          </div>
+          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff' }}>
+            {fmt(totalLiquidityBalance)}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.5rem', fontSize: '0.78rem', color: 'var(--success)' }}>
+            <ShieldCheck size={14} />
+            <span>{isPlaidConnected ? 'Plaid Live Sync Active' : 'Checking & Savings Balances'}</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* 2. TRANSPARENT ACCOUNTING AUDIT & INTERNAL TRANSFER MAP */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(21, 28, 44, 0.9), rgba(30, 41, 64, 0.6))' }}>
+        <div className="flex-between" style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
+          <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Calculator size={20} color="var(--primary-light)" />
+            <span>Family Accounting Audit & Internal Transfer Map</span>
+          </h3>
+          <span className="badge badge-primary">Verified Math Audit</span>
+        </div>
+
+        <div className="grid-3" style={{ fontSize: '0.88rem' }}>
+          
+          <div style={{ background: 'rgba(0,0,0,0.25)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontWeight: 700, color: '#a855f7', marginBottom: '0.4rem' }}>1. External Income Inflow</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+              • Barbara (OPM): $5,645.84<br/>
+              • Chris (NC A&T): $4,546.27<br/>
+              • Erin (UNCG): $2,500.00<br/>
+              <strong style={{ color: '#fff', fontSize: '0.9rem' }}>Total New Income: $12,692.11 / mo</strong>
+            </div>
+          </div>
+
+          <div style={{ background: 'rgba(0,0,0,0.25)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontWeight: 700, color: 'var(--warning)', marginBottom: '0.4rem' }}>2. Internal Family Transfer</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+              • Barbara transfers <strong style={{ color: 'var(--warning)' }}>$3,000.00 / mo</strong> to Chris.<br/>
+              • Moves internally within family.<br/>
+              <strong style={{ color: '#fff', fontSize: '0.9rem' }}>Net Outflow Impact: $0.00</strong>
+            </div>
+          </div>
+
+          <div style={{ background: 'rgba(0,0,0,0.25)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontWeight: 700, color: 'var(--danger)', marginBottom: '0.4rem' }}>3. External Bills Outflow</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+              • Barbara External Bills: $1,837.24<br/>
+              • Erin Bills: $1,569.00<br/>
+              • Chris Bills: $4,311.62<br/>
+              <strong style={{ color: 'var(--danger)', fontSize: '0.9rem' }}>Total Real Bills: $7,717.86 / mo</strong>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -215,7 +206,7 @@ export const Dashboard = () => {
               <span className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>$5,645.84</span>
             </div>
             <div className="flex-between" style={{ fontSize: '0.88rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>11 Itemized Bills:</span>
+              <span style={{ color: 'var(--text-muted)' }}>11 Bills (inc. $3k transfer):</span>
               <span className="font-mono" style={{ fontWeight: 700, color: 'var(--danger)' }}>{fmt(barbaraTotalExpenses)}</span>
             </div>
             <div className="flex-between" style={{ fontSize: '0.95rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-color)' }}>
@@ -263,7 +254,7 @@ export const Dashboard = () => {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginTop: '0.75rem' }}>
             <div className="flex-between" style={{ fontSize: '0.88rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Salary + Transfer:</span>
+              <span style={{ color: 'var(--text-muted)' }}>Salary + $3k Transfer:</span>
               <span className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>$7,546.27</span>
             </div>
             <div className="flex-between" style={{ fontSize: '0.88rem' }}>

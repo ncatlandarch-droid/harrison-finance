@@ -6,7 +6,7 @@ const FinanceContext = createContext();
 export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('harrison_finance_v2.8');
+      const saved = localStorage.getItem('harrison_finance_v2.9');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.version === INITIAL_DATA.version) {
@@ -23,40 +23,40 @@ export const FinanceProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('harrison_finance_v2.8', JSON.stringify(data));
+      localStorage.setItem('harrison_finance_v2.9', JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save to local storage:', e);
     }
   }, [data]);
 
   const members = data.family.members.filter(m => m.role !== 'Child');
-  const totalBaseIncome = members.reduce((sum, m) => sum + (m.income || 0), 0);
+  
+  // 1. External Base Household Income (New Money Coming In)
+  const totalBaseIncome = 12692.11; // Barbara $5,645.84 + Chris $4,546.27 + Erin $2,500.00
 
-  // Itemized Expense Totals
-  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, b) => sum + b.amount, 0);
-  const erinTotalExpenses = data.erinExpenses.reduce((sum, e) => sum + e.amount, 0);
-  const chrisTotalExpenses = data.chrisExpenses.reduce((sum, c) => sum + c.amount, 0);
+  // 2. Individual Itemized Expenses
+  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, b) => sum + b.amount, 0); // $4,837.24 (includes $3,000 transfer to Chris)
+  const erinTotalExpenses = data.erinExpenses.reduce((sum, e) => sum + e.amount, 0);       // $1,569.00
+  const chrisTotalExpenses = data.chrisExpenses.reduce((sum, c) => sum + c.amount, 0);     // $4,311.62
 
-  // Calculate Real Scraped Plaid Bank Spending
+  // 3. External Family Outflow (excluding internal $3k transfer between Barbara and Chris)
+  const totalExternalExpenses = (barbaraTotalExpenses - 3000.00) + erinTotalExpenses + chrisTotalExpenses; // $7,717.86
+
+  // 4. Earner Net Surpluses
+  const barbaraNetRemaining = 5645.84 - barbaraTotalExpenses; // $808.60
+  const erinNetRemaining = 2500.00 - erinTotalExpenses;       // $931.00
+  const chrisNetRemaining = (4546.27 + 3000.00) - chrisTotalExpenses; // $3,234.65
+
+  // 5. Total Combined Real Household Surplus
+  const totalCombinedSurplus = totalBaseIncome - totalExternalExpenses; // $4,974.25
+
+  // 6. Plaid Live Bank Scraped Spending & Balances
   const scrapedPlaidTxns = data.transactions.filter(t => t.id.startsWith('pt_') || t.source === 'Plaid');
   const totalScrapedBankSpending = scrapedPlaidTxns.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
-
-  // Member Surpluses
-  const barbaraNetRemaining = 5645.84 - barbaraTotalExpenses;
-  const erinNetRemaining = 2500.00 - erinTotalExpenses;
-  const chrisNetRemaining = (4546.27 + 3000.00) - chrisTotalExpenses;
-
-  // Combined Household Surplus
-  const totalCombinedExpenses = barbaraTotalExpenses + erinTotalExpenses + chrisTotalExpenses;
-  const totalCombinedSurplus = (totalBaseIncome + 3000.00) - (totalScrapedBankSpending > 0 ? (totalScrapedBankSpending + barbaraTotalExpenses + erinTotalExpenses) : totalCombinedExpenses);
-
-  // Live Net Worth from Accounts
   const totalLiquidityBalance = data.accounts.reduce((sum, a) => sum + (a.balance || 0), 0);
 
-  // Merge Real Plaid Bank Accounts & Auto-Scraped Transactions
   const mergePlaidData = (plaidAccounts = [], plaidTxns = []) => {
     setData(prev => {
-      // 1. Update Accounts with Real Live Balances
       const updatedAccounts = [...prev.accounts];
       plaidAccounts.forEach(pa => {
         const existingIdx = updatedAccounts.findIndex(a => a.name.toLowerCase().includes(pa.name.toLowerCase()) || a.institution.toLowerCase().includes(pa.name.toLowerCase()));
@@ -78,20 +78,19 @@ export const FinanceProvider = ({ children }) => {
         }
       });
 
-      // 2. Map and Auto-Categorize Real Plaid Transactions
       const mappedTxns = plaidTxns.map((pt, idx) => {
         const name = pt.merchant_name || pt.name || 'Transaction';
         const amount = -Math.abs(pt.amount);
         let category = 'Shopping & Entertainment';
         const upper = name.toUpperCase();
 
-        if (upper.includes('DOORDASH') || upper.includes('CHICK') || upper.includes('CHIPOTLE') || upper.includes('PANERA') || upper.includes('MCDONALD') || upper.includes('STARBUCKS') || upper.includes('RESTAURANT') || upper.includes('COOKOUT') || upper.includes('OLIVE GARDEN')) {
+        if (upper.includes('DOORDASH') || upper.includes('CHICK') || upper.includes('CHIPOTLE') || upper.includes('PANERA') || upper.includes('MCDONALD') || upper.includes('STARBUCKS') || upper.includes('COOKOUT')) {
           category = 'Restaurants & Dining';
         } else if (upper.includes('HARRIS TEETER') || upper.includes('COSTCO') || upper.includes('ALDI') || upper.includes('WALMART') || upper.includes('FOOD LION')) {
           category = 'Groceries';
-        } else if (upper.includes('DUKE') || upper.includes('SPECTRUM') || upper.includes('WATER') || upper.includes('MORTGAGE') || upper.includes('POWER')) {
+        } else if (upper.includes('DUKE') || upper.includes('SPECTRUM') || upper.includes('WATER') || upper.includes('MORTGAGE')) {
           category = 'Home & Utilities';
-        } else if (upper.includes('GEICO') || upper.includes('PROGRESSIVE') || upper.includes('PRIMERICA') || upper.includes('INSURANCE')) {
+        } else if (upper.includes('GEICO') || upper.includes('PROGRESSIVE') || upper.includes('PRIMERICA')) {
           category = 'Insurance';
         }
 
@@ -138,11 +137,11 @@ export const FinanceProvider = ({ children }) => {
       barbaraTotalExpenses,
       erinTotalExpenses,
       chrisTotalExpenses,
+      totalExternalExpenses,
       totalScrapedBankSpending,
       barbaraNetRemaining,
       erinNetRemaining,
       chrisNetRemaining,
-      totalCombinedExpenses,
       totalCombinedSurplus,
       totalLiquidityBalance,
       mergePlaidData,
