@@ -49,7 +49,7 @@ window.Dashboard = {
               </div>
             </div>
             <p class="text-sm text-muted">Combined Income</p>
-            <p class="text-2xl font-mono font-bold" id="stat-income">$12,692.11</p>
+            <p class="text-2xl font-mono font-bold" id="stat-income">$0.00</p>
             <p class="text-xs text-success flex-align-center mt-2 gap-1">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
               +2.4% from last month
@@ -63,7 +63,7 @@ window.Dashboard = {
               </div>
             </div>
             <p class="text-sm text-muted">Total Budget</p>
-            <p class="text-2xl font-mono font-bold" id="stat-budget">$4,065.73</p>
+            <p class="text-2xl font-mono font-bold" id="stat-budget">$0.00</p>
             <p class="text-xs text-warning flex-align-center mt-2 gap-1">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
               Adjusted for this month
@@ -77,7 +77,7 @@ window.Dashboard = {
               </div>
             </div>
             <p class="text-sm text-muted">Net Cash Flow</p>
-            <p class="text-2xl font-mono font-bold text-success" id="stat-cashflow">$8,626.38</p>
+            <p class="text-2xl font-mono font-bold text-success" id="stat-cashflow">$0.00</p>
             <p class="text-xs text-primary flex-align-center mt-2 gap-1">
               Remaining after budget
             </p>
@@ -90,7 +90,7 @@ window.Dashboard = {
               </div>
             </div>
             <p class="text-sm text-muted">Net Worth</p>
-            <p class="text-2xl font-mono font-bold" id="stat-networth">$125,430.00</p>
+            <p class="text-2xl font-mono font-bold" id="stat-networth">$0.00</p>
             <p class="text-xs text-muted flex-align-center mt-2 gap-1">
               Estimated total assets
             </p>
@@ -125,20 +125,9 @@ window.Dashboard = {
           <div class="flex-between align-center" style="gap: 2rem;">
             <div style="flex: 1; text-align: center;">
               <p class="text-sm text-muted mb-2">Household Total</p>
-              <h2 class="text-5xl font-mono font-bold text-primary mb-6">$3,321.12</h2>
-              <div class="flex-around">
-                <div class="text-center">
-                  <div style="background: hsl(280, 70%, 60%); width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; font-size: 1.2rem;">B</div>
-                  <p class="font-mono text-sm font-bold">$1,049.04</p>
-                </div>
-                <div class="text-center">
-                  <div style="background: hsl(250, 85%, 60%); width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; font-size: 1.2rem;">C</div>
-                  <p class="font-mono text-sm font-bold">$1,049.04</p>
-                </div>
-                <div class="text-center">
-                  <div style="background: hsl(340, 85%, 60%); width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; font-size: 1.2rem;">E</div>
-                  <p class="font-mono text-sm font-bold">$1,049.04</p>
-                </div>
+              <h2 class="text-5xl font-mono font-bold text-primary mb-6" id="household-total">$0.00</h2>
+              <div class="flex-around" id="household-members">
+                <!-- Populated dynamically -->
               </div>
             </div>
             <div style="flex: 1; border-left: 1px solid var(--border-color); padding-left: 2rem;">
@@ -155,7 +144,7 @@ window.Dashboard = {
           <div id="recent-activity-list" class="empty-state text-center p-5">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin: 0 auto 1rem;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
             <p class="text-muted mb-4">No transactions yet — import your BoA CSV to get started!</p>
-            <button class="btn btn-primary" onclick="window.app && window.app.navigate('import')">Import Data</button>
+            <button class="btn btn-primary" onclick="window.App && window.App.navigate('import')">Import Data</button>
           </div>
         </div>
 
@@ -171,6 +160,56 @@ window.Dashboard = {
       document.getElementById('hero-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
     }
 
+    const fmt = (v) => '$' + Math.abs(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    
+    // Retrieve Data from Storage
+    const members = window.Storage ? window.Storage.getMembers() : [];
+    const transactions = window.Storage ? (window.Storage.data.transactions || []) : [];
+    const budgets = window.Storage ? (window.Storage.data.budgets || []) : [];
+    const accounts = window.Storage ? (window.Storage.data.accounts || []) : [];
+    const householdFinance = window.Storage && window.Storage.data.householdFinance ? window.Storage.data.householdFinance : { totalHouseholdExpense: 0, members: {} };
+    
+    // Calculate Stats
+    const totalIncome = members.reduce((sum, m) => sum + (m.income || 0), 0);
+    const totalBudgetLimit = budgets.reduce((sum, b) => sum + (b.limit || 0), 0);
+    const totalBudgetSpent = budgets.reduce((sum, b) => sum + Math.abs(b.spent || 0), 0);
+    const netCashFlow = totalIncome - totalBudgetSpent;
+    const netWorth = accounts.reduce((sum, a) => sum + (a.balance || 0), 0);
+
+    // Update Stats DOM
+    const statIncomeEl = document.getElementById('stat-income');
+    const statBudgetEl = document.getElementById('stat-budget');
+    const statCashflowEl = document.getElementById('stat-cashflow');
+    const statNetworthEl = document.getElementById('stat-networth');
+    
+    if (statIncomeEl) statIncomeEl.textContent = fmt(totalIncome);
+    if (statBudgetEl) statBudgetEl.textContent = fmt(totalBudgetLimit);
+    if (statCashflowEl) statCashflowEl.textContent = fmt(netCashFlow);
+    if (statNetworthEl) statNetworthEl.textContent = fmt(netWorth);
+
+    // Household Total
+    const householdTotalEl = document.getElementById('household-total');
+    if (householdTotalEl) householdTotalEl.textContent = fmt(householdFinance.totalHouseholdExpense || 0);
+
+    // Household Members Contributions
+    const householdMembersEl = document.getElementById('household-members');
+    if (householdMembersEl) {
+      let hHtml = '';
+      members.forEach(m => {
+        const mKey = Object.keys(householdFinance.members || {}).find(k => k.toLowerCase() === m.name.toLowerCase());
+        if (mKey) {
+          const con = householdFinance.members[mKey].contribution || 0;
+          hHtml += `
+            <div class="text-center">
+              <div style="background: ${m.color}; width: 48px; height: 48px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-weight: bold; font-size: 1.2rem;">${m.name.charAt(0)}</div>
+              <p class="font-mono text-sm font-bold">${fmt(con)}</p>
+            </div>
+          `;
+        }
+      });
+      householdMembersEl.innerHTML = hHtml;
+    }
+
     this.renderFamilyCards();
     this.renderCharts();
     this.renderActivity();
@@ -180,19 +219,29 @@ window.Dashboard = {
     const container = document.getElementById('family-cards-container');
     if (!container) return;
 
-    const formatFn = window.App && window.App.formatCurrency ? window.App.formatCurrency : (v) => '$' + v.toFixed(2);
-
-    const family = [
-      { name: 'Barbara', role: 'Primary', income: 5645.84, expenses: 1479.11, contribution: 1049.04, available: 3117.69, color: 'hsl(280, 70%, 60%)' },
-      { name: 'Chris', role: 'Primary', income: 4546.27, expenses: 1356.62, contribution: 1049.04, available: 2140.61, color: 'hsl(250, 85%, 60%)' },
-      { name: 'Erin', role: 'Spouse', income: 2500.00, expenses: 1230.00, contribution: 1049.04, available: 220.96, color: 'hsl(340, 85%, 60%)' }
-    ];
-
-    container.innerHTML = family.map(member => {
-      const incTotal = member.income;
-      const pExp = (member.expenses / incTotal) * 100;
-      const pCon = (member.contribution / incTotal) * 100;
-      const pAvail = (member.available / incTotal) * 100;
+    const fmt = (v) => '$' + Math.abs(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    
+    const members = window.Storage ? window.Storage.getMembers() : [];
+    const householdFinance = window.Storage && window.Storage.data.householdFinance ? window.Storage.data.householdFinance : { members: {} };
+    const transactions = window.Storage ? (window.Storage.data.transactions || []) : [];
+    
+    container.innerHTML = members.map(member => {
+      let expenses = 0;
+      transactions.forEach(t => {
+        if (t.memberId === member.id && (t.type === 'expense' || t.amount < 0)) {
+          expenses += Math.abs(t.amount);
+        }
+      });
+      
+      const mKey = Object.keys(householdFinance.members || {}).find(k => k.toLowerCase() === member.name.toLowerCase());
+      const contribution = mKey ? (householdFinance.members[mKey].contribution || 0) : 0;
+      const income = member.income || 0;
+      const available = income - expenses - contribution;
+      
+      const incTotal = income || 1;
+      const pExp = (expenses / incTotal) * 100;
+      const pCon = (contribution / incTotal) * 100;
+      const pAvail = (Math.max(0, available) / incTotal) * 100;
 
       return `
         <div class="card" style="border-top: 4px solid ${member.color}; transition: all 0.3s ease; cursor: default;" onmouseover="this.style.boxShadow='0 8px 25px ${member.color.replace(')', ', 0.2)').replace('hsl', 'hsla')}'" onmouseout="this.style.boxShadow='var(--shadow-md)'">
@@ -209,19 +258,19 @@ window.Dashboard = {
           <div class="grid-2 gap-3 mb-4">
             <div class="bg-secondary p-2 rounded">
               <p class="text-xs text-muted mb-1">Income</p>
-              <p class="font-mono font-bold text-lg">${formatFn(member.income)}</p>
+              <p class="font-mono font-bold text-lg">${fmt(income)}</p>
             </div>
             <div class="bg-secondary p-2 rounded">
               <p class="text-xs text-muted mb-1">Available</p>
-              <p class="font-mono font-bold text-lg text-success">${formatFn(member.available)}</p>
+              <p class="font-mono font-bold text-lg text-success">${fmt(available)}</p>
             </div>
             <div class="bg-secondary p-2 rounded">
               <p class="text-xs text-muted mb-1">Expenses</p>
-              <p class="font-mono font-bold">${formatFn(member.expenses)}</p>
+              <p class="font-mono font-bold">${fmt(expenses)}</p>
             </div>
             <div class="bg-secondary p-2 rounded">
               <p class="text-xs text-muted mb-1">Contribution</p>
-              <p class="font-mono font-bold text-warning">${formatFn(member.contribution)}</p>
+              <p class="font-mono font-bold text-warning">${fmt(contribution)}</p>
             </div>
           </div>
 
@@ -238,27 +287,52 @@ window.Dashboard = {
   renderCharts() {
     if (window.Charts) {
       setTimeout(() => {
+        // Cash Flow Donut
+        const transactions = window.Storage ? (window.Storage.data.transactions || []) : [];
+        let tIncome = 0;
+        let tExpenses = 0;
+        transactions.forEach(t => {
+          if (t.type === 'income' || t.amount > 0) tIncome += Math.abs(t.amount);
+          else tExpenses += Math.abs(t.amount);
+        });
+        const householdTotal = window.Storage && window.Storage.data.householdFinance ? window.Storage.data.householdFinance.totalHouseholdExpense : 0;
+        const tAvailable = tIncome - tExpenses - householdTotal;
+
         window.Charts.donut('cashFlowChart', [
-          { label: 'Available', value: 5479.26, color: '#4ade80' },
-          { label: 'Expenses', value: 4065.73, color: '#f87171' },
-          { label: 'Household', value: 3147.12, color: '#fbbf24' }
+          { label: 'Available', value: Math.max(0, tAvailable), color: '#4ade80' },
+          { label: 'Expenses', value: tExpenses, color: '#f87171' },
+          { label: 'Household', value: householdTotal, color: '#fbbf24' }
         ], { responsive: true, maintainAspectRatio: false });
 
+        // Income Comparison
+        const members = window.Storage ? window.Storage.getMembers() : [];
+        const incLabels = members.map(m => m.name);
+        const incValues = members.map(m => m.income || 0);
+        const incColors = members.map(m => m.color || '#3b82f6');
+
         window.Charts.bar('incomeComparisonChart', {
-          labels: ['Barbara', 'Chris', 'Erin'],
+          labels: incLabels,
           datasets: [{
             label: 'Income',
-            values: [5645.84, 4546.27, 2500],
-            color: ['hsl(280, 70%, 60%)', 'hsl(250, 85%, 60%)', 'hsl(340, 85%, 60%)']
+            values: incValues,
+            color: incColors
           }]
         }, { responsive: true, maintainAspectRatio: false });
 
-        window.Charts.donut('householdPieChart', [
-          { label: 'Mortgage', value: 1800, color: '#a855f7' },
-          { label: 'Utilities', value: 450, color: '#3b82f6' },
-          { label: 'Groceries', value: 800, color: '#10b981' },
-          { label: 'Misc', value: 271.12, color: '#f59e0b' }
-        ], { responsive: true, maintainAspectRatio: false });
+        // Household Pie
+        const budgets = window.Storage ? (window.Storage.data.budgets || []) : [];
+        const budgColors = ['#a855f7', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4'];
+        const budgData = budgets.map((b, i) => ({
+          label: b.category || 'Misc',
+          value: Math.abs(b.spent || 0),
+          color: budgColors[i % budgColors.length]
+        })).filter(b => b.value > 0);
+        
+        if (budgData.length === 0) {
+          budgData.push({label: 'No Data', value: 1, color: '#6b7280'});
+        }
+
+        window.Charts.donut('householdPieChart', budgData, { responsive: true, maintainAspectRatio: false });
       }, 100);
     }
   },
@@ -267,14 +341,39 @@ window.Dashboard = {
     const list = document.getElementById('recent-activity-list');
     if (!list) return;
 
-    const txns = [
-      { date: 'Today', name: 'NC A&T Payroll', amount: 4537.96, type: 'income', member: 'Chris' },
-      { date: 'Yesterday', name: 'Erin Zelle to Chris', amount: 650.00, type: 'income', member: 'Erin' },
-      { date: 'Jul 15', name: 'Barbara OPM Pension', amount: 5974.31, type: 'income', member: 'Barbara' },
-      { date: 'Jul 14', name: 'BoA Cash Rewards', amount: -150.00, type: 'expense', member: 'Chris' }
-    ];
+    let txns = window.Storage ? [...(window.Storage.data.transactions || [])] : [];
+    txns.sort((a, b) => new Date(b.date) - new Date(a.date));
+    txns = txns.slice(0, 10);
 
-    const formatFn = window.App && window.App.formatCurrency ? window.App.formatCurrency : (v) => '$' + Math.abs(v).toFixed(2);
+    const fmt = (v) => '$' + Math.abs(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+    if (txns.length === 0) {
+      list.innerHTML = `
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin: 0 auto 1rem;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <p class="text-muted mb-4">No transactions yet — import your BoA CSV to get started!</p>
+        <button class="btn btn-primary" onclick="window.App && window.App.navigate('import')">Import Data</button>
+      `;
+      list.classList.add('empty-state', 'text-center', 'p-5');
+      return;
+    }
+
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const todayStr = today.toISOString().split('T')[0];
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    const formatDate = (dateStr) => {
+      if (!dateStr) return '';
+      if (dateStr.startsWith(todayStr)) return 'Today';
+      if (dateStr.startsWith(yesterdayStr)) return 'Yesterday';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    };
+
+    const familyMembers = window.Storage && window.Storage.data.family && window.Storage.data.family.members 
+      ? window.Storage.data.family.members 
+      : [];
 
     let html = '<div class="transaction-list" style="margin: -1.5rem;">';
     txns.forEach(t => {
@@ -282,23 +381,25 @@ window.Dashboard = {
       const color = isIncome ? 'var(--success)' : 'var(--text-main)';
       const sign = isIncome ? '+' : '-';
       
-      let memberColor = 'var(--text-muted)';
-      if (t.member === 'Barbara') memberColor = 'hsl(280, 70%, 60%)';
-      if (t.member === 'Chris') memberColor = 'hsl(250, 85%, 60%)';
-      if (t.member === 'Erin') memberColor = 'hsl(340, 85%, 60%)';
+      const member = familyMembers.find(m => m.id === t.memberId);
+      const memberName = member ? member.name : 'Unknown';
+      const memberColor = member && member.color ? member.color : 'var(--text-muted)';
+      const firstInitial = memberName.charAt(0).toUpperCase();
+      
+      const displayDate = formatDate(t.date);
 
       html += `
         <div class="flex-between align-center p-4 hover-bg" style="border-bottom: 1px solid var(--border-color); transition: background 0.2s;">
           <div class="flex-align-center gap-4">
             <div style="width: 48px; height: 48px; border-radius: 50%; background: ${memberColor}20; color: ${memberColor}; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;">
-              ${t.member.charAt(0)}
+              ${firstInitial}
             </div>
             <div class="text-left">
-              <p class="font-bold text-lg">${t.name}</p>
-              <p class="text-sm text-muted">${t.date}</p>
+              <p class="font-bold text-lg">${t.description || t.name || 'Transaction'}</p>
+              <p class="text-sm text-muted">${displayDate}</p>
             </div>
           </div>
-          <p class="font-mono font-bold text-lg" style="color: ${color}">${sign}${formatFn(Math.abs(t.amount))}</p>
+          <p class="font-mono font-bold text-lg" style="color: ${color}">${sign}${fmt(t.amount)}</p>
         </div>
       `;
     });

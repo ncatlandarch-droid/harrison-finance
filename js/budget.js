@@ -42,15 +42,15 @@
         <div class="grid-3 mb-6 animate-fade-in-up" style="animation-delay: 0.1s">
           <div class="card stat-card text-center p-5" style="border-bottom: 4px solid var(--primary);">
             <p class="text-sm text-muted mb-2 font-bold uppercase tracking-wider">Total Budget</p>
-            <p class="text-4xl font-mono font-bold text-primary" id="budget-total">$4,065.73</p>
+            <p class="text-4xl font-mono font-bold text-primary" id="budget-total">--</p>
           </div>
           <div class="card stat-card text-center p-5" style="border-bottom: 4px solid var(--warning);">
             <p class="text-sm text-muted mb-2 font-bold uppercase tracking-wider">Spent This Month</p>
-            <p class="text-4xl font-mono font-bold text-warning" id="budget-spent">$1,452.30</p>
+            <p class="text-4xl font-mono font-bold text-warning" id="budget-spent">--</p>
           </div>
           <div class="card stat-card text-center p-5" style="border-bottom: 4px solid var(--success);">
             <p class="text-sm text-muted mb-2 font-bold uppercase tracking-wider">Remaining</p>
-            <p class="text-4xl font-mono font-bold text-success" id="budget-remaining">$2,613.43</p>
+            <p class="text-4xl font-mono font-bold text-success" id="budget-remaining">--</p>
           </div>
         </div>
 
@@ -65,22 +65,57 @@
   loadData() {
     this.currentFilter = 'All';
     this.renderCategories();
+    this.updateSummary();
+  },
+
+  updateSummary() {
+    const fmt = (v) => '$' + Math.abs(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    const budgets = (Storage && Storage.data) ? Storage.data.budgets : [];
+    const totalLimit = budgets.reduce((s, b) => s + (b.limit || 0), 0);
+    const totalSpent = budgets.reduce((s, b) => s + (b.spent || 0), 0);
+    const remaining = totalLimit - totalSpent;
+    const el1 = document.getElementById('budget-total');
+    const el2 = document.getElementById('budget-spent');
+    const el3 = document.getElementById('budget-remaining');
+    if (el1) el1.textContent = fmt(totalLimit);
+    if (el2) el2.textContent = fmt(totalSpent);
+    if (el3) {
+      el3.textContent = fmt(Math.abs(remaining));
+      el3.style.color = remaining >= 0 ? 'var(--success)' : 'var(--danger)';
+      if (remaining < 0) el3.textContent = '-' + el3.textContent;
+    }
   },
 
   renderCategories() {
     const container = document.getElementById('budget-categories-list');
     if (!container) return;
 
-    const formatFn = window.App && window.App.formatCurrency ? window.App.formatCurrency : (v) => '$' + v.toFixed(2);
+    const formatFn = (v) => '$' + Math.abs(v).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
-    let categories = [
-      { name: 'Groceries', limit: 1200, spent: 850, member: 'Family', icon: '<path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>' },
-      { name: 'Dining Out', limit: 400, spent: 380, member: 'Chris', icon: '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>' },
-      { name: 'Utilities', limit: 450, spent: 200, member: 'Barbara', icon: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>' },
-      { name: 'Gasoline', limit: 300, spent: 150, member: 'Family', icon: '<path d="M3 22v-8p2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v8"></path><path d="M11 7H3"></path><path d="M15 11l4-4 4 4"></path>' },
-      { name: 'Entertainment', limit: 300, spent: 50, member: 'Erin', icon: '<circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line>' },
-      { name: 'Shopping', limit: 500, spent: 100, member: 'Barbara', icon: '<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>' }
-    ];
+    const iconMap = {
+      home: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>',
+      car: '<circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-6l2-5h14l2 5v6h-2"></path><path d="M5 7h14"></path>',
+      cart: '<path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>',
+      user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>',
+      heart: '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>',
+      shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>',
+      utensils: '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>',
+      dollar: '<line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>',
+      briefcase: '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>',
+      'trending-up': '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline>'
+    };
+    const defaultIcon = '<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line>';
+
+    let categories = ((Storage && Storage.data) ? Storage.data.budgets : []).map(b => {
+      const memberName = b.memberId === 'family' ? 'Family' : (Storage.getMember(b.memberId) || {}).name || b.memberId;
+      return {
+        name: b.category,
+        limit: b.limit || 0,
+        spent: b.spent || 0,
+        member: memberName,
+        icon: iconMap[b.icon] || defaultIcon
+      };
+    });
 
     if (this.currentFilter && this.currentFilter !== 'All') {
       categories = categories.filter(c => c.member === this.currentFilter || c.member === 'Family');
@@ -131,8 +166,8 @@
     const btnAdd = document.getElementById('btn-add-budget');
     if (btnAdd) {
       btnAdd.addEventListener('click', () => {
-        if (window.app && window.app.showModal) {
-          window.app.showModal(
+        if (window.App && window.App.showModal) {
+          window.App.showModal(
             'Add Budget Category', 
             `<form id="add-budget-form">
                <div class="form-group mb-3">
@@ -153,7 +188,7 @@
                  </select>
                </div>
              </form>`,
-            `<button class="btn btn-outline" onclick="window.app.hideModal()">Cancel</button>
+            `<button class="btn btn-outline" onclick="window.App.hideModal()">Cancel</button>
              <button class="btn btn-primary" onclick="window.Budget.saveCategory()">Save Category</button>`
           );
         }
@@ -180,9 +215,9 @@
 
   saveCategory() {
     // Mock save
-    if (window.app && window.app.hideModal) {
-      window.app.hideModal();
-      window.app.showToast('Budget category saved successfully', 'success');
+    if (window.App && window.App.hideModal) {
+      window.App.hideModal();
+      window.App.showToast('Budget category saved successfully', 'success');
     }
   }
 };
