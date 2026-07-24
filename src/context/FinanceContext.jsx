@@ -6,7 +6,7 @@ const FinanceContext = createContext();
 export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('harrison_finance_v2.7');
+      const saved = localStorage.getItem('harrison_finance_v2.8');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.version === INITIAL_DATA.version) {
@@ -23,29 +23,28 @@ export const FinanceProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('harrison_finance_v2.7', JSON.stringify(data));
+      localStorage.setItem('harrison_finance_v2.8', JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save to local storage:', e);
     }
   }, [data]);
 
   const members = data.family.members.filter(m => m.role !== 'Child');
-  const totalIncome = members.reduce((sum, m) => sum + (m.income || 0), 0);
+  const totalBaseIncome = members.reduce((sum, m) => sum + (m.income || 0), 0); // $12,692.11
 
-  // Barbara's Exact Expenses ($4,837.24)
-  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, b) => sum + b.amount, 0);
+  // Itemized Expense Totals
+  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, b) => sum + b.amount, 0); // $4,837.24
+  const erinTotalExpenses = data.erinExpenses.reduce((sum, e) => sum + e.amount, 0);       // $1,569.00
+  const chrisTotalExpenses = data.chrisExpenses.reduce((sum, c) => sum + c.amount, 0);     // $4,311.62
 
-  // Erin's Exact Expenses ($1,569.00)
-  const erinTotalExpenses = data.erinExpenses.reduce((sum, e) => sum + e.amount, 0);
-
-  // Joint & Personal Bills
-  const jointBillsTotal = data.bills.filter(b => b.paidBy === 'joint').reduce((sum, b) => sum + b.amount, 0);
-  const chrisPersonalBills = data.bills.filter(b => b.paidBy === 'chris').reduce((sum, b) => sum + b.amount, 0);
-
-  // Member Surpluses
+  // Individual Earner Net Surpluses
   const barbaraNetRemaining = 5645.84 - barbaraTotalExpenses; // $808.60
-  const erinNetRemaining = 2500.00 - erinTotalExpenses; // $931.00
-  const chrisNetRemaining = 4546.27 + 3000.00 - jointBillsTotal - chrisPersonalBills; // $4,524.47
+  const erinNetRemaining = 2500.00 - erinTotalExpenses;       // $931.00
+  const chrisNetRemaining = (4546.27 + 3000.00) - chrisTotalExpenses; // $3,234.65
+
+  // Combined Household Surplus
+  const totalCombinedExpenses = barbaraTotalExpenses + erinTotalExpenses + chrisTotalExpenses; // $10,717.86
+  const totalCombinedSurplus = (totalBaseIncome + 3000.00) - totalCombinedExpenses; // $4,974.25 (or $1,974.25 net outside internal transfer)
 
   const addTransaction = (newTxn) => {
     setData(prev => ({
@@ -57,13 +56,6 @@ export const FinanceProvider = ({ children }) => {
     }));
   };
 
-  const updateBillStatus = (billId, newStatus) => {
-    setData(prev => ({
-      ...prev,
-      bills: prev.bills.map(b => b.id === billId ? { ...b, status: newStatus } : b)
-    }));
-  };
-
   return (
     <FinanceContext.Provider value={{
       data,
@@ -71,15 +63,16 @@ export const FinanceProvider = ({ children }) => {
       activeTab,
       setActiveTab,
       members,
-      totalIncome,
+      totalBaseIncome,
       barbaraTotalExpenses,
       erinTotalExpenses,
-      jointBillsTotal,
+      chrisTotalExpenses,
       barbaraNetRemaining,
       erinNetRemaining,
       chrisNetRemaining,
-      addTransaction,
-      updateBillStatus
+      totalCombinedExpenses,
+      totalCombinedSurplus,
+      addTransaction
     }}>
       {children}
     </FinanceContext.Provider>

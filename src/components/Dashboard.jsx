@@ -7,19 +7,23 @@ import {
   AlertTriangle, 
   HeartHandshake,
   Building,
-  Car,
-  Baby,
-  Smile
+  UserCheck,
+  Zap,
+  ShoppingBag,
+  Sparkles
 } from 'lucide-react';
 
 export const Dashboard = () => {
   const { 
-    totalIncome, 
+    totalBaseIncome, 
     barbaraTotalExpenses, 
     erinTotalExpenses,
+    chrisTotalExpenses,
     barbaraNetRemaining,
     erinNetRemaining,
     chrisNetRemaining,
+    totalCombinedExpenses,
+    totalCombinedSurplus,
     data 
   } = useFinance();
 
@@ -58,25 +62,55 @@ export const Dashboard = () => {
               <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.5rem 0.85rem', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.82rem' }}>
                 Aug 2029 Reset Rate: <strong style={{ color: 'var(--danger)' }}>15.30%</strong> • 30-Yr Interest: <strong>$227,000</strong>
               </div>
+              <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.5rem 0.85rem', borderRadius: '8px', border: '1px solid var(--border-color)', fontSize: '0.82rem', color: 'var(--primary-light)' }}>
+                Target Strategy: Refinance or Payoff before Aug 2029
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 1. INDIVIDUAL FAMILY EARNER CARDS */}
+      {/* 1. OVERALL FAMILY HOUSEHOLD SUMMARY ROW */}
+      <div className="grid-3">
+        <div className="card card-glow" style={{ borderTop: '4px solid var(--success)' }}>
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Combined Family Income</span>
+          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff', marginTop: '0.4rem' }}>
+            {fmt(totalBaseIncome)}
+          </div>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Barbara ($5.6k) + Chris ($4.5k) + Erin ($2.5k)</span>
+        </div>
+
+        <div className="card card-glow" style={{ borderTop: '4px solid var(--danger)' }}>
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Combined Family Expenses</span>
+          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--danger)', marginTop: '0.4rem' }}>
+            {fmt(totalCombinedExpenses)}
+          </div>
+          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Barbara ($4.8k) + Erin ($1.5k) + Chris ($4.3k)</span>
+        </div>
+
+        <div className="card card-glow" style={{ borderTop: '4px solid var(--primary-light)' }}>
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Real Net Family Surplus</span>
+          <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--success)', marginTop: '0.4rem' }}>
+            {fmt(totalCombinedSurplus)}
+          </div>
+          <span style={{ fontSize: '0.78rem', color: 'var(--success)' }}>Actual Net Surplus after ALL 34 Itemized Bills</span>
+        </div>
+      </div>
+
+      {/* 2. INDIVIDUAL FAMILY EARNER CARDS */}
       <div className="grid-3">
         
         {/* Barbara Card */}
         <div className="card card-glow" style={{ borderTop: '4px solid #a855f7' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#a855f7', color: '#fff', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>B</div>
-              <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>Barbara</span>
+              <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: '#a855f7', color: '#fff', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>B</div>
+              <span style={{ fontWeight: 800, fontSize: '1.15rem', color: '#fff' }}>Barbara</span>
             </div>
             <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#a855f7' }}>OPM Pension</span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.75rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginTop: '0.75rem' }}>
             <div className="flex-between" style={{ fontSize: '0.88rem' }}>
               <span style={{ color: 'var(--text-muted)' }}>Income:</span>
               <span className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>$5,645.84</span>
@@ -96,13 +130,13 @@ export const Dashboard = () => {
         <div className="card card-glow" style={{ borderTop: '4px solid #ec4899' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#ec4899', color: '#fff', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>E</div>
-              <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>Erin</span>
+              <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: '#ec4899', color: '#fff', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>E</div>
+              <span style={{ fontWeight: 800, fontSize: '1.15rem', color: '#fff' }}>Erin</span>
             </div>
             <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.2)', color: '#ec4899' }}>UNCG Salary</span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.75rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginTop: '0.75rem' }}>
             <div className="flex-between" style={{ fontSize: '0.88rem' }}>
               <span style={{ color: 'var(--text-muted)' }}>Income:</span>
               <span className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>$2,500.00</span>
@@ -122,20 +156,20 @@ export const Dashboard = () => {
         <div className="card card-glow" style={{ borderTop: '4px solid #6366f1' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#6366f1', color: '#fff', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>C</div>
-              <span style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>Chris</span>
+              <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: '#6366f1', color: '#fff', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>C</div>
+              <span style={{ fontWeight: 800, fontSize: '1.15rem', color: '#fff' }}>Chris</span>
             </div>
             <span className="badge" style={{ background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8' }}>NC A&T State</span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.75rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', marginTop: '0.75rem' }}>
             <div className="flex-between" style={{ fontSize: '0.88rem' }}>
               <span style={{ color: 'var(--text-muted)' }}>Salary + Transfer:</span>
               <span className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>$7,546.27</span>
             </div>
             <div className="flex-between" style={{ fontSize: '0.88rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Joint Bills + Insurance:</span>
-              <span className="font-mono" style={{ fontWeight: 700, color: 'var(--danger)' }}>$3,021.80</span>
+              <span style={{ color: 'var(--text-muted)' }}>14 Itemized Bills:</span>
+              <span className="font-mono" style={{ fontWeight: 700, color: 'var(--danger)' }}>{fmt(chrisTotalExpenses)}</span>
             </div>
             <div className="flex-between" style={{ fontSize: '0.95rem', paddingTop: '0.5rem', borderTop: '1px solid var(--border-color)' }}>
               <span style={{ fontWeight: 700, color: '#fff' }}>Net Surplus:</span>
@@ -146,17 +180,17 @@ export const Dashboard = () => {
 
       </div>
 
-      {/* 2. ERIN & BARBARA ITEMIZED EXPENSE TABLES (SIDE-BY-SIDE) */}
-      <div className="grid-2">
+      {/* 3. ITEMIZED EXPENSE TABLES FOR ALL THREE MEMBERS */}
+      <div className="grid-3">
         
         {/* Barbara's Expenses Table */}
         <div className="card">
           <div className="flex-between" style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Barbara's Itemized Bills</h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>11 Bills • $4,837.24 Total</span>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Barbara's Bills</h3>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>11 Items • $4,837.24 / mo</span>
             </div>
-            <span className="badge badge-danger">OPM Paid</span>
+            <span className="badge badge-danger">OPM</span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -165,14 +199,14 @@ export const Dashboard = () => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: '0.6rem 0.85rem',
+                padding: '0.55rem 0.75rem',
                 background: 'rgba(0,0,0,0.2)',
                 borderRadius: 'var(--radius-md)',
-                fontSize: '0.88rem'
+                fontSize: '0.82rem'
               }}>
                 <div>
                   <div style={{ fontWeight: 600, color: '#fff' }}>{item.description}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{item.name}</div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.name}</div>
                 </div>
                 <div className="font-mono" style={{ fontWeight: 700, color: item.name === 'Figure' ? 'var(--danger)' : '#fff' }}>
                   {fmt(item.amount)}
@@ -186,10 +220,10 @@ export const Dashboard = () => {
         <div className="card">
           <div className="flex-between" style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Erin's Itemized Bills</h3>
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>9 Bills • $1,569.00 Total</span>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Erin's Bills</h3>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>9 Items • $1,569.00 / mo</span>
             </div>
-            <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.2)', color: '#ec4899' }}>UNCG Paid</span>
+            <span className="badge" style={{ background: 'rgba(236, 72, 153, 0.2)', color: '#ec4899' }}>UNCG</span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -198,16 +232,49 @@ export const Dashboard = () => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: '0.6rem 0.85rem',
+                padding: '0.55rem 0.75rem',
                 background: 'rgba(0,0,0,0.2)',
                 borderRadius: 'var(--radius-md)',
-                fontSize: '0.88rem'
+                fontSize: '0.82rem'
               }}>
                 <div>
                   <div style={{ fontWeight: 600, color: '#fff' }}>{item.description}</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{item.name} • {item.category}</div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.name}</div>
                 </div>
                 <div className="font-mono" style={{ fontWeight: 700, color: '#fff' }}>
+                  {fmt(item.amount)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Chris's Expenses Table */}
+        <div className="card">
+          <div className="flex-between" style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--border-color)' }}>
+            <div>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>Chris's Bills</h3>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>14 Items • $4,311.62 / mo</span>
+            </div>
+            <span className="badge" style={{ background: 'rgba(99, 102, 241, 0.2)', color: '#818cf8' }}>NC A&T</span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {data.chrisExpenses.map(item => (
+              <div key={item.id} style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: '0.55rem 0.75rem',
+                background: 'rgba(0,0,0,0.2)',
+                borderRadius: 'var(--radius-md)',
+                fontSize: '0.82rem'
+              }}>
+                <div>
+                  <div style={{ fontWeight: 600, color: '#fff' }}>{item.description}</div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.name}</div>
+                </div>
+                <div className="font-mono" style={{ fontWeight: 700, color: item.amount >= 1000 ? 'var(--warning)' : '#fff' }}>
                   {fmt(item.amount)}
                 </div>
               </div>

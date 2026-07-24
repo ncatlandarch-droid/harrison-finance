@@ -1,5 +1,5 @@
 export const INITIAL_DATA = {
-  version: '2.7-erin-exact',
+  version: '2.8-complete-family-exact',
   family: {
     members: [
       { id: 'barbara', name: 'Barbara', role: 'Parent', color: '#a855f7', income: 5645.84, employer: 'OPM Pension' },
@@ -19,8 +19,8 @@ export const INITIAL_DATA = {
   // Barbara's Exact Itemized Bills ($4,837.24 / mo)
   barbaraExpenses: [
     { id: 'barb-1', description: 'Figure Room Addition Loan', name: 'Figure', amount: 1000.00, category: 'Debt & Loans', paidBy: 'barbara', notes: '9.75% interest ($140k total int). Jumps to 15.3% Aug 2029 ($227k total int)!' },
-    { id: 'barb-2', description: 'PenFed Credit Card Refinance', name: 'PenFed', amount: 389.16, category: 'Debt & Loans', paidBy: 'barbara', notes: 'Credit card refinance' },
-    { id: 'barb-3', description: 'Support / Transfer to Chris', name: 'Chris', amount: 3000.00, category: 'Family Transfer', paidBy: 'barbara', notes: 'Monthly family support transfer' },
+    { id: 'barb-2', description: 'PenFed Credit Card Refinance', name: 'PenFed', amount: 389.16, category: 'Debt & Loans', paidBy: 'barbara' },
+    { id: 'barb-3', description: 'Support / Transfer to Chris', name: 'Chris', amount: 3000.00, category: 'Family Transfer', paidBy: 'barbara' },
     { id: 'barb-4', description: 'Pest Management', name: 'Pest Management', amount: 110.00, category: 'Utilities & Home', paidBy: 'barbara' },
     { id: 'barb-5', description: 'Sewer Service', name: 'City Sewer', amount: 100.00, category: 'Utilities & Home', paidBy: 'barbara' },
     { id: 'barb-6', description: 'Americo Life Insurance ($90k Policy)', name: 'Americo', amount: 73.94, category: 'Insurance', paidBy: 'barbara' },
@@ -42,21 +42,28 @@ export const INITIAL_DATA = {
     { id: 'erin-8', description: 'Cell Phone', name: 'Mobile Phone', amount: 40.00, category: 'Utilities', paidBy: 'erin' },
     { id: 'erin-9', description: 'Netflix Streaming', name: 'Netflix', amount: 10.00, category: 'Entertainment', paidBy: 'erin' }
   ],
-  // Household Shared Bills (Chris Account)
-  bills: [
-    { id: 'b1', name: 'Mortgage Payment', amount: 1800.00, dueDay: 1, category: 'Housing', paidBy: 'joint', status: 'upcoming' },
-    { id: 'b2', name: 'Duke Energy (Electricity)', amount: 285.00, dueDay: 5, category: 'Utilities', paidBy: 'joint', status: 'upcoming' },
-    { id: 'b3', name: 'Spectrum Fiber Internet', amount: 89.99, dueDay: 8, category: 'Utilities', paidBy: 'joint', status: 'upcoming' },
-    { id: 'b4', name: 'City of Greensboro Water', amount: 175.62, dueDay: 10, category: 'Utilities', paidBy: 'joint', status: 'upcoming' },
-    { id: 'b5', name: 'American Home Shield Warranty', amount: 200.00, dueDay: 12, category: 'Housing', paidBy: 'joint', status: 'upcoming' },
-    { id: 'b6', name: 'GEICO Auto Insurance', amount: 312.19, dueDay: 15, category: 'Insurance', paidBy: 'joint', status: 'upcoming' },
-    { id: 'b7', name: 'Primerica Life Insurance', amount: 145.00, dueDay: 1, category: 'Insurance', paidBy: 'chris', status: 'upcoming' }
+  // Chris's Exact Itemized Bills ($4,311.62 / mo)
+  chrisExpenses: [
+    { id: 'chris-1', description: 'Food for Everyone (Household Dining & Groceries)', name: 'Food Pool', amount: 2100.00, category: 'Food & Groceries', paidBy: 'chris' },
+    { id: 'chris-2', description: 'Mortgage Payment', name: 'Mortgage', amount: 1200.00, category: 'Housing', paidBy: 'chris' },
+    { id: 'chris-3', description: 'Weed / Personal Dispensary', name: 'Personal', amount: 400.00, category: 'Personal & Recreation', paidBy: 'chris' },
+    { id: 'chris-4', description: 'Capital One Savings Deposit', name: 'Capital One', amount: 150.00, category: 'Savings', paidBy: 'chris' },
+    { id: 'chris-5', description: 'Car Insurance', name: 'Progressive Insurance', amount: 124.71, category: 'Insurance', paidBy: 'chris' },
+    { id: 'chris-6', description: 'Primerica Monthly Investment', name: 'Primerica', amount: 100.00, category: 'Investments', paidBy: 'chris' },
+    { id: 'chris-7', description: 'Primerica Life Insurance', name: 'Primerica', amount: 96.82, category: 'Insurance', paidBy: 'chris' },
+    { id: 'chris-8', description: 'Adobe Creative Cloud', name: 'Adobe', amount: 37.35, category: 'Business & Software', paidBy: 'chris' },
+    { id: 'chris-9', description: 'Planet Fitness Gym Membership', name: 'Planet Fitness', amount: 24.99, category: 'Health & Fitness', paidBy: 'chris' },
+    { id: 'chris-10', description: 'ChatGPT Subscription', name: 'OpenAI', amount: 20.00, category: 'Software & AI', paidBy: 'chris' },
+    { id: 'chris-11', description: 'HBO Max (via Amazon)', name: 'Amazon', amount: 16.99, category: 'Subscriptions', paidBy: 'chris' },
+    { id: 'chris-12', description: 'Amazon Prime', name: 'Amazon', amount: 14.99, category: 'Subscriptions', paidBy: 'chris' },
+    { id: 'chris-13', description: 'Showtime (via Amazon)', name: 'Amazon', amount: 12.99, category: 'Subscriptions', paidBy: 'chris' },
+    { id: 'chris-14', description: 'Pandora Music', name: 'Amazon', amount: 12.78, category: 'Subscriptions', paidBy: 'chris' }
   ],
+  bills: [],
   budgets: [
-    { id: 'bg1', category: 'Home & Utilities', limit: 2550.00, spent: 2549.61, memberId: 'family', icon: 'Home' },
-    { id: 'bg2', category: 'Groceries', limit: 1200.00, spent: 850.74, memberId: 'family', icon: 'ShoppingCart' },
-    { id: 'bg3', category: 'Restaurants & Dining (DoorDash)', limit: 800.00, spent: 926.00, memberId: 'family', icon: 'Utensils' },
-    { id: 'bg4', category: 'Shopping & Leisure', limit: 600.00, spent: 489.12, memberId: 'family', icon: 'ShoppingBag' }
+    { id: 'bg1', category: 'Food for Everyone', limit: 2100.00, spent: 2100.00, memberId: 'chris', icon: 'ShoppingCart' },
+    { id: 'bg2', category: 'Housing & Utilities', limit: 1200.00, spent: 1200.00, memberId: 'chris', icon: 'Home' },
+    { id: 'bg3', category: 'Personal & Recreation', limit: 400.00, spent: 400.00, memberId: 'chris', icon: 'ShoppingBag' }
   ],
   transactions: [
     { id: 't101', memberId: 'chris', date: '2026-07-23', description: 'Panera Bread', amount: -56.78, category: 'Restaurants & Dining', type: 'debit' },
