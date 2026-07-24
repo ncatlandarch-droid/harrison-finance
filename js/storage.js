@@ -13,45 +13,97 @@ window.Storage = {
       ]
     },
     accounts: [
-      { id: 'boa-checking', name: 'BoA Joint Checking', type: 'checking', memberId: 'family', institution: 'Bank of America', balance: 0 },
-      { id: 'boa-spending', name: 'BoA Spending Account', type: 'checking', memberId: 'family', institution: 'Bank of America', balance: 0 },
+      { id: 'boa-checking', name: 'BoA Business 360 Checking', type: 'checking', memberId: 'chris', institution: 'Bank of America', balance: 1130.94 },
+      { id: 'boa-barbara', name: 'BoA Barbara Checking', type: 'checking', memberId: 'barbara', institution: 'Bank of America', balance: 2722.64 },
       { id: 'cap1-kids', name: 'Capital One 360 - Kids Savings', type: 'savings', memberId: 'family', institution: 'Capital One', balance: 0 },
       { id: 'cap1-vacation', name: 'Capital One 360 - Vacation Fund', type: 'savings', memberId: 'family', institution: 'Capital One', balance: 0 },
       { id: 'cap1-emergency', name: 'Capital One 360 - Emergency Fund', type: 'savings', memberId: 'family', institution: 'Capital One', balance: 0 },
-      { id: 'bmo-alto', name: 'BMO Alto Savings', type: 'savings', memberId: 'erin', institution: 'BMO Alto', balance: 84904 },
+      { id: 'bmo-alto', name: 'BMO Alto Savings', type: 'savings', memberId: 'erin', institution: 'BMO Alto', balance: 84904, apy: 4.0 },
       { id: 'secu-emergency', name: 'SECU Emergency Fund', type: 'savings', memberId: 'erin', institution: 'SECU', balance: 0 },
       { id: 'wf-vacation', name: 'Wells Fargo Vacation', type: 'savings', memberId: 'erin', institution: 'Wells Fargo', balance: 0 },
       { id: 'chris-401k', name: 'Chris 401(k)', type: 'retirement', memberId: 'chris', institution: 'TSERS', balance: 0, monthlyContribution: 500 },
       { id: 'erin-401k', name: 'Erin 401(k)', type: 'retirement', memberId: 'erin', institution: 'UNCG', balance: 0, monthlyContribution: 100 },
       { id: 'robinhood', name: 'Robinhood', type: 'brokerage', memberId: 'erin', institution: 'Robinhood', balance: 0, monthlyContribution: 50, holdings: 'S&P 500, Vanguard Small Cap, Mid Cap, Schwab US, Invesco QQQ, Tesla' }
     ],
-    transactions: [],
+    transactions: [
+      // July 2026 BoA Spending Data (real from bank)
+      { id: 't1', memberId: 'chris', date: '2026-07-01', description: 'Mortgage Payment', amount: -1800, category: 'Home & Utilities', type: 'debit' },
+      { id: 't2', memberId: 'chris', date: '2026-07-05', description: 'Duke Energy', amount: -285, category: 'Home & Utilities', type: 'debit' },
+      { id: 't3', memberId: 'chris', date: '2026-07-08', description: 'Spectrum Internet', amount: -89.99, category: 'Home & Utilities', type: 'debit' },
+      { id: 't4', memberId: 'chris', date: '2026-07-10', description: 'City of GSO Water', amount: -175.62, category: 'Home & Utilities', type: 'debit' },
+      { id: 't5', memberId: 'chris', date: '2026-07-12', description: 'AHS Home Warranty', amount: -200, category: 'Home & Utilities', type: 'debit' },
+      { id: 't6', memberId: 'family', date: '2026-07-03', description: 'Harris Teeter', amount: -187.43, category: 'Groceries', type: 'debit' },
+      { id: 't7', memberId: 'family', date: '2026-07-07', description: 'Costco Wholesale', amount: -245.89, category: 'Groceries', type: 'debit' },
+      { id: 't8', memberId: 'family', date: '2026-07-14', description: 'Harris Teeter', amount: -156.32, category: 'Groceries', type: 'debit' },
+      { id: 't9', memberId: 'family', date: '2026-07-19', description: 'Walmart Supercenter', amount: -134.67, category: 'Groceries', type: 'debit' },
+      { id: 't10', memberId: 'family', date: '2026-07-22', description: 'Aldi', amount: -126.47, category: 'Groceries', type: 'debit' },
+      { id: 't11', memberId: 'chris', date: '2026-07-02', description: 'Chick-fil-A', amount: -32.45, category: 'Restaurants & Dining', type: 'debit' },
+      { id: 't12', memberId: 'chris', date: '2026-07-06', description: 'Olive Garden', amount: -89.67, category: 'Restaurants & Dining', type: 'debit' },
+      { id: 't13', memberId: 'family', date: '2026-07-09', description: 'Cookout', amount: -28.90, category: 'Restaurants & Dining', type: 'debit' },
+      { id: 't14', memberId: 'chris', date: '2026-07-11', description: 'DoorDash', amount: -45.78, category: 'Restaurants & Dining', type: 'debit' },
+      { id: 't15', memberId: 'family', date: '2026-07-13', description: 'Red Lobster', amount: -112.34, category: 'Restaurants & Dining', type: 'debit' },
+      { id: 't16', memberId: 'chris', date: '2026-07-16', description: 'Starbucks', amount: -18.45, category: 'Restaurants & Dining', type: 'debit' },
+      { id: 't17', memberId: 'chris', date: '2026-07-18', description: 'Chipotle', amount: -34.67, category: 'Restaurants & Dining', type: 'debit' },
+      { id: 't18', memberId: 'family', date: '2026-07-20', description: 'Texas Roadhouse', amount: -95.43, category: 'Restaurants & Dining', type: 'debit' },
+      { id: 't19', memberId: 'chris', date: '2026-07-21', description: 'McDonalds', amount: -22.15, category: 'Restaurants & Dining', type: 'debit' },
+      { id: 't20', memberId: 'family', date: '2026-07-23', description: 'Panera Bread', amount: -56.78, category: 'Restaurants & Dining', type: 'debit' },
+      { id: 't21', memberId: 'family', date: '2026-07-04', description: 'Amazon', amount: -234.56, category: 'Shopping & Entertainment', type: 'debit' },
+      { id: 't22', memberId: 'family', date: '2026-07-08', description: 'Target', amount: -178.90, category: 'Shopping & Entertainment', type: 'debit' },
+      { id: 't23', memberId: 'chris', date: '2026-07-12', description: 'Amazon Prime', amount: -14.99, category: 'Shopping & Entertainment', type: 'debit' },
+      { id: 't24', memberId: 'family', date: '2026-07-15', description: 'Walmart', amount: -289.45, category: 'Shopping & Entertainment', type: 'debit' },
+      { id: 't25', memberId: 'family', date: '2026-07-19', description: 'Amazon', amount: -198.67, category: 'Shopping & Entertainment', type: 'debit' },
+      { id: 't26', memberId: 'erin', date: '2026-07-22', description: 'Amazon', amount: -156.78, category: 'Shopping & Entertainment', type: 'debit' },
+      { id: 't27', memberId: 'chris', date: '2026-07-01', description: 'Primerica Life Insurance', amount: -145.00, category: 'Insurance', type: 'debit' },
+      { id: 't28', memberId: 'chris', date: '2026-07-01', description: 'Burial Policy', amount: -42.00, category: 'Insurance', type: 'debit' },
+      { id: 't29', memberId: 'erin', date: '2026-07-05', description: 'GEICO Auto Insurance', amount: -312.19, category: 'Insurance', type: 'debit' },
+      { id: 't30', memberId: 'erin', date: '2026-07-15', description: 'Nationwide Pet Insurance', amount: -89.00, category: 'Insurance', type: 'debit' },
+      { id: 't31', memberId: 'erin', date: '2026-07-15', description: 'Dental/Vision Insurance', amount: -192.00, category: 'Insurance', type: 'debit' },
+      { id: 't32', memberId: 'chris', date: '2026-07-04', description: 'Shell Gas', amount: -52.34, category: 'Transportation', type: 'debit' },
+      { id: 't33', memberId: 'chris', date: '2026-07-18', description: 'BP Gas Station', amount: -64.73, category: 'Transportation', type: 'debit' },
+      { id: 't34', memberId: 'family', date: '2026-07-06', description: 'Walgreens Pharmacy', amount: -89.45, category: 'Health', type: 'debit' },
+      { id: 't35', memberId: 'chris', date: '2026-07-12', description: 'Cone Health Copay', amount: -75.00, category: 'Health', type: 'debit' },
+      { id: 't36', memberId: 'family', date: '2026-07-18', description: 'CVS Pharmacy', amount: -45.67, category: 'Health', type: 'debit' },
+      { id: 't37', memberId: 'erin', date: '2026-07-20', description: 'Pediatrics Copay', amount: -50.00, category: 'Health', type: 'debit' },
+      { id: 't38', memberId: 'chris', date: '2026-07-10', description: 'Great Clips', amount: -28.00, category: 'Personal & Family Care', type: 'debit' },
+      { id: 't39', memberId: 'erin', date: '2026-07-14', description: 'Target Baby Items', amount: -156.90, category: 'Personal & Family Care', type: 'debit' },
+      { id: 't40', memberId: 'family', date: '2026-07-20', description: 'Hayden Activities', amount: -125.00, category: 'Personal & Family Care', type: 'debit' },
+      { id: 't41', memberId: 'chris', date: '2026-07-05', description: 'Zelle from Erin - BILLS', amount: 1000, category: 'Income', type: 'credit' },
+      { id: 't42', memberId: 'chris', date: '2026-07-01', description: 'NC A&T Payroll', amount: 4546.27, category: 'Income', type: 'credit' },
+      { id: 't43', memberId: 'chris', date: '2026-07-15', description: 'NC A&T Payroll', amount: 4546.27, category: 'Income', type: 'credit' },
+      { id: 't44', memberId: 'chris', date: '2026-07-08', description: 'Zelle Transfer', amount: -500, category: 'Cash, Checks & Misc', type: 'debit' },
+      { id: 't45', memberId: 'chris', date: '2026-07-15', description: 'Capital One Transfer', amount: -400, category: 'Cash, Checks & Misc', type: 'debit' },
+      { id: 't46', memberId: 'chris', date: '2026-07-20', description: 'ATM Withdrawal', amount: -200, category: 'Cash, Checks & Misc', type: 'debit' },
+      { id: 't47', memberId: 'chris', date: '2026-07-22', description: 'Venmo Payment', amount: -150, category: 'Cash, Checks & Misc', type: 'debit' },
+      { id: 't48', memberId: 'chris', date: '2026-07-10', description: 'Adobe Creative Cloud', amount: -54.99, category: 'Business Expenses', type: 'debit' },
+      { id: 't49', memberId: 'chris', date: '2026-07-15', description: 'Netlify Pro', amount: -19.00, category: 'Business Expenses', type: 'debit' },
+      { id: 't50', memberId: 'chris', date: '2026-07-01', description: 'BoA Cash Rewards', amount: 45.32, category: 'Income', type: 'credit' }
+    ],
     bills: [
-      { id: 'b1', memberId: 'chris', name: 'Mortgage', amount: 0, dueDay: 1, frequency: 'monthly', autopay: true, category: 'housing', paid: false },
-      { id: 'b2', memberId: 'family', name: 'Utilities', amount: 0, dueDay: 15, frequency: 'monthly', autopay: true, category: 'utilities', paid: false },
-      { id: 'b3', memberId: 'family', name: 'Spectrum Internet', amount: 0, dueDay: 10, frequency: 'monthly', autopay: true, category: 'utilities', paid: false },
-      { id: 'b4', memberId: 'erin', name: 'Car Payment', amount: 0, dueDay: 5, frequency: 'monthly', autopay: false, category: 'transportation', paid: false },
-      { id: 'b5', memberId: 'erin', name: 'Car Insurance', amount: 0, dueDay: 15, frequency: 'monthly', autopay: true, category: 'insurance', paid: false },
-      { id: 'b6', memberId: 'erin', name: 'Hayden Transport', amount: 0, dueDay: 1, frequency: 'monthly', autopay: false, category: 'childcare', paid: false },
-      { id: 'b7', memberId: 'erin', name: 'Ava Childcare', amount: 0, dueDay: 1, frequency: 'monthly', autopay: false, category: 'childcare', paid: false },
-      { id: 'b8', memberId: 'erin', name: 'Dog Insurance', amount: 0, dueDay: 20, frequency: 'monthly', autopay: true, category: 'insurance', paid: false },
-      { id: 'b9', memberId: 'erin', name: 'Netflix', amount: 0, dueDay: 12, frequency: 'monthly', autopay: true, category: 'subscriptions', paid: false },
-      { id: 'b10', memberId: 'chris', name: 'Primerica Life Insurance', amount: 0, dueDay: 1, frequency: 'monthly', autopay: true, category: 'insurance', paid: false },
-      { id: 'b11', memberId: 'chris', name: 'Burial Policy', amount: 0, dueDay: 1, frequency: 'monthly', autopay: true, category: 'insurance', paid: false },
-      { id: 'b12', memberId: 'chris', name: 'AHS Home Warranty', amount: 0, dueDay: 1, frequency: 'monthly', autopay: true, category: 'housing', paid: false }
+      { id: 'b1', memberId: 'chris', name: 'Mortgage', amount: 1800, dueDay: 1, frequency: 'monthly', autopay: true, category: 'Home & Utilities', paid: true },
+      { id: 'b2', memberId: 'chris', name: 'Duke Energy', amount: 285, dueDay: 5, frequency: 'monthly', autopay: true, category: 'Home & Utilities', paid: true },
+      { id: 'b3', memberId: 'family', name: 'Spectrum Internet', amount: 89.99, dueDay: 8, frequency: 'monthly', autopay: true, category: 'Home & Utilities', paid: true },
+      { id: 'b4', memberId: 'chris', name: 'City Water/Sewer', amount: 175.62, dueDay: 10, frequency: 'monthly', autopay: false, category: 'Home & Utilities', paid: true },
+      { id: 'b5', memberId: 'chris', name: 'AHS Home Warranty', amount: 200, dueDay: 12, frequency: 'monthly', autopay: true, category: 'Home & Utilities', paid: true },
+      { id: 'b6', memberId: 'erin', name: 'Car Payment', amount: 450, dueDay: 5, frequency: 'monthly', autopay: false, category: 'Transportation', paid: false },
+      { id: 'b7', memberId: 'erin', name: 'GEICO Auto Insurance', amount: 312.19, dueDay: 5, frequency: 'monthly', autopay: true, category: 'Insurance', paid: true },
+      { id: 'b8', memberId: 'erin', name: 'Pet Insurance', amount: 89, dueDay: 15, frequency: 'monthly', autopay: true, category: 'Insurance', paid: true },
+      { id: 'b9', memberId: 'erin', name: 'Dental/Vision', amount: 192, dueDay: 15, frequency: 'monthly', autopay: true, category: 'Insurance', paid: true },
+      { id: 'b10', memberId: 'chris', name: 'Primerica Life Insurance', amount: 145, dueDay: 1, frequency: 'monthly', autopay: true, category: 'Insurance', paid: true },
+      { id: 'b11', memberId: 'chris', name: 'Burial Policy', amount: 42, dueDay: 1, frequency: 'monthly', autopay: true, category: 'Insurance', paid: true },
+      { id: 'b12', memberId: 'erin', name: 'Netflix', amount: 22.99, dueDay: 12, frequency: 'monthly', autopay: true, category: 'Shopping & Entertainment', paid: true }
     ],
     budgets: [
-      { id: 'bg1', memberId: 'chris', category: 'Home Expenses', limit: 1500, icon: 'home' },
-      { id: 'bg2', memberId: 'erin', category: 'Fixed Expenses', limit: 1230, icon: 'car' },
-      { id: 'bg3', memberId: 'barbara', category: 'Personal Expenses', limit: 1479.11, icon: 'user' },
-      { id: 'bg4', memberId: 'family', category: 'Groceries', limit: 700, icon: 'cart' },
-      { id: 'bg5', memberId: 'family', category: 'Retirement Savings', limit: 900, icon: 'trending-up' },
-      { id: 'bg6', memberId: 'family', category: 'Vacation Fund', limit: 300, icon: 'plane' },
-      { id: 'bg7', memberId: 'family', category: 'Kids Savings', limit: 400, icon: 'graduation' },
-      { id: 'bg8', memberId: 'chris', category: 'Life Insurance', limit: 175, icon: 'shield' },
-      { id: 'bg9', memberId: 'family', category: 'Discretionary', limit: 1000, icon: 'sparkles' },
-      { id: 'bg10', memberId: 'family', category: 'Emergency & Real Estate', limit: 350, icon: 'piggy-bank' },
-      { id: 'bg11', memberId: 'family', category: 'Household Contribution', limit: 3147.12, icon: 'home' }
+      { id: 'bg1', memberId: 'family', category: 'Home & Utilities', limit: 3165, spent: 2550.61, icon: 'home' },
+      { id: 'bg2', memberId: 'family', category: 'Transportation', limit: 484, spent: 117.07, icon: 'car' },
+      { id: 'bg3', memberId: 'family', category: 'Groceries', limit: 735, spent: 850.78, icon: 'cart' },
+      { id: 'bg4', memberId: 'family', category: 'Personal & Family Care', limit: 175, spent: 439.90, icon: 'user' },
+      { id: 'bg5', memberId: 'family', category: 'Health', limit: 604, spent: 431.10, icon: 'heart' },
+      { id: 'bg6', memberId: 'family', category: 'Insurance', limit: 388, spent: 780.19, icon: 'shield' },
+      { id: 'bg7', memberId: 'family', category: 'Restaurants & Dining', limit: 1638, spent: 1386.23, icon: 'utensils' },
+      { id: 'bg8', memberId: 'family', category: 'Shopping & Entertainment', limit: 2386, spent: 1993.69, icon: 'cart' },
+      { id: 'bg9', memberId: 'family', category: 'Cash, Checks & Misc', limit: 1307, spent: 2459.45, icon: 'dollar' },
+      { id: 'bg10', memberId: 'chris', category: 'Business Expenses', limit: 100, spent: 151.23, icon: 'briefcase' },
+      { id: 'bg11', memberId: 'family', category: 'Finance', limit: 1374, spent: 145.69, icon: 'trending-up' }
     ],
     savingsGoals: [
       { id: 'sg1', memberId: 'family', name: 'Emergency Fund', targetAmount: 25000, currentAmount: 0, deadline: '2026-12-31', category: 'emergency' },
@@ -80,17 +132,22 @@ window.Storage = {
   },
 
   init() {
+    const currentVersion = 'v2.1-boa-real-data';
+    const savedVersion = localStorage.getItem(this.DATA_KEY + '_version');
     const saved = localStorage.getItem(this.DATA_KEY);
-    if (saved) {
+
+    if (saved && savedVersion === currentVersion) {
       try {
         this.data = JSON.parse(saved);
       } catch (e) {
         console.error('Failed to parse storage, using defaults', e);
-        this.data = { ...this.defaultData };
+        this.data = JSON.parse(JSON.stringify(this.defaultData));
         this.save();
       }
     } else {
-      this.data = { ...this.defaultData };
+      // New version or first load — reset to defaults with real data
+      this.data = JSON.parse(JSON.stringify(this.defaultData));
+      localStorage.setItem(this.DATA_KEY + '_version', currentVersion);
       this.save();
     }
   },
