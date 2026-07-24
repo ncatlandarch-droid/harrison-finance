@@ -1,77 +1,81 @@
+// Real Harrison Family Financial Data derived directly from Bank of America statements
 export const INITIAL_DATA = {
-  version: '2.8-complete-family-exact',
+  version: "3.0_boa_empirical",
   family: {
+    name: "Harrison Family",
     members: [
-      { id: 'barbara', name: 'Barbara', role: 'Parent', color: '#a855f7', income: 5645.84, employer: 'OPM Pension' },
-      { id: 'chris', name: 'Chris', role: 'Primary', color: '#6366f1', income: 4546.27, employer: 'NC A&T State University' },
-      { id: 'erin', name: 'Erin', role: 'Spouse', color: '#ec4899', income: 2500.00, employer: 'UNCG' },
-      { id: 'hayden', name: 'Hayden', role: 'Child', color: '#14b8a6', birthYear: 2020 },
-      { id: 'ava', name: 'Ava Joy', role: 'Child', color: '#f59e0b', birthYear: 2024 }
+      { id: "barbara", name: "Barbara", role: "Adult", income: 5645.84, employer: "OPM Pension", color: "#a855f7" },
+      { id: "erin", name: "Erin", role: "Adult", income: 2500.00, employer: "UNCG", color: "#ec4899" },
+      { id: "chris", name: "Chris", role: "Adult", income: 6309.36, employer: "NC A&T State", color: "#6366f1" },
+      { id: "hayden", name: "Hayden", role: "Child", income: 0, employer: "Student", color: "#3b82f6" },
+      { id: "ava", name: "Ava", role: "Child", income: 0, employer: "Child", color: "#f59e0b" }
     ]
   },
-  accounts: [
-    { id: 'boa-checking', name: 'BoA Business 360 Checking', type: 'Checking', memberId: 'chris', institution: 'Bank of America', balance: 1130.94 },
-    { id: 'boa-barbara', name: 'BoA Barbara Checking', type: 'Checking', memberId: 'barbara', institution: 'Bank of America', balance: 2722.64 },
-    { id: 'penfed-savings', name: 'PenFed Credit Union Savings', type: 'Savings', memberId: 'barbara', institution: 'PenFed', balance: 1250.00 },
-    { id: 'bmo-alto', name: 'BMO Alto Savings', type: 'Savings', memberId: 'erin', institution: 'BMO Alto', balance: 84904.00, apy: 4.0 },
-    { id: 'cap1-emergency', name: 'Capital One Emergency Fund', type: 'Savings', memberId: 'family', institution: 'Capital One', balance: 15000.00 }
-  ],
-  // Barbara's Exact Itemized Bills ($4,837.24 / mo)
+
+  // Barbara Itemized Expenses (Total: $4,837.24 / mo)
   barbaraExpenses: [
-    { id: 'barb-1', description: 'Figure Room Addition Loan', name: 'Figure', amount: 1000.00, category: 'Debt & Loans', paidBy: 'barbara', notes: '9.75% interest ($140k total int). Jumps to 15.3% Aug 2029 ($227k total int)!' },
-    { id: 'barb-2', description: 'PenFed Credit Card Refinance', name: 'PenFed', amount: 389.16, category: 'Debt & Loans', paidBy: 'barbara' },
-    { id: 'barb-3', description: 'Support / Transfer to Chris', name: 'Chris', amount: 3000.00, category: 'Family Transfer', paidBy: 'barbara' },
-    { id: 'barb-4', description: 'Pest Management', name: 'Pest Management', amount: 110.00, category: 'Utilities & Home', paidBy: 'barbara' },
-    { id: 'barb-5', description: 'Sewer Service', name: 'City Sewer', amount: 100.00, category: 'Utilities & Home', paidBy: 'barbara' },
-    { id: 'barb-6', description: 'Americo Life Insurance ($90k Policy)', name: 'Americo', amount: 73.94, category: 'Insurance', paidBy: 'barbara' },
-    { id: 'barb-7', description: 'Lumico Life Insurance', name: 'Lumico', amount: 54.14, category: 'Insurance', paidBy: 'barbara' },
-    { id: 'barb-8', description: 'PenFed Savings Contribution', name: 'PenFed Savings', amount: 50.00, category: 'Savings', paidBy: 'barbara' },
-    { id: 'barb-9', description: 'Pill Pack Medication', name: 'Pill Pack', amount: 30.00, category: 'Health', paidBy: 'barbara' },
-    { id: 'barb-10', description: 'Spectrum Cell Phone', name: 'Spectrum', amount: 20.00, category: 'Utilities', paidBy: 'barbara' },
-    { id: 'barb-11', description: 'Rocket Money', name: 'Rocket', amount: 10.00, category: 'Services', paidBy: 'barbara' }
+    { id: "b01", item: "Figure Room Addition HELOC", category: "Debt Payoff", frequency: "Monthly", amount: 1000.00, notes: "9.75% resetting to 15.30% in Aug 2029" },
+    { id: "b02", item: "PenFed Credit Card Refinance", category: "Debt Payoff", frequency: "Monthly", amount: 389.16 },
+    { id: "b03", item: "Support Transfer to Chris", category: "Family Support", frequency: "Monthly", amount: 3000.00 },
+    { id: "b04", item: "Pest Management", category: "Home & Utilities", frequency: "Monthly", amount: 110.00 },
+    { id: "b05", item: "Sewer Service", category: "Home & Utilities", frequency: "Monthly", amount: 100.00 },
+    { id: "b06", item: "Americo Life Insurance ($90k)", category: "Insurance", frequency: "Monthly", amount: 73.94 },
+    { id: "b07", item: "Lumico Life Insurance", category: "Insurance", frequency: "Monthly", amount: 54.14 },
+    { id: "b08", item: "PenFed Savings Deposit", category: "Savings", frequency: "Monthly", amount: 50.00 },
+    { id: "b09", item: "Pill Pack Meds", category: "Health & Care", frequency: "Monthly", amount: 30.00 },
+    { id: "b10", item: "Spectrum Cell Phone", category: "Cell & Tech", frequency: "Monthly", amount: 20.00 },
+    { id: "b11", item: "Rocket Money", category: "Subscriptions", frequency: "Monthly", amount: 10.00 }
   ],
-  // Erin's Exact Itemized Bills ($1,569.00 / mo)
+
+  // Erin Itemized Expenses (Total: $1,569.00 / mo)
   erinExpenses: [
-    { id: 'erin-1', description: 'Groceries', name: 'Groceries', amount: 550.00, category: 'Food', paidBy: 'erin' },
-    { id: 'erin-2', description: 'Car Payment', name: 'Auto Loan', amount: 500.00, category: 'Transportation', paidBy: 'erin' },
-    { id: 'erin-3', description: 'Hayden Transportation', name: 'Transportation', amount: 200.00, category: 'Kids & Family', paidBy: 'erin' },
-    { id: 'erin-4', description: 'Hayden School Lunch', name: 'School Lunch', amount: 80.00, category: 'Kids & Family', paidBy: 'erin' },
-    { id: 'erin-5', description: 'Ava Diapers, Wipes & Care', name: 'Baby Care', amount: 75.00, category: 'Kids & Family', paidBy: 'erin' },
-    { id: 'erin-6', description: 'Car Insurance', name: 'Auto Insurance', amount: 62.00, category: 'Insurance', paidBy: 'erin' },
-    { id: 'erin-7', description: 'Dog Insurance', name: 'Pet Insurance', amount: 52.00, category: 'Insurance', paidBy: 'erin' },
-    { id: 'erin-8', description: 'Cell Phone', name: 'Mobile Phone', amount: 40.00, category: 'Utilities', paidBy: 'erin' },
-    { id: 'erin-9', description: 'Netflix Streaming', name: 'Netflix', amount: 10.00, category: 'Entertainment', paidBy: 'erin' }
+    { id: "e01", item: "Groceries", category: "Groceries", frequency: "Monthly", amount: 550.00 },
+    { id: "e02", item: "Car Payment", category: "Transportation", frequency: "Monthly", amount: 500.00 },
+    { id: "e03", item: "Hayden Transportation", category: "Transportation", frequency: "Monthly", amount: 200.00 },
+    { id: "e04", item: "Hayden School Lunch", category: "Family Care", frequency: "Monthly", amount: 80.00 },
+    { id: "e05", item: "Ava Diapers, Wipes & Care", category: "Family Care", frequency: "Monthly", amount: 75.00 },
+    { id: "e06", item: "Car Insurance", category: "Insurance", frequency: "Monthly", amount: 62.00 },
+    { id: "e07", item: "Dog Insurance", category: "Insurance", frequency: "Monthly", amount: 52.00 },
+    { id: "e08", item: "Cell Phone", category: "Cell & Tech", frequency: "Monthly", amount: 40.00 },
+    { id: "e09", item: "Netflix", category: "Subscriptions", frequency: "Monthly", amount: 10.00 }
   ],
-  // Chris's Exact Itemized Bills ($4,311.62 / mo)
+
+  // Chris REAL Empirical Expenses (Derived from Bank of America Statements)
   chrisExpenses: [
-    { id: 'chris-1', description: 'Food for Everyone (Household Dining & Groceries)', name: 'Food Pool', amount: 2100.00, category: 'Food & Groceries', paidBy: 'chris' },
-    { id: 'chris-2', description: 'Mortgage Payment', name: 'Mortgage', amount: 1200.00, category: 'Housing', paidBy: 'chris' },
-    { id: 'chris-3', description: 'Weed / Personal Dispensary', name: 'Personal', amount: 400.00, category: 'Personal & Recreation', paidBy: 'chris' },
-    { id: 'chris-4', description: 'Capital One Savings Deposit', name: 'Capital One', amount: 150.00, category: 'Savings', paidBy: 'chris' },
-    { id: 'chris-5', description: 'Car Insurance', name: 'Progressive Insurance', amount: 124.71, category: 'Insurance', paidBy: 'chris' },
-    { id: 'chris-6', description: 'Primerica Monthly Investment', name: 'Primerica', amount: 100.00, category: 'Investments', paidBy: 'chris' },
-    { id: 'chris-7', description: 'Primerica Life Insurance', name: 'Primerica', amount: 96.82, category: 'Insurance', paidBy: 'chris' },
-    { id: 'chris-8', description: 'Adobe Creative Cloud', name: 'Adobe', amount: 37.35, category: 'Business & Software', paidBy: 'chris' },
-    { id: 'chris-9', description: 'Planet Fitness Gym Membership', name: 'Planet Fitness', amount: 24.99, category: 'Health & Fitness', paidBy: 'chris' },
-    { id: 'chris-10', description: 'ChatGPT Subscription', name: 'OpenAI', amount: 20.00, category: 'Software & AI', paidBy: 'chris' },
-    { id: 'chris-11', description: 'HBO Max (via Amazon)', name: 'Amazon', amount: 16.99, category: 'Subscriptions', paidBy: 'chris' },
-    { id: 'chris-12', description: 'Amazon Prime', name: 'Amazon', amount: 14.99, category: 'Subscriptions', paidBy: 'chris' },
-    { id: 'chris-13', description: 'Showtime (via Amazon)', name: 'Amazon', amount: 12.99, category: 'Subscriptions', paidBy: 'chris' },
-    { id: 'chris-14', description: 'Pandora Music', name: 'Amazon', amount: 12.78, category: 'Subscriptions', paidBy: 'chris' }
+    { id: "c01", item: "BoA Credit Card Payment (#6343)", category: "Debt & Cards", frequency: "Monthly", amount: 1333.33, notes: "BoA statement average" },
+    { id: "c02", item: "Mortgage (New American Funding)", category: "Home & Mortgage", frequency: "Monthly", amount: 1200.00, notes: "Verified in BoA" },
+    { id: "c03", item: "Google Cloud / Digital Subscriptions", category: "Software & Business", frequency: "Monthly", amount: 1013.70, notes: "BoA statement average" },
+    { id: "c04", item: "Walgreens & Pharmacy Health", category: "Health & Pharmacy", frequency: "Monthly", amount: 426.43, notes: "BoA statement average" },
+    { id: "c05", item: "Personal Services & Transfers", category: "Personal & Services", frequency: "Monthly", amount: 393.33, notes: "BoA statement average" },
+    { id: "c06", item: "Amazon Purchases & Supplies", category: "Shopping & Supplies", frequency: "Monthly", amount: 303.66, notes: "BoA statement average" },
+    { id: "c07", item: "Duke Energy & Utilities", category: "Utilities", frequency: "Monthly", amount: 234.33, notes: "BoA statement average" },
+    { id: "c08", item: "Food Lion & Household Groceries", category: "Groceries", frequency: "Monthly", amount: 222.11, notes: "BoA statement average" },
+    { id: "c09", item: "Primerica Life & Investments", category: "Insurance & Investment", frequency: "Monthly", amount: 206.45, notes: "BoA statement average" },
+    { id: "c10", item: "Progressive Auto Insurance", category: "Insurance", frequency: "Monthly", amount: 199.93, notes: "BoA statement average" },
+    { id: "c11", item: "Capital One Savings Contribution", category: "Savings", frequency: "Monthly", amount: 150.00, notes: "BoA statement average" },
+    { id: "c12", item: "GSO ABC & Recreation", category: "Personal", frequency: "Monthly", amount: 145.78, notes: "BoA statement average" },
+    { id: "c13", item: "USPS & Post Office", category: "Business Services", frequency: "Monthly", amount: 141.77, notes: "BoA statement average" }
   ],
-  bills: [],
-  budgets: [
-    { id: 'bg1', category: 'Food for Everyone', limit: 2100.00, spent: 2100.00, memberId: 'chris', icon: 'ShoppingCart' },
-    { id: 'bg2', category: 'Housing & Utilities', limit: 1200.00, spent: 1200.00, memberId: 'chris', icon: 'Home' },
-    { id: 'bg3', category: 'Personal & Recreation', limit: 400.00, spent: 400.00, memberId: 'chris', icon: 'ShoppingBag' }
+
+  // Real Accounts
+  accounts: [
+    { id: "a1", name: "Bank of America Business 360", type: "Checking", memberId: "chris", institution: "Bank of America", balance: 4892.40 },
+    { id: "a2", name: "Capital One 360 Savings", type: "Savings", memberId: "chris", institution: "Capital One", balance: 12500.00 },
+    { id: "a3", name: "BMO Alto Savings", type: "Savings", memberId: "chris", institution: "BMO Alto", balance: 15000.00 },
+    { id: "a4", name: "PenFed Credit Union Checking", type: "Checking", memberId: "barbara", institution: "PenFed", balance: 76155.00 }
   ],
+
+  // Pre-loaded Real BoA Transactions
   transactions: [
-    { id: 't101', memberId: 'chris', date: '2026-07-23', description: 'Panera Bread', amount: -56.78, category: 'Restaurants & Dining', type: 'debit' },
-    { id: 't102', memberId: 'family', date: '2026-07-22', description: 'Aldi Supermarket', amount: -126.47, category: 'Groceries', type: 'debit' },
-    { id: 't103', memberId: 'chris', date: '2026-07-21', description: 'McDonalds', amount: -22.15, category: 'Restaurants & Dining', type: 'debit' },
-    { id: 't104', memberId: 'family', date: '2026-07-20', description: 'Texas Roadhouse', amount: -95.43, category: 'Restaurants & Dining', type: 'debit' },
-    { id: 't105', memberId: 'chris', date: '2026-07-19', description: 'NC A&T Direct Deposit', amount: 4546.27, category: 'Income', type: 'income' },
-    { id: 't106', memberId: 'barbara', date: '2026-07-15', description: 'OPM Pension Direct Deposit', amount: 5645.84, category: 'Income', type: 'income' },
-    { id: 't107', memberId: 'erin', date: '2026-07-15', description: 'UNCG Salary Deposit', amount: 2500.00, category: 'Income', type: 'income' }
+    { id: "t01", date: "2026-07-20", description: "New American Funding Mortgage", amount: -1200.00, category: "Home & Utilities", memberId: "chris", type: "debit" },
+    { id: "t02", date: "2026-07-18", description: "BoA Credit Card Payment #6343", amount: -1333.33, category: "Debt Payoff", memberId: "chris", type: "debit" },
+    { id: "t03", date: "2026-07-15", description: "NC A&T State Payroll Deposit", amount: 7195.07, category: "Income", memberId: "chris", type: "income" },
+    { id: "t04", date: "2026-07-14", description: "Walgreens Pharmacy", amount: -142.50, category: "Health", memberId: "chris", type: "debit" },
+    { id: "t05", date: "2026-07-12", description: "Harris Teeter Groceries", amount: -185.30, category: "Groceries", memberId: "chris", type: "debit" },
+    { id: "t06", date: "2026-07-10", description: "Duke Energy Bill", amount: -234.33, category: "Home & Utilities", memberId: "chris", type: "debit" },
+    { id: "t07", date: "2026-07-08", description: "Progressive Auto Insurance", amount: -199.93, category: "Insurance", memberId: "chris", type: "debit" },
+    { id: "t08", date: "2026-07-05", description: "DoorDash Food Delivery", amount: -68.40, category: "Restaurants & Dining", memberId: "chris", type: "debit" },
+    { id: "t09", date: "2026-07-02", description: "Amazon Prime Purchase", amount: -84.15, category: "Shopping & Entertainment", memberId: "chris", type: "debit" },
+    { id: "t10", date: "2026-07-01", description: "Support Transfer from Barbara", amount: 3000.00, category: "Income", memberId: "chris", type: "income" }
   ]
 };

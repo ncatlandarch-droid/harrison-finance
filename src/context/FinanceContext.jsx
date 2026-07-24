@@ -6,7 +6,7 @@ const FinanceContext = createContext();
 export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('harrison_finance_v2.9');
+      const saved = localStorage.getItem('harrison_finance_v3.0');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.version === INITIAL_DATA.version) {
@@ -23,7 +23,7 @@ export const FinanceProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('harrison_finance_v2.9', JSON.stringify(data));
+      localStorage.setItem('harrison_finance_v3.0', JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save to local storage:', e);
     }
@@ -31,24 +31,25 @@ export const FinanceProvider = ({ children }) => {
 
   const members = data.family.members.filter(m => m.role !== 'Child');
   
-  // 1. External Base Household Income (New Money Coming In)
-  const totalBaseIncome = 12692.11; // Barbara $5,645.84 + Chris $4,546.27 + Erin $2,500.00
+  // 1. External Base Household Income (Real BoA verified deposits + Erin UNCG salary)
+  // Barbara $5,645.84 (OPM) + Chris $6,309.36 (BoA NC A&T avg deposit) + Erin $2,500.00 (UNCG)
+  const totalBaseIncome = 5645.84 + 6309.36 + 2500.00; // $14,455.20 / mo
 
-  // 2. Individual Itemized Expenses
-  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, b) => sum + b.amount, 0); // $4,837.24 (includes $3,000 transfer to Chris)
+  // 2. Individual Expenses
+  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, b) => sum + b.amount, 0); // $4,837.24 (inc $3k transfer)
   const erinTotalExpenses = data.erinExpenses.reduce((sum, e) => sum + e.amount, 0);       // $1,569.00
-  const chrisTotalExpenses = data.chrisExpenses.reduce((sum, c) => sum + c.amount, 0);     // $4,311.62
+  const chrisTotalExpenses = data.chrisExpenses.reduce((sum, c) => sum + c.amount, 0);     // $5,970.82 (derived from real BoA statement)
 
-  // 3. External Family Outflow (excluding internal $3k transfer between Barbara and Chris)
-  const totalExternalExpenses = (barbaraTotalExpenses - 3000.00) + erinTotalExpenses + chrisTotalExpenses; // $7,717.86
+  // 3. External Family Outflow (excluding internal $3k transfer)
+  const totalExternalExpenses = (barbaraTotalExpenses - 3000.00) + erinTotalExpenses + chrisTotalExpenses; // $9,377.06
 
   // 4. Earner Net Surpluses
   const barbaraNetRemaining = 5645.84 - barbaraTotalExpenses; // $808.60
   const erinNetRemaining = 2500.00 - erinTotalExpenses;       // $931.00
-  const chrisNetRemaining = (4546.27 + 3000.00) - chrisTotalExpenses; // $3,234.65
+  const chrisNetRemaining = (6309.36 + 3000.00) - chrisTotalExpenses; // $3,338.54
 
   // 5. Total Combined Real Household Surplus
-  const totalCombinedSurplus = totalBaseIncome - totalExternalExpenses; // $4,974.25
+  const totalCombinedSurplus = totalBaseIncome - totalExternalExpenses; // $5,078.14
 
   // 6. Plaid Live Bank Scraped Spending & Balances
   const scrapedPlaidTxns = data.transactions.filter(t => t.id.startsWith('pt_') || t.source === 'Plaid');
