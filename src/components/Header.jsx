@@ -1,12 +1,14 @@
 import React from 'react';
 import { useFinance } from '../context/FinanceContext';
-import { PlusCircle, Download, Calendar } from 'lucide-react';
+import { PlusCircle, Calendar } from 'lucide-react';
+import { PlaidLinkButton } from './PlaidLinkButton';
 
 export const Header = ({ onOpenAddModal }) => {
   const { activeTab } = useFinance();
 
   const titleMap = {
     dashboard: 'Primary Household Dashboard',
+    strategy: 'Debt & Spending Strategy',
     bills: 'Bills & Smart Bill Allocation',
     budget: 'Category Spending & Budgets',
     transactions: 'Bank & Cash Transactions',
@@ -45,6 +47,8 @@ export const Header = ({ onOpenAddModal }) => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <PlaidLinkButton />
+
         <button 
           className="btn btn-secondary"
           onClick={onOpenAddModal}
