@@ -6,193 +6,172 @@ const FinanceContext = createContext();
 export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('harrison_finance_v3.6_accurate_cash');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.version === INITIAL_DATA.version) {
-          return parsed;
-        }
-      }
+      const saved = localStorage.getItem('harrison_finance_v4_data');
+      return saved ? JSON.parse(saved) : INITIAL_DATA;
     } catch (e) {
-      console.error('Failed to load local storage data:', e);
+      return INITIAL_DATA;
     }
-    return INITIAL_DATA;
   });
 
   const [activeTab, setActiveTab] = useState('dashboard');
 
+  // Household Profile & Location Settings
+  const [householdProfile, setHouseholdProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem('harrison_household_profile');
+      return saved ? JSON.parse(saved) : {
+        familyName: 'The Harrison Family',
+        city: 'Greensboro',
+        state: 'NC',
+        zipCode: '27401',
+        country: 'United States'
+      };
+    } catch (e) {
+      return {
+        familyName: 'The Harrison Family',
+        city: 'Greensboro',
+        state: 'NC',
+        zipCode: '27401',
+        country: 'United States'
+      };
+    }
+  });
+
+  // Dynamic Family Roster (Includes Hayden & Ava)
+  const [members, setMembers] = useState(() => {
+    try {
+      const saved = localStorage.getItem('harrison_members_list');
+      return saved ? JSON.parse(saved) : [
+        {
+          id: 'erin',
+          name: 'Erin Harrison',
+          title: 'Efficiency Specialist & Educator',
+          image: '/avatars/erin.png',
+          color: '#ec4899',
+          role: 'Adult Earner',
+          birthday: '1988-04-12',
+          income: 2500.00,
+          badge: '👑 MVP LEADER',
+          level: 'LVL 99 BUDGET NINJA',
+          isLeader: true
+        },
+        {
+          id: 'chris',
+          name: 'Chris Harrison',
+          title: 'Operating Lead & Tech Architect',
+          image: '/avatars/chris.jpg',
+          color: '#6366f1',
+          role: 'Adult Earner',
+          birthday: '1984-08-24',
+          income: 9309.36,
+          badge: '🚀 REVENUE ENGINE',
+          level: 'LVL 95 TECH ARCHITECT',
+          isLeader: false
+        },
+        {
+          id: 'barbara',
+          name: 'Barbara Harrison',
+          title: 'Family Pillar & Reserve Guardian',
+          image: '/avatars/barbara.png',
+          color: '#a855f7',
+          role: 'Senior Pillar (Age 75)',
+          birthday: '1951-03-15',
+          income: 5645.84,
+          badge: '🛡️ CAPITAL SHIELD',
+          level: 'LVL 99 WEALTH GUARDIAN',
+          isLeader: false
+        },
+        {
+          id: 'hayden',
+          name: 'Hayden Harrison',
+          title: 'Junior Wealth Builder',
+          image: '/avatars/isla-bulldog.jpg',
+          color: '#3b82f6',
+          role: 'Youth Dependent',
+          birthday: '2014-06-18',
+          income: 50.00, // Allowance / Savings
+          badge: '🌟 FUTURE INVESTOR',
+          level: 'LVL 15 SAVINGS CHAMP',
+          isLeader: false
+        },
+        {
+          id: 'ava',
+          name: 'Ava Harrison',
+          title: 'Junior Innovator & Explorer',
+          image: '/avatars/isla-bulldog.jpg',
+          color: '#10b981',
+          role: 'Youth Dependent',
+          birthday: '2018-09-05',
+          income: 30.00, // Allowance / Savings
+          badge: '🎨 CREATIVE INVESTOR',
+          level: 'LVL 10 SAVINGS STAR',
+          isLeader: false
+        }
+      ];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  // Save to localStorage
   useEffect(() => {
     try {
-      localStorage.setItem('harrison_finance_v3.6_accurate_cash', JSON.stringify(data));
+      localStorage.setItem('harrison_finance_v4_data', JSON.stringify(data));
+      localStorage.setItem('harrison_household_profile', JSON.stringify(householdProfile));
+      localStorage.setItem('harrison_members_list', JSON.stringify(members));
     } catch (e) {
-      console.error('Failed to save to local storage:', e);
+      console.error(e);
     }
-  }, [data]);
+  }, [data, householdProfile, members]);
 
-  const members = data.family.members.filter(m => m.role !== 'Child');
-  
-  // External Base Incomes
+  // Add New Member
+  const addFamilyMember = (newMember) => {
+    setMembers(prev => [...prev, {
+      id: 'mem_' + Date.now(),
+      image: '/avatars/isla-bulldog.jpg',
+      color: '#f59e0b',
+      badge: '✨ NEW MEMBER',
+      level: 'LVL 1 ROOKIE',
+      isLeader: false,
+      ...newMember
+    }]);
+  };
+
+  // Financial Computations
   const totalBaseIncome = 5645.84 + 6309.36 + 2500.00; // $14,455.20 / mo
+  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, item) => sum + item.amount, 0);
+  const erinTotalExpenses = data.erinExpenses.reduce((sum, item) => sum + item.amount, 0);
+  const chrisTotalExpenses = data.chrisExpenses.reduce((sum, item) => sum + item.amount, 0);
+  const totalExternalExpenses = barbaraTotalExpenses + erinTotalExpenses + chrisTotalExpenses;
+  const totalCombinedSurplus = totalBaseIncome - totalExternalExpenses;
 
-  // Itemized Expenses
-  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, b) => sum + b.amount, 0); // $4,837.24
-  const erinTotalExpenses = data.erinExpenses.reduce((sum, e) => sum + e.amount, 0);       // $1,569.00
-  const chrisTotalExpenses = data.chrisExpenses.reduce((sum, c) => sum + c.amount, 0);     // $5,970.82
+  const papiChecking = data.boaAccounts.find(a => a.mask === '7333') || { balance: -36.00 };
+  const spendingMoney = data.boaAccounts.find(a => a.mask === '4866') || { balance: 468.24 };
+  const advPlusBanking = data.boaAccounts.find(a => a.mask === '4717') || { balance: 443.12 };
+  const advantageSavings = data.boaAccounts.find(a => a.mask === '0495') || { balance: 2392.91 };
+  const bankAmericardCreditCard = data.boaAccounts.find(a => a.mask === '6343') || { balance: 4500.00 };
+  const barbaraCheckingAccount = data.accounts.find(a => a.id === 'acc_barbara_checking') || { balance: 76155.00 };
 
-  const totalExternalExpenses = (barbaraTotalExpenses - 3000.00) + erinTotalExpenses + chrisTotalExpenses;
-
-  // Surpluses
-  const barbaraNetRemaining = 5645.84 - barbaraTotalExpenses; 
-  const erinNetRemaining = 2500.00 - erinTotalExpenses;       
-  const chrisNetRemaining = (6309.36 + 3000.00) - chrisTotalExpenses; 
-
-  const totalCombinedSurplus = totalBaseIncome - totalExternalExpenses; 
-
-  // Plaid Live Bank Scraped Spending & Active Checking Balances
-  const scrapedPlaidTxns = data.transactions.filter(t => t.id.startsWith('pt_') || t.source.includes('Plaid') || t.source.includes('BoA Live Direct'));
-  const totalScrapedBankSpending = scrapedPlaidTxns.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
-  
-  // EXACT 5 REAL BANK OF AMERICA ACCOUNTS FROM YOUR LIVE SCREENSHOT
-  const papiChecking = data.accounts.find(a => a.id === 'boa_7333' || a.name.includes('7333')) || { name: 'Papi Checking - 7333', balance: -36.00 };
-  const spendingMoney = data.accounts.find(a => a.id === 'boa_4866' || a.name.includes('4866')) || { name: 'Spending Money - 4866', balance: 468.24 };
-  const advPlusBanking = data.accounts.find(a => a.id === 'boa_4717' || a.name.includes('4717')) || { name: 'Adv Plus Banking - 4717', balance: 443.12 };
-  const advantageSavings = data.accounts.find(a => a.id === 'boa_0495' || a.name.includes('0495')) || { name: 'Advantage Savings - 0495', balance: 2392.91 };
-  const bankAmericardCreditCard = data.accounts.find(a => a.id === 'boa_6343' || a.name.includes('6343')) || { name: 'BankAmericard Visa - 6343', balance: 4560.47 };
-  const barbaraCheckingAccount = data.accounts.find(a => a.memberId === 'barbara' || a.id === 'penfed_savings') || { name: "Mom's PenFed Savings", balance: 76155.00 };
-
-  // 🎯 STRICT SEPARATION: CHECKING CASH VS SAVINGS RESERVES
-  // Total Active Checking Cash (Papi -$36 + Spending $468.24 + Adv Plus $443.12 = $875.36)
-  const totalCheckingCash = (papiChecking.balance) + (spendingMoney.balance) + (advPlusBanking.balance); // $875.36
-  const totalBoACash = totalCheckingCash + advantageSavings.balance; // $3,268.27
-  const totalLiquidityBalance = totalBoACash + barbaraCheckingAccount.balance; // $79,423.27
-
-  // Derived Combined Bills Array for BillsSection
-  const combinedBills = [
-    ...data.barbaraExpenses.map(b => ({ ...b, member: 'Barbara', status: 'due' })),
-    ...data.erinExpenses.map(e => ({ ...e, member: 'Erin', status: 'due' })),
-    ...data.chrisExpenses.map(c => ({ ...c, member: 'Chris', status: 'due' }))
-  ];
-
-  // Derived Budget Categories for BudgetSection
-  const budgetCategories = [
-    { id: 'b_mortgage', category: 'Home & Mortgage', limit: 2200.00, spent: 1200.00, icon: '🏠' },
-    { id: 'b_groceries', category: 'Groceries & Dining', limit: 2500.00, spent: 1470.64, icon: '🛒' },
-    { id: 'b_utilities', category: 'Utilities & Tech', limit: 800.00, spent: 344.33, icon: '⚡' },
-    { id: 'b_insurance', category: 'Insurance & Health', limit: 900.00, spent: 780.30, icon: '🛡️' },
-    { id: 'b_debt', category: 'Debt & Loans', limit: 2722.49, spent: 2722.49, icon: '💳' },
-    { id: 'b_personal', category: 'Personal & Misc', limit: 1000.00, spent: 687.55, icon: '🎯' }
-  ];
-
-  const billAllocations = [
-    { memberId: 'barbara', name: 'Barbara', color: '#a855f7', proportionalJointBillShare: barbaraTotalExpenses },
-    { memberId: 'erin', name: 'Erin', color: '#ec4899', proportionalJointBillShare: erinTotalExpenses },
-    { memberId: 'chris', name: 'Chris', color: '#6366f1', proportionalJointBillShare: chrisTotalExpenses }
-  ];
-
-  const updateBillStatus = (billId, status) => {
-    console.log('Update bill status:', billId, status);
-  };
-
-  const mergePlaidData = (plaidAccounts = [], plaidTxns = []) => {
-    setData(prev => {
-      const updatedAccounts = [...prev.accounts];
-
-      plaidAccounts.forEach(pa => {
-        const mask = pa.mask || '';
-        const liveBal = pa.balances.current ?? pa.balances.available ?? 0;
-
-        const existingIdx = updatedAccounts.findIndex(a => 
-          (mask && (a.id.includes(mask) || a.name.includes(mask))) ||
-          a.name.toLowerCase().includes(pa.name.toLowerCase())
-        );
-
-        if (existingIdx >= 0) {
-          updatedAccounts[existingIdx] = {
-            ...updatedAccounts[existingIdx],
-            balance: liveBal,
-            lastSynced: new Date().toLocaleTimeString()
-          };
-        } else {
-          updatedAccounts.unshift({
-            id: 'plaid_' + (pa.account_id || mask),
-            name: pa.official_name || pa.name + (mask ? ` - ${mask}` : ''),
-            type: pa.type === 'depository' ? 'Checking' : pa.type,
-            memberId: 'chris',
-            institution: 'Bank of America',
-            balance: liveBal,
-            lastSynced: new Date().toLocaleTimeString()
-          });
-        }
-      });
-
-      const mappedTxns = plaidTxns.map((pt, idx) => {
-        const name = pt.merchant_name || pt.name || 'Transaction';
-        const amount = -Math.abs(pt.amount);
-        let category = 'Shopping & Entertainment';
-        const upper = name.toUpperCase();
-
-        if (upper.includes('DOORDASH') || upper.includes('CHICK') || upper.includes('CHIPOTLE') || upper.includes('PANERA') || upper.includes('MCDONALD') || upper.includes('STARBUCKS') || upper.includes('COOKOUT')) {
-          category = 'Restaurants & Dining';
-        } else if (upper.includes('HARRIS TEETER') || upper.includes('COSTCO') || upper.includes('ALDI') || upper.includes('WALMART') || upper.includes('FOOD LION') || upper.includes('LIDL')) {
-          category = 'Groceries';
-        } else if (upper.includes('DUKE') || upper.includes('SPECTRUM') || upper.includes('WATER') || upper.includes('MORTGAGE')) {
-          category = 'Home & Utilities';
-        } else if (upper.includes('GEICO') || upper.includes('PROGRESSIVE') || upper.includes('PRIMERICA')) {
-          category = 'Insurance';
-        }
-
-        return {
-          id: 'pt_' + (pt.transaction_id || idx),
-          memberId: 'chris',
-          date: pt.date || new Date().toISOString().split('T')[0],
-          description: name,
-          amount: amount,
-          category: category,
-          type: amount > 0 ? 'income' : 'debit',
-          source: 'Plaid'
-        };
-      });
-
-      const combinedTxns = [...mappedTxns, ...prev.transactions.filter(t => !t.id.startsWith('pt_'))];
-
-      return {
-        ...prev,
-        accounts: updatedAccounts,
-        transactions: combinedTxns
-      };
-    });
-  };
-
-  const addTransaction = (newTxn) => {
-    setData(prev => ({
-      ...prev,
-      transactions: [
-        { id: 't_' + Date.now(), ...newTxn },
-        ...prev.transactions
-      ]
-    }));
-  };
+  const totalCheckingCash = (papiChecking.balance || 0) + (spendingMoney.balance || 0) + (advPlusBanking.balance || 0);
+  const totalBoACash = totalCheckingCash + (advantageSavings.balance || 0);
+  const totalLiquidityBalance = totalBoACash + (barbaraCheckingAccount.balance || 0);
 
   return (
     <FinanceContext.Provider value={{
-      data: {
-        ...data,
-        bills: combinedBills,
-        budgets: budgetCategories
-      },
+      data,
       setData,
       activeTab,
       setActiveTab,
+      householdProfile,
+      setHouseholdProfile,
       members,
+      setMembers,
+      addFamilyMember,
       totalBaseIncome,
       barbaraTotalExpenses,
       erinTotalExpenses,
       chrisTotalExpenses,
       totalExternalExpenses,
-      totalScrapedBankSpending,
-      barbaraNetRemaining,
-      erinNetRemaining,
-      chrisNetRemaining,
       totalCombinedSurplus,
       totalCheckingCash,
       totalBoACash,
@@ -202,11 +181,7 @@ export const FinanceProvider = ({ children }) => {
       advPlusBanking,
       advantageSavings,
       bankAmericardCreditCard,
-      barbaraCheckingAccount,
-      billAllocations,
-      updateBillStatus,
-      mergePlaidData,
-      addTransaction
+      barbaraCheckingAccount
     }}>
       {children}
     </FinanceContext.Provider>

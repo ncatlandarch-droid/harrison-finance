@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useFinance } from '../context/FinanceContext';
 import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
 import { PlayerProfileModal } from './PlayerProfileModal';
+import { FamilyProfilePortalModal } from './FamilyProfilePortalModal';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -28,12 +29,16 @@ import {
   Phone,
   Calendar,
   Crown,
-  ChevronRight
+  ChevronRight,
+  MapPin,
+  UserPlus
 } from 'lucide-react';
 
 export const Dashboard = () => {
   const { 
-    data, 
+    data,
+    householdProfile,
+    members,
     totalBaseIncome, 
     barbaraTotalExpenses, 
     erinTotalExpenses, 
@@ -52,108 +57,81 @@ export const Dashboard = () => {
   } = useFinance();
 
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isFamilyPortalOpen, setIsFamilyPortalOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  // Player Metrics for Giant Showcase Character Cards
-  const players = [
-    {
-      id: 'erin',
-      name: 'Erin Harrison',
-      title: 'Efficiency Specialist & Educator',
-      image: '/avatars/erin.png',
-      color: '#ec4899',
-      income: 2500.00,
-      expenses: erinTotalExpenses,
-      surplus: 2500.00 - erinTotalExpenses,
-      badge: '👑 MVP LEADER',
-      isLeader: true,
-      ratio: Math.round((erinTotalExpenses / 2500.00) * 100),
-      level: 'LVL 99 BUDGET NINJA',
-      estateScore: 100
-    },
-    {
-      id: 'chris',
-      name: 'Chris Harrison',
-      title: 'Operating Lead & Tech Architect',
-      image: '/avatars/chris.jpg',
-      color: '#6366f1',
-      income: 6309.36 + 3000.00,
-      expenses: chrisTotalExpenses,
-      surplus: (6309.36 + 3000.00) - chrisTotalExpenses,
-      badge: '🚀 REVENUE ENGINE',
-      isLeader: false,
-      ratio: Math.round((chrisTotalExpenses / (6309.36 + 3000.00)) * 100),
-      level: 'LVL 95 TECH ARCHITECT',
-      estateScore: 100
-    },
-    {
-      id: 'barbara',
-      name: 'Barbara Harrison',
-      title: 'Family Pillar & Reserve Guardian',
-      image: '/avatars/barbara.png',
-      color: '#a855f7',
-      income: 5645.84,
-      expenses: barbaraTotalExpenses,
-      surplus: 5645.84 - barbaraTotalExpenses,
-      badge: '🛡️ CAPITAL SHIELD',
-      isLeader: false,
-      ratio: Math.round((barbaraTotalExpenses / 5645.84) * 100),
-      level: 'LVL 99 WEALTH GUARDIAN',
-      estateScore: 100
-    }
-  ];
-
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.25rem' }}>
       
-      {/* 🎮 GIANT SHOWCASE PLAYER CHARACTER CARDS */}
+      {/* 🎮 FAMILY ROSTER HEADER WITH LOCATION BADGE & ADD MEMBER BUTTON */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(7, 10, 18, 0.98), rgba(15, 23, 42, 0.95))', padding: '1.75rem' }}>
         <div className="flex-between" style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1.25rem' }}>
           <div>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-              <Trophy size={28} color="#FDB927" />
-              <span>Harrison Family Roster & Interactive Document Vaults</span>
-            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                <Trophy size={28} color="#FDB927" />
+                <span>{householdProfile.familyName} Player Roster ({members.length} Members)</span>
+              </h3>
+              <button 
+                onClick={() => setIsFamilyPortalOpen(true)}
+                className="badge badge-success"
+                style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem', padding: '4px 10px', fontSize: '0.75rem' }}
+              >
+                <MapPin size={12} />
+                <span>{householdProfile.city}, {householdProfile.state} {householdProfile.zipCode}</span>
+              </button>
+            </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-              👉 <strong>Click any avatar card below</strong> to open their document lockbox and upload legal estate files!
+              👉 <strong>Click any player avatar</strong> to open their document vault (Birth Certificates, Passports, Insurance) & Gamified XP!
             </p>
           </div>
 
-          <button 
-            className="btn"
-            onClick={() => setIsReportOpen(true)}
-            style={{
-              background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
-              color: '#004684',
-              fontWeight: 800,
-              fontSize: '0.92rem',
-              padding: '0.65rem 1.25rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              boxShadow: '0 4px 18px rgba(253, 185, 39, 0.4)',
-              borderRadius: '30px'
-            }}
-          >
-            <FileText size={18} />
-            <span>Open Real Talk Financial Report ❤️</span>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <button 
+              className="btn btn-secondary"
+              onClick={() => setIsFamilyPortalOpen(true)}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.88rem' }}
+            >
+              <UserPlus size={16} />
+              <span>+ Add Family Member</span>
+            </button>
+
+            <button 
+              className="btn"
+              onClick={() => setIsReportOpen(true)}
+              style={{
+                background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
+                color: '#004684',
+                fontWeight: 800,
+                fontSize: '0.92rem',
+                padding: '0.65rem 1.25rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                boxShadow: '0 4px 18px rgba(253, 185, 39, 0.4)',
+                borderRadius: '30px'
+              }}
+            >
+              <FileText size={18} />
+              <span>Open Real Talk Financial Report ❤️</span>
+            </button>
+          </div>
         </div>
 
-        {/* 3 GIANT Interactive Player Character Cards (140px Avatars) */}
-        <div className="grid-3" style={{ gap: '1.5rem' }}>
-          {players.map((p) => (
+        {/* 5 Dynamic Family Character Cards (Includes Hayden & Ava!) */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+          {members.map((p) => (
             <div 
               key={p.id} 
               onClick={() => setSelectedPlayer(p)}
               style={{
                 background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.98))',
-                borderRadius: '24px',
-                padding: '2rem 1.5rem',
+                borderRadius: '20px',
+                padding: '1.5rem 1.25rem',
                 border: p.isLeader ? '2.5px solid #FDB927' : `1.5px solid ${p.color}60`,
-                boxShadow: p.isLeader ? '0 12px 40px rgba(253, 185, 39, 0.35)' : `0 8px 25px rgba(0,0,0,0.5)`,
+                boxShadow: p.isLeader ? '0 12px 35px rgba(253, 185, 39, 0.3)' : `0 8px 25px rgba(0,0,0,0.5)`,
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
@@ -167,37 +145,37 @@ export const Dashboard = () => {
               {p.isLeader && (
                 <div style={{
                   position: 'absolute',
-                  top: '-14px',
-                  right: '20px',
+                  top: '-12px',
+                  right: '15px',
                   background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
                   color: '#004684',
-                  padding: '4px 14px',
+                  padding: '3px 10px',
                   borderRadius: '20px',
                   fontWeight: 900,
-                  fontSize: '0.74rem',
+                  fontSize: '0.7rem',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.3rem',
                   boxShadow: '0 4px 12px rgba(253, 185, 39, 0.5)'
                 }}>
-                  <Crown size={14} fill="#004684" />
-                  <span>MVP #1 SURPLUS LEADER</span>
+                  <Crown size={12} fill="#004684" />
+                  <span>MVP #1 LEADER</span>
                 </div>
               )}
 
               {/* Giant Avatar Header */}
               <div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1rem' }}>
                   
-                  {/* LARGER PHOTO AVATAR FRAME (135px) WITH MATCHED HEAD ZOOM */}
+                  {/* PHOTO AVATAR FRAME (110px) */}
                   <div style={{
-                    width: '135px',
-                    height: '135px',
+                    width: '110px',
+                    height: '110px',
                     borderRadius: '50%',
                     border: `4px solid ${p.color}`,
-                    boxShadow: `0 0 35px ${p.color}70`,
+                    boxShadow: `0 0 25px ${p.color}70`,
                     overflow: 'hidden',
-                    marginBottom: '1rem',
+                    marginBottom: '0.75rem',
                     background: '#1e1b4b'
                   }}>
                     <img 
@@ -208,34 +186,16 @@ export const Dashboard = () => {
                     />
                   </div>
 
-                  <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.3rem' }}>{p.name}</h4>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{p.title}</span>
+                  <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.15rem' }}>{p.name}</h4>
+                  <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>{p.title}</span>
                   
-                  <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem' }}>
-                    <span className="badge" style={{ fontSize: '0.7rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
+                  <div style={{ display: 'flex', gap: '0.3rem', marginTop: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <span className="badge" style={{ fontSize: '0.66rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
                       {p.level}
                     </span>
-                    <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
-                      Repository: 100%
+                    <span className="badge badge-success" style={{ fontSize: '0.66rem' }}>
+                      1,000 XP ✓
                     </span>
-                  </div>
-                </div>
-
-                {/* Progress Bar & Efficiency Ratio */}
-                <div style={{ marginBottom: '1.25rem' }}>
-                  <div className="flex-between" style={{ fontSize: '0.8rem', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
-                    <span>Spending Ratio ({p.ratio}%)</span>
-                    <span style={{ color: 'var(--success)', fontWeight: 800 }}>
-                      +{fmt(p.surplus)} Surplus
-                    </span>
-                  </div>
-                  <div style={{ width: '100%', height: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '5px', overflow: 'hidden' }}>
-                    <div style={{
-                      width: `${Math.min(p.ratio, 100)}%`,
-                      height: '100%',
-                      background: p.ratio > 80 ? 'linear-gradient(90deg, #f59e0b, #ef4444)' : 'linear-gradient(90deg, #10b981, #6366f1)',
-                      borderRadius: '5px'
-                    }} />
                   </div>
                 </div>
               </div>
@@ -246,15 +206,15 @@ export const Dashboard = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 background: 'rgba(0,0,0,0.3)',
-                padding: '0.75rem 1rem',
+                padding: '0.65rem 0.85rem',
                 borderRadius: '10px',
                 border: '1px solid rgba(255,255,255,0.05)',
-                fontSize: '0.82rem',
+                fontSize: '0.78rem',
                 color: p.color,
                 fontWeight: 800
               }}>
-                <span>Click to Upload & View Repository</span>
-                <ChevronRight size={18} />
+                <span>Open Passport & Vault</span>
+                <ChevronRight size={16} />
               </div>
 
             </div>
@@ -409,77 +369,9 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* 4 Summary Stat Cards */}
-      <div className="grid-4">
-        
-        {/* Total Monthly Income */}
-        <div className="card">
-          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>FAMILY NET INFLOW</span>
-            <div style={{ padding: '0.4rem', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--success)' }}>
-              <ArrowUpRight size={18} />
-            </div>
-          </div>
-          <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff' }}>
-            {fmt(totalBaseIncome)}
-          </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
-            Barbara ($5.6k) + Chris ($6.3k) + Erin ($2.5k)
-          </div>
-        </div>
-
-        {/* Total Monthly Expenses */}
-        <div className="card">
-          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL FIXED OUTFLOW</span>
-            <div style={{ padding: '0.4rem', borderRadius: '8px', background: 'rgba(239, 68, 68, 0.15)', color: 'var(--danger)' }}>
-              <ArrowDownRight size={18} />
-            </div>
-          </div>
-          <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--danger)' }}>
-            {fmt(totalExternalExpenses)}
-          </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
-            34 Itemized Family Commitments
-          </div>
-        </div>
-
-        {/* Net Monthly Surplus */}
-        <div className="card card-glow">
-          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>NET MONTHLY SURPLUS</span>
-            <div style={{ padding: '0.4rem', borderRadius: '8px', background: 'rgba(99, 102, 241, 0.15)', color: 'var(--primary-light)' }}>
-              <TrendingUp size={18} />
-            </div>
-          </div>
-          <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--success)' }}>
-            +{fmt(totalCombinedSurplus)}
-          </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
-            Real Net Inflow Minus Fixed Bills
-          </div>
-        </div>
-
-        {/* Active Checking Cash */}
-        <div className="card">
-          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>CHECKING CASH CASH</span>
-            <div style={{ padding: '0.4rem', borderRadius: '8px', background: 'rgba(245, 158, 11, 0.15)', color: 'var(--warning)' }}>
-              <Wallet size={18} />
-            </div>
-          </div>
-          <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--warning)' }}>
-            {fmt(totalCheckingCash)}
-          </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
-            Across 3 Active BoA Checking Accounts
-          </div>
-        </div>
-
-      </div>
-
       {/* Modals */}
       <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
+      <FamilyProfilePortalModal isOpen={isFamilyPortalOpen} onClose={() => setIsFamilyPortalOpen(false)} />
       <PlayerProfileModal player={selectedPlayer} onClose={() => setSelectedPlayer(null)} />
 
     </div>
