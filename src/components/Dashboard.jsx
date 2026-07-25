@@ -7,6 +7,7 @@ import { AddAccountModal } from './AddAccountModal';
 import { EditAccountModal } from './EditAccountModal';
 import { AccountTroubleshooterModal } from './AccountTroubleshooterModal';
 import { RetirementSimulatorModal } from './RetirementSimulatorModal';
+import { BeneficiaryAuditModal } from './BeneficiaryAuditModal';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -71,6 +72,7 @@ export const Dashboard = () => {
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   const [isTroubleshooterOpen, setIsTroubleshooterOpen] = useState(false);
   const [isRetirementSimOpen, setIsRetirementSimOpen] = useState(false);
+  const [isBeneficiaryOpen, setIsBeneficiaryOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [editingAccount, setEditingAccount] = useState(null);
 
@@ -127,10 +129,19 @@ export const Dashboard = () => {
             </div>
 
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                 <span className="badge badge-success" style={{ background: '#10b981', color: '#fff', fontWeight: 900, fontSize: '0.78rem' }}>
                   {collectiveGrade}
                 </span>
+
+                <button 
+                  onClick={() => setIsBeneficiaryOpen(true)}
+                  className="badge" 
+                  style={{ background: 'rgba(16, 185, 129, 0.2)', color: 'var(--success)', fontWeight: 900, fontSize: '0.78rem', border: '1px solid #10b981', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+                >
+                  <Users size={12} /> Beneficiary Directory 👥
+                </button>
+
                 <button 
                   onClick={() => setIsRetirementSimOpen(true)}
                   className="badge" 
@@ -524,6 +535,7 @@ export const Dashboard = () => {
       <EditAccountModal isOpen={!!editingAccount} onClose={() => setEditingAccount(null)} account={editingAccount} />
       <AccountTroubleshooterModal isOpen={isTroubleshooterOpen} onClose={() => setIsTroubleshooterOpen(false)} />
       <RetirementSimulatorModal isOpen={isRetirementSimOpen} onClose={() => setIsRetirementSimOpen(false)} />
+      <BeneficiaryAuditModal isOpen={isBeneficiaryOpen} onClose={() => setIsBeneficiaryOpen(false)} />
 
     </div>
   );
