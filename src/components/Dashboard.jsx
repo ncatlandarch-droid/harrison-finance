@@ -25,7 +25,8 @@ import {
   CheckCircle2,
   FileText,
   Phone,
-  Calendar
+  Calendar,
+  Crown
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -52,62 +53,65 @@ export const Dashboard = () => {
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  // Player Metrics for Gamified Scoreboard with Image Avatar Support
+  // Player Metrics for Large Game Character Cards
   const players = [
     {
-      id: 'barbara',
-      name: 'Barbara (Mom)',
-      role: 'Family Pillar & Reserve Guardian',
-      avatarEmoji: '💜',
-      imagePath: '/avatars/barbara.jpg',
-      color: '#a855f7',
-      income: 5645.84,
-      expenses: barbaraTotalExpenses,
-      surplus: 5645.84 - barbaraTotalExpenses,
-      badge: '👑 Wealth Preserver',
-      ratio: Math.round((barbaraTotalExpenses / 5645.84) * 100)
-    },
-    {
-      id: 'chris',
-      name: 'Chris',
-      role: 'Operating Lead & Tech Architect',
-      avatarEmoji: '💙',
-      imagePath: '/avatars/chris.jpg',
-      color: '#6366f1',
-      income: 6309.36 + 3000.00,
-      expenses: chrisTotalExpenses,
-      surplus: (6309.36 + 3000.00) - chrisTotalExpenses,
-      badge: '🚀 Revenue Engine',
-      ratio: Math.round((chrisTotalExpenses / (6309.36 + 3000.00)) * 100)
-    },
-    {
       id: 'erin',
-      name: 'Erin',
-      role: 'Efficiency Specialist & Educator',
-      avatarEmoji: '💗',
-      imagePath: '/avatars/erin.jpg',
+      name: 'Erin Harrison',
+      title: 'Efficiency Specialist & Educator',
+      image: '/avatars/erin.png',
       color: '#ec4899',
       income: 2500.00,
       expenses: erinTotalExpenses,
       surplus: 2500.00 - erinTotalExpenses,
-      badge: '🎯 Budget Ninja',
-      ratio: Math.round((erinTotalExpenses / 2500.00) * 100)
+      badge: '👑 MVP LEADER',
+      isLeader: true,
+      ratio: Math.round((erinTotalExpenses / 2500.00) * 100),
+      level: 'LVL 99 BUDGET NINJA'
+    },
+    {
+      id: 'chris',
+      name: 'Chris Harrison',
+      title: 'Operating Lead & Tech Architect',
+      image: '/avatars/chris.jpg',
+      color: '#6366f1',
+      income: 6309.36 + 3000.00,
+      expenses: chrisTotalExpenses,
+      surplus: (6309.36 + 3000.00) - chrisTotalExpenses,
+      badge: '🚀 REVENUE ENGINE',
+      isLeader: false,
+      ratio: Math.round((chrisTotalExpenses / (6309.36 + 3000.00)) * 100),
+      level: 'LVL 95 TECH ARCHITECT'
+    },
+    {
+      id: 'barbara',
+      name: 'Barbara Harrison',
+      title: 'Family Pillar & Reserve Guardian',
+      image: '/avatars/barbara.png',
+      color: '#a855f7',
+      income: 5645.84,
+      expenses: barbaraTotalExpenses,
+      surplus: 5645.84 - barbaraTotalExpenses,
+      badge: '🛡️ CAPITAL SHIELD',
+      isLeader: false,
+      ratio: Math.round((barbaraTotalExpenses / 5645.84) * 100),
+      level: 'LVL 99 WEALTH GUARDIAN'
     }
   ];
 
   return (
-    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.25rem' }}>
       
-      {/* 🎮 GAMIFIED FAMILY PLAYER SCOREBOARD & PLAYER AVATARS */}
-      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))' }}>
-        <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+      {/* 🎮 AAA GAME-STYLE PLAYER CHARACTER SELECTION & SCOREBOARD */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(7, 10, 18, 0.98), rgba(15, 23, 42, 0.95))', padding: '1.75rem' }}>
+        <div className="flex-between" style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1.25rem' }}>
           <div>
-            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <Trophy size={24} color="#FDB927" />
-              <span>Harrison Family Financial Scoreboard & Avatars</span>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+              <Trophy size={28} color="#FDB927" />
+              <span>Harrison Family Player Roster & Cash Flow Leaderboard</span>
             </h3>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Real-time gamified cash flow performance tracking per family earner
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+              Gamified efficiency scoring: Measuring net surplus ratio (Surplus ÷ Income)
             </p>
           </div>
 
@@ -118,10 +122,13 @@ export const Dashboard = () => {
               background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
               color: '#004684',
               fontWeight: 800,
+              fontSize: '0.92rem',
+              padding: '0.65rem 1.25rem',
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              boxShadow: '0 4px 14px rgba(253, 185, 39, 0.4)'
+              boxShadow: '0 4px 18px rgba(253, 185, 39, 0.4)',
+              borderRadius: '30px'
             }}
           >
             <FileText size={18} />
@@ -129,83 +136,103 @@ export const Dashboard = () => {
           </button>
         </div>
 
-        {/* 3 Player Cards */}
-        <div className="grid-3">
+        {/* 3 Large Game Character Cards */}
+        <div className="grid-3" style={{ gap: '1.5rem' }}>
           {players.map((p) => (
             <div key={p.id} style={{
-              background: 'rgba(0, 0, 0, 0.35)',
-              borderRadius: 'var(--radius-md)',
-              padding: '1.25rem',
-              border: `1px solid ${p.color}40`,
+              background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))',
+              borderRadius: '16px',
+              padding: '1.5rem',
+              border: p.isLeader ? '2px solid #FDB927' : `1px solid ${p.color}50`,
+              boxShadow: p.isLeader ? '0 10px 30px rgba(253, 185, 39, 0.25)' : 'none',
               position: 'relative',
-              overflow: 'hidden'
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
             }}>
-              {/* Top Row: Avatar & Badge */}
-              <div className="flex-between" style={{ marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+              {/* Leader Crown Badge */}
+              {p.isLeader && (
+                <div style={{
+                  position: 'absolute',
+                  top: '-14px',
+                  right: '20px',
+                  background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
+                  color: '#004684',
+                  padding: '4px 12px',
+                  borderRadius: '20px',
+                  fontWeight: 900,
+                  fontSize: '0.74rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.3rem',
+                  boxShadow: '0 4px 12px rgba(253, 185, 39, 0.5)'
+                }}>
+                  <Crown size={14} fill="#004684" />
+                  <span>MVP #1 SURPLUS LEADER</span>
+                </div>
+              )}
+
+              {/* Character Photo Header */}
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1.1rem', marginBottom: '1.25rem' }}>
                   <div style={{
-                    width: '52px',
-                    height: '52px',
+                    width: '72px',
+                    height: '72px',
                     borderRadius: '50%',
-                    background: `linear-gradient(135deg, ${p.color}, #1e1b4b)`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.6rem',
-                    boxShadow: `0 4px 14px ${p.color}40`,
-                    border: '2px solid rgba(255,255,255,0.2)',
-                    overflow: 'hidden'
+                    border: `3px solid ${p.color}`,
+                    boxShadow: `0 0 20px ${p.color}60`,
+                    overflow: 'hidden',
+                    flexShrink: 0,
+                    position: 'relative',
+                    background: '#1e1b4b'
                   }}>
                     <img 
-                      src={p.imagePath} 
+                      src={p.image} 
                       alt={p.name}
-                      onError={(e) => { e.target.style.display = 'none'; }}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => { e.target.style.display = 'none'; }}
                     />
-                    <span style={{ position: 'absolute' }}>{p.avatarEmoji}</span>
                   </div>
+
                   <div>
-                    <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem' }}>{p.name}</h4>
-                    <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>{p.role}</span>
+                    <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.15rem' }}>{p.name}</h4>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.1rem' }}>{p.title}</span>
+                    <span className="badge" style={{ marginTop: '0.4rem', fontSize: '0.68rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
+                      {p.level}
+                    </span>
                   </div>
                 </div>
 
-                <div style={{ textAlign: 'right' }}>
-                  <span className="badge" style={{ background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 700 }}>
-                    {p.badge}
-                  </span>
+                {/* Progress Bar & Efficiency Ratio */}
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <div className="flex-between" style={{ fontSize: '0.8rem', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
+                    <span>Spending Ratio ({p.ratio}%)</span>
+                    <span style={{ color: 'var(--success)', fontWeight: 800 }}>
+                      +{fmt(p.surplus)} Net Surplus
+                    </span>
+                  </div>
+                  <div style={{ width: '100%', height: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '5px', overflow: 'hidden' }}>
+                    <div style={{
+                      width: `${Math.min(p.ratio, 100)}%`,
+                      height: '100%',
+                      background: p.ratio > 80 ? 'linear-gradient(90deg, #f59e0b, #ef4444)' : 'linear-gradient(90deg, #10b981, #6366f1)',
+                      borderRadius: '5px'
+                    }} />
+                  </div>
                 </div>
               </div>
 
-              {/* Inflow vs Outflow Progress Bar */}
-              <div style={{ marginBottom: '1rem' }}>
-                <div className="flex-between" style={{ fontSize: '0.78rem', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
-                  <span>Spending Ratio ({p.ratio}%)</span>
-                  <span style={{ color: p.surplus > 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 700 }}>
-                    +{fmt(p.surplus)} Net Surplus
-                  </span>
-                </div>
-                <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
-                  <div style={{
-                    width: `${Math.min(p.ratio, 100)}%`,
-                    height: '100%',
-                    background: p.ratio > 85 ? 'linear-gradient(90deg, #f59e0b, #ef4444)' : 'linear-gradient(90deg, #10b981, #6366f1)',
-                    borderRadius: '4px'
-                  }} />
-                </div>
-              </div>
-
-              {/* Inflow / Outflow Stat Numbers */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', background: 'rgba(255,255,255,0.03)', padding: '0.75rem', borderRadius: '8px' }}>
+              {/* Stat HUD Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', background: 'rgba(0,0,0,0.3)', padding: '0.85rem', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)' }}>
                 <div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>INCOME BROUGHT IN</div>
-                  <div className="font-mono" style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--success)' }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>MONTHLY INFLOW</div>
+                  <div className="font-mono" style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--success)', marginTop: '0.1rem' }}>
                     {fmt(p.income)}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>MONTHLY SPENT</div>
-                  <div className="font-mono" style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--danger)' }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>FIXED SPENT</div>
+                  <div className="font-mono" style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--danger)', marginTop: '0.1rem' }}>
                     {fmt(p.expenses)}
                   </div>
                 </div>
@@ -216,39 +243,40 @@ export const Dashboard = () => {
       </div>
 
       {/* 🕊️ PAPI ACCOUNT CLOSURE & HELOC PAYOFF PROJECTION CARDS */}
-      <div className="grid-2" style={{ gap: '1.25rem' }}>
+      <div className="grid-2" style={{ gap: '1.5rem' }}>
         
         {/* Papi Bank of America Closure Guide */}
-        <div className="card" style={{ background: 'rgba(99, 102, 241, 0.12)', border: '1px solid rgba(99, 102, 241, 0.4)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '1.5rem' }}>🕊️</span>
+        <div className="card" style={{ background: 'rgba(99, 102, 241, 0.12)', border: '1px solid rgba(99, 102, 241, 0.4)', padding: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1rem' }}>
+            <span style={{ fontSize: '1.6rem' }}>🕊️</span>
             <div>
-              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem' }}>Papi Checking - 7333 Closure Checklist</h4>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Bank of America Estate Care Team Instructions</p>
+              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.1rem' }}>Papi Checking - 7333 Closure Checklist</h4>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Bank of America Estate Care Team Official Procedure</p>
             </div>
           </div>
 
-          <div style={{ fontSize: '0.84rem', color: '#cbd5e1', lineHeight: '1.5', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <div>• <strong>BoA Estate Line:</strong> Call <strong>888-689-4466</strong> (Mon–Fri 9am–8pm ET)</div>
-            <div>• <strong>Documents Needed:</strong> Original Death Certificate + Photo ID</div>
-            <div>• <strong>Action:</strong> Transfer `-$36.00` balance to Adv Plus 4717 and close cleanly.</div>
+          <div style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            <div>• <strong>BoA Estate Servicing Phone:</strong> <strong>888-689-4466</strong> (Mon–Fri 9am–8pm ET)</div>
+            <div>• <strong>Online Case Portal:</strong> bankofamerica.com/estateservices</div>
+            <div>• <strong>Documents Required:</strong> Original Death Certificate + Photo ID (Chris/Barbara)</div>
+            <div>• <strong>Action Plan:</strong> Settle `-$36.00` balance into Adv Plus 4717 & close account 7333 cleanly.</div>
           </div>
         </div>
 
         {/* Figure HELOC +$1,000 Extra Payment Payoff Simulator */}
-        <div className="card" style={{ background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-            <TrendingUp size={24} color="#f59e0b" />
+        <div className="card" style={{ background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.4)', padding: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1rem' }}>
+            <TrendingUp size={26} color="#f59e0b" />
             <div>
-              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem' }}>Figure HELOC +$1,000 Extra Payoff Simulator</h4>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Accelerated Principal Reduction Plan</p>
+              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.1rem' }}>Figure HELOC +$1,000 Extra Payoff Simulator</h4>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Accelerated Principal Payoff Plan</p>
             </div>
           </div>
 
-          <div style={{ fontSize: '0.84rem', color: '#cbd5e1', lineHeight: '1.5', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <div>• <strong>Standard Plan ($1k/mo):</strong> 25+ years • Rate jumps to 15.3% in Aug 2029</div>
-            <div>• <strong>Accelerated Plan ($2k/mo):</strong> Paid off in <strong>5.2 Years (by late 2031!)</strong></div>
-            <div style={{ color: 'var(--success)', fontWeight: 800 }}>• Total Interest Saved: +$98,400 Cash Saved!</div>
+          <div style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            <div>• <strong>Min Payment Plan ($1k/mo):</strong> 25+ years • Rate reset to 15.3% in Aug 2029</div>
+            <div>• <strong>Accelerated Plan ($3.2k/mo total):</strong> Paid off in <strong>36 Months (August 2029!)</strong></div>
+            <div style={{ color: 'var(--success)', fontWeight: 800 }}>• Total Interest Saved: +$87,400 Cash Saved!</div>
           </div>
         </div>
 
