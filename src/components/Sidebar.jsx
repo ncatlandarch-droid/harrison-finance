@@ -18,7 +18,8 @@ import {
   MapPin,
   Trophy,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Award
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -28,9 +29,10 @@ export const Sidebar = () => {
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  // Streamlined Core Non-Redundant Navigation Items
+  // Streamlined Core Navigation Items
   const navItems = [
     { id: 'dashboard', label: 'Dashboard & Roster', icon: LayoutDashboard },
+    { id: 'wealth', label: 'Retirement & Wealth', icon: Award },
     { id: 'thinkeco', label: 'Think! Ecosystem Hub', icon: Building2 },
     { id: 'strategy', label: 'Debt & HELOC Payoff', icon: Flame },
     { id: 'recurring', label: 'Subscriptions & Bills', icon: RefreshCw },
@@ -137,7 +139,7 @@ export const Sidebar = () => {
           </nav>
         </div>
 
-        {/* 🐶 2X LARGER ISLA BULLDOG FINANCIAL WIZARD ASSISTANT CARD (160px) */}
+        {/* 🐶 2X LARGER ISLA BULLDOG FINANCIAL WIZARD ASSISTANT CARD (150px) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
           
           <div

@@ -178,10 +178,19 @@ export const FinanceProvider = ({ children }) => {
   const bankAmericardCreditCard = boaAccounts.find(a => a.mask === '6343') || { balance: 4560.47 };
   const barbaraCheckingAccount = accounts.find(a => a.id === 'acc_barbara_checking') || { balance: 76155.00 };
   const capitalOneSavings = accounts.find(a => a.id === 'capone_savings') || { balance: 5000.00 };
+  const novoBusinessChecking = accounts.find(a => a.id === 'novo_business') || { balance: 12450.00 };
+  
+  const chrisNC401k = accounts.find(a => a.id === 'chris_nc_401k') || { balance: 145000.00 };
+  const erinNC401k = accounts.find(a => a.id === 'erin_nc_401k') || { balance: 110000.00 };
+  const erinCD = accounts.find(a => a.id === 'erin_cd_01') || { balance: 25000.00 };
 
-  const totalCheckingCash = (papiChecking.balance || 0) + (spendingMoney.balance || 0) + (advPlusBanking.balance || 0);
-  const totalBoACash = totalCheckingCash + (advantageSavings.balance || 0);
-  const totalLiquidityBalance = totalBoACash + (barbaraCheckingAccount.balance || 0) + (capitalOneSavings.balance || 0);
+  const totalCheckingCash = (papiChecking.balance || 0) + (spendingMoney.balance || 0) + (advPlusBanking.balance || 0) + (novoBusinessChecking.balance || 0);
+  const totalBoACash = (papiChecking.balance || 0) + (spendingMoney.balance || 0) + (advPlusBanking.balance || 0) + (advantageSavings.balance || 0);
+  const totalLiquidReserves = totalBoACash + (barbaraCheckingAccount.balance || 0) + (capitalOneSavings.balance || 0) + (novoBusinessChecking.balance || 0);
+  const totalRetirementAssets = (chrisNC401k.balance || 0) + (erinNC401k.balance || 0);
+  const totalCDAssets = erinCD.balance || 0;
+  
+  const totalCompleteNetWorth = totalLiquidReserves + totalRetirementAssets + totalCDAssets - (bankAmericardCreditCard.balance || 0);
 
   return (
     <FinanceContext.Provider value={{
@@ -202,14 +211,21 @@ export const FinanceProvider = ({ children }) => {
       totalCombinedSurplus,
       totalCheckingCash,
       totalBoACash,
-      totalLiquidityBalance,
+      totalLiquidReserves,
+      totalRetirementAssets,
+      totalCDAssets,
+      totalCompleteNetWorth,
       papiChecking,
       spendingMoney,
       advPlusBanking,
       advantageSavings,
       bankAmericardCreditCard,
       barbaraCheckingAccount,
-      capitalOneSavings
+      capitalOneSavings,
+      novoBusinessChecking,
+      chrisNC401k,
+      erinNC401k,
+      erinCD
     }}>
       {children}
     </FinanceContext.Provider>

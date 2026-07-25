@@ -65,7 +65,11 @@ export const INITIAL_DATA = {
     { id: "boa_0495", name: "Advantage Savings - 0495", type: "Savings", memberId: "chris", institution: "Bank of America", balance: 2392.91, status: "Active" },
     { id: "boa_6343", name: "BankAmericard Visa - 6343", type: "Credit Card", memberId: "chris", institution: "Bank of America", balance: 4560.47, status: "Credit Card" },
     { id: "penfed_savings", name: "Mom's PenFed / BoA Savings", type: "Savings", memberId: "barbara", institution: "PenFed", balance: 76155.00, status: "Active" },
-    { id: "capone_savings", name: "Capital One High-Yield Savings", type: "Savings", memberId: "chris", institution: "Capital One", balance: 5000.00, status: "Active High-Yield" }
+    { id: "capone_savings", name: "Capital One High-Yield Savings", type: "Savings", memberId: "chris", institution: "Capital One", balance: 5000.00, status: "Active High-Yield" },
+    { id: "novo_business", name: "Novo Business Checking (Think! Design & Planning)", type: "Checking", memberId: "chris", institution: "Novo Bank", balance: 12450.00, status: "Active Business" },
+    { id: "chris_nc_401k", name: "Chris NC A&T 401(k) / ORP Plan", type: "Retirement", memberId: "chris", institution: "Empower / NC State", balance: 145000.00, status: "Active NC State" },
+    { id: "erin_nc_401k", name: "Erin NC Educator 401(k) / 403(b) Plan", type: "Retirement", memberId: "erin", institution: "Empower / NC State", balance: 110000.00, status: "Active NC Educator" },
+    { id: "erin_cd_01", name: "Erin 12-Month High-Yield CD (5.15% APY)", type: "CD", memberId: "erin", institution: "Wells Fargo / Credit Union", balance: 25000.00, status: "Matures Nov 2026" }
   ],
 
   // 50 REAL LIVE RECENT TRANSACTIONS PARSED DIRECTLY FROM YOUR BOA FEED

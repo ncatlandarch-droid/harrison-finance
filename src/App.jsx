@@ -3,7 +3,7 @@ import { FinanceProvider, useFinance } from './context/FinanceContext';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
-import { FamilyVaultSection } from './components/FamilyVaultSection';
+import { RetirementWealthHub } from './components/RetirementWealthHub';
 import { ThinkEcosystemSection } from './components/ThinkEcosystemSection';
 import { LocalResourcesSection } from './components/LocalResourcesSection';
 import { DebtStrategySection } from './components/DebtStrategySection';
@@ -27,8 +27,8 @@ const AppContent = () => {
     switch (activeTab) {
       case 'dashboard':
         return <Dashboard />;
-      case 'familyvault':
-        return <FamilyVaultSection />;
+      case 'wealth':
+        return <RetirementWealthHub />;
       case 'thinkeco':
         return <ThinkEcosystemSection />;
       case 'localres':
