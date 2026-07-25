@@ -10,7 +10,10 @@ import {
   PieChart as PieIcon, 
   Zap, 
   ShieldAlert,
-  Sliders
+  Sliders,
+  CreditCard,
+  Check,
+  Calendar
 } from 'lucide-react';
 import { 
   PieChart, 
@@ -34,6 +37,7 @@ export const DebtStrategySection = () => {
   } = useFinance();
 
   const [extraPayment, setExtraPayment] = useState(500);
+  const [boaTargetPlan, setBoaTargetPlan] = useState('full'); // 'full' | '6mo' | '12mo'
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -47,11 +51,6 @@ export const DebtStrategySection = () => {
     { category: 'Savings & Investments', amount: 400.00, color: '#10b981', items: 'Capital One ($150), Primerica Inv ($100), PenFed ($50)' },
     { category: 'Subscriptions & Software', amount: 162.08, color: '#06b6d4', items: 'Adobe, Gym, Netflix, Max, Prime, Showtime, Pandora, ChatGPT' }
   ];
-
-  // Figure HELOC Projections
-  const currentFigureInterest30Yr = 140000;
-  const resetFigureInterest30Yr = 227000;
-  const interestSavedByRefinancing = resetFigureInterest30Yr - currentFigureInterest30Yr;
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -72,6 +71,114 @@ export const DebtStrategySection = () => {
             Net Surplus: {fmt(totalCombinedSurplus)} / mo
           </div>
         </div>
+      </div>
+
+      {/* 💳 BANKAMERICARD VISA AUTOPAY & PAYOFF TARGET ENGINE */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.18), rgba(15, 23, 42, 0.95))', border: '2px solid var(--danger)' }}>
+        <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
+          <div>
+            <span className="badge badge-danger" style={{ fontWeight: 900, padding: '4px 12px' }}>
+              💳 BANK OF AMERICA VISA (CARD 6343) AUTOPAY GOAL
+            </span>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <CreditCard size={24} color="var(--danger)" />
+              <span>What Should Be Your BankAmericard Monthly AutoPay Goal?</span>
+            </h3>
+            <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Stop minimum payment traps! Choose your automated payoff target below:
+            </p>
+          </div>
+        </div>
+
+        {/* 3 AutoPay Plan Options */}
+        <div className="grid-3" style={{ gap: '1.25rem', marginBottom: '1.5rem' }}>
+          
+          {/* Plan 1: Full Statement Balance (Gold Standard) */}
+          <div 
+            onClick={() => setBoaTargetPlan('full')}
+            style={{ 
+              background: boaTargetPlan === 'full' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(0,0,0,0.35)', 
+              border: boaTargetPlan === 'full' ? '2.5px solid #10b981' : '1px solid var(--border-color)', 
+              borderRadius: '16px', 
+              padding: '1.25rem',
+              cursor: 'pointer'
+            }}
+          >
+            <div style={{ fontSize: '0.78rem', color: 'var(--success)', fontWeight: 900 }}>🥇 GOLD STANDARD (#1 GOAL)</div>
+            <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#fff', margin: '0.3rem 0' }}>
+              AutoPay Full Statement
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 800 }}>
+              $0.00 Interest Ever Paid!
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
+              Pays full statement balance automatically 5 days before due date.
+            </div>
+          </div>
+
+          {/* Plan 2: 6-Month Fast Payoff ($760/mo) */}
+          <div 
+            onClick={() => setBoaTargetPlan('6mo')}
+            style={{ 
+              background: boaTargetPlan === '6mo' ? 'rgba(253, 185, 39, 0.2)' : 'rgba(0,0,0,0.35)', 
+              border: boaTargetPlan === '6mo' ? '2.5px solid #FDB927' : '1px solid var(--border-color)', 
+              borderRadius: '16px', 
+              padding: '1.25rem',
+              cursor: 'pointer'
+            }}
+          >
+            <div style={{ fontSize: '0.78rem', color: '#FDB927', fontWeight: 900 }}>⚡ 6-MONTH ACCELERATED</div>
+            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', margin: '0.3rem 0' }}>
+              $760.00 / month
+            </div>
+            <div style={{ fontSize: '0.8rem', color: '#FDB927', fontWeight: 800 }}>
+              Saves +$1,100 in Interest!
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
+              Clears $4,560 balance in 6 months flat (Done Jan 2027!).
+            </div>
+          </div>
+
+          {/* Plan 3: 12-Month Balanced ($380/mo) */}
+          <div 
+            onClick={() => setBoaTargetPlan('12mo')}
+            style={{ 
+              background: boaTargetPlan === '12mo' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(0,0,0,0.35)', 
+              border: boaTargetPlan === '12mo' ? '2.5px solid #6366f1' : '1px solid var(--border-color)', 
+              borderRadius: '16px', 
+              padding: '1.25rem',
+              cursor: 'pointer'
+            }}
+          >
+            <div style={{ fontSize: '0.78rem', color: 'var(--primary-light)', fontWeight: 900 }}>📅 12-MONTH BALANCED</div>
+            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', margin: '0.3rem 0' }}>
+              $380.00 / month
+            </div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--primary-light)', fontWeight: 800 }}>
+              Comfortable Monthly Pace
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
+              Clears $4,560 balance in 12 months (Done July 2027!).
+            </div>
+          </div>
+
+        </div>
+
+        {/* 🤖 Step-by-Step BoA AutoPay Setup Guide */}
+        <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1.25rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ fontWeight: 800, color: '#fff', fontSize: '0.95rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <CheckCircle2 size={18} color="var(--success)" />
+            <span>How to Set Up Your Automatic Payment in Bank of America (2 Minutes):</span>
+          </div>
+          <div style={{ fontSize: '0.84rem', color: '#cbd5e1', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+            <div>1. Log into <strong>Bank of America Online Banking</strong> (or BoA Mobile App).</div>
+            <div>2. Navigate to <strong>Transfers & Pay Bills ➔ AutoPay Setup</strong>.</div>
+            <div>3. Select Card: <strong>BankAmericard Visa - 6343</strong> • Pay From: <strong>Adv Plus Checking - 4717</strong>.</div>
+            <div>4. Select Payment Amount: <strong>{boaTargetPlan === 'full' ? 'Full Statement Balance (Recommended)' : boaTargetPlan === '6mo' ? 'Fixed Amount: $760.00' : 'Fixed Amount: $380.00'}</strong>.</div>
+            <div>5. Set Pay Date: <strong>5 Days Before Due Date</strong> (buffer against late fees).</div>
+          </div>
+        </div>
+
       </div>
 
       {/* SECTION 1: WHAT ARE YOU SPENDING THE MOST MONEY ON? */}
@@ -100,167 +207,24 @@ export const DebtStrategySection = () => {
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(value) => [`$${value.toLocaleString()}`, 'Monthly Spend']}
-                  contentStyle={{ background: '#1e293b', borderColor: 'var(--border-color)', borderRadius: '8px', color: '#fff' }}
+                  formatter={(val) => fmt(val)}
+                  contentStyle={{ background: '#1e293b', border: '1px solid var(--border-color)', borderRadius: '12px', color: '#fff' }}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Itemized Category Breakdown List */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-            {spendingBreakdown.map(item => (
-              <div key={item.category} style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '0.6rem 0.85rem',
-                background: 'rgba(0,0,0,0.25)',
-                borderRadius: 'var(--radius-md)',
-                borderLeft: `4px solid ${item.color}`
-              }}>
-                <div>
-                  <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.9rem' }}>{item.category}</div>
-                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>{item.items}</div>
+          {/* List of Breakdown Items */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {spendingBreakdown.map((item, idx) => (
+              <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', padding: '0.75rem 1rem', borderRadius: '12px', borderLeft: `4px solid ${item.color}` }}>
+                <div className="flex-between">
+                  <span style={{ fontWeight: 700, color: '#fff', fontSize: '0.9rem' }}>{item.category}</span>
+                  <span className="font-mono" style={{ fontWeight: 800, color: '#fff', fontSize: '0.95rem' }}>{fmt(item.amount)}</span>
                 </div>
-                <div className="font-mono" style={{ fontWeight: 800, color: '#fff', fontSize: '1rem' }}>
-                  {fmt(item.amount)}
-                </div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{item.items}</div>
               </div>
             ))}
-          </div>
-        </div>
-      </div>
-
-      {/* SECTION 2: HOW BEST TO PAY DOWN BILLS & DEBTS (THE 3-STEP AVALANCHE PLAN) */}
-      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(21, 28, 44, 0.95), rgba(30, 41, 64, 0.7))' }}>
-        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Zap size={22} color="var(--warning)" />
-          <span>Recommended 3-Step Debt Pay-Down Plan (Save Thousands in Interest)</span>
-        </h3>
-
-        <div className="grid-3">
-          
-          {/* Step 1: Figure Loan */}
-          <div style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.4)',
-            borderRadius: 'var(--radius-md)',
-            padding: '1.25rem'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <span className="badge badge-danger">Priority #1</span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--danger)', fontWeight: 700 }}>Highest Risk</span>
-            </div>
-
-            <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', marginBottom: '0.3rem' }}>
-              Figure Room Addition Loan
-            </h4>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '0.85rem' }}>
-              Currently <strong>$1,000/mo</strong> at <strong>9.75%</strong>. Resets to <strong style={{ color: 'var(--danger)' }}>15.30% in Aug 2029</strong>!
-            </p>
-
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.65rem', borderRadius: '8px', fontSize: '0.78rem', marginBottom: '0.85rem' }}>
-              💡 <strong>Action:</strong> Apply ${extraPayment}/mo of your net surplus to principal or refi into a fixed mortgage before Aug 2029 to save <strong>$87,000</strong>!
-            </div>
-          </div>
-
-          {/* Step 2: PenFed Refinance */}
-          <div style={{
-            background: 'rgba(245, 158, 11, 0.1)',
-            border: '1px solid rgba(245, 158, 11, 0.4)',
-            borderRadius: 'var(--radius-md)',
-            padding: '1.25rem'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <span className="badge badge-warning">Priority #2</span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--warning)', fontWeight: 700 }}>Quick Cash Flow Win</span>
-            </div>
-
-            <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', marginBottom: '0.3rem' }}>
-              PenFed Credit Card Refinance
-            </h4>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '0.85rem' }}>
-              Currently <strong>$389.16/mo</strong>. High-interest credit card consolidation.
-            </p>
-
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.65rem', borderRadius: '8px', fontSize: '0.78rem', marginBottom: '0.85rem' }}>
-              💡 <strong>Action:</strong> Knock this out second. Eliminating PenFed instantly frees up <strong>$389.16/month</strong> back into Barbara's account!
-            </div>
-          </div>
-
-          {/* Step 3: DoorDash & Subscriptions */}
-          <div style={{
-            background: 'rgba(16, 185, 129, 0.1)',
-            border: '1px solid rgba(16, 185, 129, 0.4)',
-            borderRadius: 'var(--radius-md)',
-            padding: '1.25rem'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <span className="badge badge-success">Priority #3</span>
-              <span style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 700 }}>Instant Monthly Savings</span>
-            </div>
-
-            <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', marginBottom: '0.3rem' }}>
-              Trim DoorDash & Subscriptions
-            </h4>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '0.85rem' }}>
-              DoorDash/Dining out is averaging <strong>$488/mo</strong> in extra fees.
-            </p>
-
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '0.65rem', borderRadius: '8px', fontSize: '0.78rem', marginBottom: '0.85rem' }}>
-              💡 <strong>Action:</strong> Cooking or picking up meals saves ~$330/mo. We already cut $110/mo in unused tech subs today!
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* SECTION 3: INTERACTIVE DEBT PAYOFF SIMULATOR */}
-      <div className="card">
-        <div className="flex-between" style={{ marginBottom: '1rem' }}>
-          <div>
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Sliders size={20} color="var(--primary-light)" />
-              <span>Interactive Extra Principal Payment Simulator</span>
-            </h3>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-              See how adding extra money towards the Figure Loan shortens the payoff timeline.
-            </p>
-          </div>
-          <div className="font-mono" style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--success)' }}>
-            +${extraPayment} / month extra
-          </div>
-        </div>
-
-        <input 
-          type="range"
-          min="100"
-          max="2000"
-          step="50"
-          value={extraPayment}
-          onChange={(e) => setExtraPayment(Number(e.target.value))}
-          style={{ width: '100%', cursor: 'pointer', margin: '0.5rem 0 1.25rem' }}
-        />
-
-        <div className="grid-3" style={{ textAlign: 'center' }}>
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Extra Payment Amount</span>
-            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary-light)', marginTop: '0.2rem' }}>
-              ${extraPayment} / mo
-            </div>
-          </div>
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Estimated Interest Saved</span>
-            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--success)', marginTop: '0.2rem' }}>
-              ${(extraPayment * 42).toLocaleString()}
-            </div>
-          </div>
-          <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: 'var(--radius-md)' }}>
-            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Payoff Accelerated By</span>
-            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--warning)', marginTop: '0.2rem' }}>
-              ~{Math.round(extraPayment / 80)} Years Faster
-            </div>
           </div>
         </div>
       </div>
