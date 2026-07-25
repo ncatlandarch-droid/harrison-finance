@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFinance } from '../context/FinanceContext';
+import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -16,7 +17,13 @@ import {
   Lock,
   Sparkles,
   RefreshCw,
-  Info
+  Trophy,
+  Heart,
+  Flame,
+  Award,
+  Zap,
+  CheckCircle2,
+  FileText
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -39,29 +46,167 @@ export const Dashboard = () => {
     barbaraCheckingAccount
   } = useFinance();
 
+  const [isReportOpen, setIsReportOpen] = useState(false);
+
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  // Player Metrics for Gamified Scoreboard
+  const players = [
+    {
+      id: 'barbara',
+      name: 'Barbara (Mom)',
+      role: 'Family Pillar & Reserve Guardian',
+      avatar: '💜',
+      color: '#a855f7',
+      income: 5645.84,
+      expenses: barbaraTotalExpenses,
+      surplus: 5645.84 - barbaraTotalExpenses,
+      score: 92,
+      badge: '👑 Wealth Preserver',
+      ratio: Math.round((barbaraTotalExpenses / 5645.84) * 100)
+    },
+    {
+      id: 'chris',
+      name: 'Chris',
+      role: 'Operating Lead & Tech Architect',
+      avatar: '💙',
+      color: '#6366f1',
+      income: 6309.36 + 3000.00, // Includes transfer for household
+      expenses: chrisTotalExpenses,
+      surplus: (6309.36 + 3000.00) - chrisTotalExpenses,
+      score: 84,
+      badge: '🚀 Revenue Engine',
+      ratio: Math.round((chrisTotalExpenses / (6309.36 + 3000.00)) * 100)
+    },
+    {
+      id: 'erin',
+      name: 'Erin',
+      role: 'Efficiency Specialist & Educator',
+      avatar: '💗',
+      color: '#ec4899',
+      income: 2500.00,
+      expenses: erinTotalExpenses,
+      surplus: 2500.00 - erinTotalExpenses,
+      score: 95,
+      badge: '🎯 Budget Ninja',
+      ratio: Math.round((erinTotalExpenses / 2500.00) * 100)
+    }
+  ];
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       
-      {/* 🚨 FORENSIC ACCOUNT BALANCE AUDIT ALERT */}
-      <div className="card" style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.12))', border: '1px solid rgba(239, 68, 68, 0.4)' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-          <AlertTriangle size={28} color="var(--danger)" style={{ flexShrink: 0, marginTop: '2px' }} />
+      {/* 🎮 GAMIFIED FAMILY PLAYER SCOREBOARD & INFLOW VS SPENDING RATIO */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))' }}>
+        <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <span>Live Account Balance Audit: Checking Cash vs Savings Reserves</span>
-              <span className="badge badge-danger">High Precision</span>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <Trophy size={24} color="#FDB927" />
+              <span>Harrison Family Financial Scoreboard & Player Avatars</span>
             </h3>
-            <p style={{ fontSize: '0.88rem', color: '#e2e8f0', marginTop: '0.35rem', lineHeight: '1.6' }}>
-              You asked: <em>"How is liquid correct if we only have a few hundred in our checking accounts?"</em><br />
-              Here is the exact live mathematical breakdown: Your 3 active checking accounts currently hold <strong>{fmt(totalCheckingCash)} ($875.36)</strong> in liquid cash. Your remaining liquid reserves are held in BoA Savings ({fmt(advantageSavings.balance)}) and Mom's PenFed Savings ({fmt(barbaraCheckingAccount.balance)}).
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Real-time gamified cash flow performance tracking per family earner
             </p>
           </div>
+
+          <button 
+            className="btn"
+            onClick={() => setIsReportOpen(true)}
+            style={{
+              background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
+              color: '#004684',
+              fontWeight: 800,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              boxShadow: '0 4px 14px rgba(253, 185, 39, 0.4)'
+            }}
+          >
+            <FileText size={18} />
+            <span>Open Real Talk Financial Report ❤️</span>
+          </button>
+        </div>
+
+        {/* 3 Player Cards */}
+        <div className="grid-3">
+          {players.map((p) => (
+            <div key={p.id} style={{
+              background: 'rgba(0, 0, 0, 0.35)',
+              borderRadius: 'var(--radius-md)',
+              padding: '1.25rem',
+              border: `1px solid ${p.color}40`,
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Top Row: Avatar & Badge */}
+              <div className="flex-between" style={{ marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    background: `linear-gradient(135deg, ${p.color}, #1e1b4b)`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.6rem',
+                    boxShadow: `0 4px 14px ${p.color}40`,
+                    border: '2px solid rgba(255,255,255,0.2)'
+                  }}>
+                    {p.avatar}
+                  </div>
+                  <div>
+                    <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem' }}>{p.name}</h4>
+                    <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>{p.role}</span>
+                  </div>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <span className="badge" style={{ background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 700 }}>
+                    {p.badge}
+                  </span>
+                </div>
+              </div>
+
+              {/* Inflow vs Outflow Progress Bar */}
+              <div style={{ marginBottom: '1rem' }}>
+                <div className="flex-between" style={{ fontSize: '0.78rem', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
+                  <span>Spending Ratio ({p.ratio}%)</span>
+                  <span style={{ color: p.surplus > 0 ? 'var(--success)' : 'var(--danger)', fontWeight: 700 }}>
+                    +{fmt(p.surplus)} Net Surplus
+                  </span>
+                </div>
+                <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
+                  <div style={{
+                    width: `${Math.min(p.ratio, 100)}%`,
+                    height: '100%',
+                    background: p.ratio > 85 ? 'linear-gradient(90deg, #f59e0b, #ef4444)' : 'linear-gradient(90deg, #10b981, #6366f1)',
+                    borderRadius: '4px'
+                  }} />
+                </div>
+              </div>
+
+              {/* Inflow / Outflow Stat Numbers */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', background: 'rgba(255,255,255,0.03)', padding: '0.75rem', borderRadius: '8px' }}>
+                <div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>INCOME BROUGHT IN</div>
+                  <div className="font-mono" style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--success)' }}>
+                    {fmt(p.income)}
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>MONTHLY SPENT</div>
+                  <div className="font-mono" style={{ fontWeight: 800, fontSize: '1rem', color: 'var(--danger)' }}>
+                    {fmt(p.expenses)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* 💳 EXACT 5 BANK OF AMERICA ACCOUNTS & BALANCES WIDGET */}
+      {/* 💳 REAL LIVE BANK OF AMERICA ACCOUNTS & BALANCES WIDGET */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))' }}>
         <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
@@ -280,6 +425,9 @@ export const Dashboard = () => {
           </table>
         </div>
       </div>
+
+      {/* Financial Strategy Modal */}
+      <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
 
     </div>
   );
