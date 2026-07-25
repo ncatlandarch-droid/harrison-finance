@@ -18,7 +18,8 @@ import {
   Info,
   Heart,
   UserCheck,
-  Mail
+  Mail,
+  Shield
 } from 'lucide-react';
 
 export const RetirementWealthHub = () => {
@@ -57,7 +58,7 @@ export const RetirementWealthHub = () => {
               The Harrison Family Complete Net Worth
             </h2>
             <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
-              Combines Liquid Cash + NC Pension ($3.1k/mo) + NC 401(k) + CDs + Business Assets
+              Combines Liquid Cash + NC Pension ($1.8k/mo) + NC 401(k) + CDs + Business Assets
             </p>
           </div>
 
@@ -81,11 +82,11 @@ export const RetirementWealthHub = () => {
           </div>
 
           <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>2. NC PENSION (8.0 YRS VESTED)</div>
+            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>2. MAY 2040 TSERS PENSION</div>
             <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FDB927', marginTop: '0.2rem' }}>
-              $3,117.50 / mo
+              $1,803.55 / mo
             </div>
-            <div style={{ fontSize: '0.74rem', color: '#FDB927', marginTop: '0.3rem', fontWeight: 700 }}>Guaranteed Lifetime Benefit</div>
+            <div style={{ fontSize: '0.74rem', color: '#FDB927', marginTop: '0.3rem', fontWeight: 700 }}>22.0 Yrs Service (Age 60)</div>
           </div>
 
           <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
@@ -107,19 +108,19 @@ export const RetirementWealthHub = () => {
         </div>
       </div>
 
-      {/* 🏛️ CHRIS'S OFFICIAL NC MARS PENSION & 8.0 YEARS SERVICE CREDIT RECORD */}
-      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(0, 70, 132, 0.35), rgba(79, 70, 229, 0.2))', border: '2px solid #FDB927' }}>
+      {/* 🏛️ CHRIS'S OFFICIAL MAY 2040 (AGE 60) TSERS CUSTOM BENEFIT ESTIMATE */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(0, 70, 132, 0.4), rgba(79, 70, 229, 0.25))', border: '2.5px solid #FDB927' }}>
         <div className="flex-between" style={{ borderBottom: '1px solid rgba(253, 185, 39, 0.3)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
           <div>
             <span className="badge badge-primary" style={{ background: '#004684', color: '#FDB927', fontWeight: 900, padding: '4px 12px' }}>
-              OFFICIAL NC TSERS RECORD • 8.0 YEARS SERVICE CREDIT
+              OFFICIAL NC ORBIT ESTIMATE • MAY 1, 2040 (AGE 60)
             </span>
-            <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <Award size={26} color="#FDB927" />
-              <span>William (Chris) Harrison — NC A&T State University Service Record</span>
+              <span>William (Chris) Harrison — TSERS Custom Retirement Estimate</span>
             </h3>
             <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Member ID: <strong>1875708</strong> • Employer: <strong>NC A&T UNIVERSITY</strong> (2018–2026) • Email: <strong>wcharris@ncat.edu</strong>
+              Member ID: <strong>1875708</strong> • Average Final Compensation (AFC): <strong>$63,591.24</strong> • Estimated Service: <strong>22.00 Years</strong>
             </p>
           </div>
 
@@ -135,164 +136,163 @@ export const RetirementWealthHub = () => {
           </a>
         </div>
 
-        {/* 4 Core TSERS Verified Cards */}
-        <div className="grid-4" style={{ gap: '1.25rem', marginBottom: '1.5rem' }}>
+        {/* 5 Pension Option Cards */}
+        <div className="grid-3" style={{ gap: '1.25rem', marginBottom: '1.5rem' }}>
           
-          {/* Lifetime Pension Card */}
+          {/* Maximum Allowance */}
           <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1.25rem', borderRadius: '16px', border: '1.5px solid #FDB927' }}>
-            <div style={{ fontSize: '0.76rem', color: '#FDB927', fontWeight: 800 }}>PROJECTED MONTHLY PENSION</div>
-            <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: '#fff', marginTop: '0.2rem' }}>
-              $3,117.50 / mo
-            </div>
-            <div style={{ fontSize: '0.74rem', color: 'var(--success)', marginTop: '0.3rem', fontWeight: 700 }}>
-              ✓ Guaranteed Monthly Lifetime Income
-            </div>
-          </div>
-
-          {/* Service Years */}
-          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', fontWeight: 800 }}>TOTAL SERVICE CREDIT</div>
-            <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--primary-light)', marginTop: '0.2rem' }}>
-              8.00 Years
+            <div style={{ fontSize: '0.76rem', color: '#FDB927', fontWeight: 800 }}>MAXIMUM ALLOWANCE</div>
+            <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 900, color: '#fff', marginTop: '0.2rem' }}>
+              $1,803.55 / mo
             </div>
             <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-              NC A&T Membership (2018–2026)
+              Member Lifetime Benefit ($0.00 to Beneficiary)
             </div>
           </div>
 
-          {/* Accumulated Balance */}
-          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', fontWeight: 800 }}>ACCUMULATED CONTRIBUTIONS</div>
-            <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--success)', marginTop: '0.2rem' }}>
-              $40,541.43
-            </div>
-            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-              Includes +$4,288.41 Interest Earned
-            </div>
-          </div>
-
-          {/* Designated Beneficiary */}
-          <div style={{ background: 'rgba(236, 72, 153, 0.15)', padding: '1.25rem', borderRadius: '16px', border: '1.5px solid #ec4899' }}>
-            <div style={{ fontSize: '0.76rem', color: '#f472b6', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+          {/* Option 2 - 100% Survivorship (RECOMMENDED FOR ERIN!) */}
+          <div style={{ background: 'rgba(236, 72, 153, 0.15)', padding: '1.25rem', borderRadius: '16px', border: '2px solid #ec4899' }}>
+            <div style={{ fontSize: '0.76rem', color: '#f472b6', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
               <Heart size={14} fill="#ec4899" />
-              <span>PRINCIPAL BENEFICIARY</span>
+              <span>OPTION 2 • 100% SURVIVORSHIP (RECOMMENDED!)</span>
             </div>
-            <div style={{ fontSize: '1.3rem', fontWeight: 900, color: '#fff', marginTop: '0.2rem' }}>
-              ERIN HARRISON
+            <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 900, color: '#fff', marginTop: '0.2rem' }}>
+              $1,682.89 / mo
             </div>
-            <div style={{ fontSize: '0.74rem', color: '#f472b6', marginTop: '0.3rem', fontWeight: 700 }}>
-              ✓ 100% Death & Return Beneficiary
+            <div style={{ fontSize: '0.74rem', color: '#f472b6', marginTop: '0.3rem', fontWeight: 800 }}>
+              ✓ Pays Erin $1,682.89/mo for LIFE if Chris passes
+            </div>
+          </div>
+
+          {/* Option 3 - 50% Survivorship */}
+          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', fontWeight: 800 }}>OPTION 3 • 50% SURVIVORSHIP</div>
+            <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 900, color: 'var(--primary-light)', marginTop: '0.2rem' }}>
+              $1,741.15 / mo
+            </div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
+              Pays Erin $870.57/mo after member death
             </div>
           </div>
 
         </div>
 
-        {/* 📜 HISTORICAL SALARY & SERVICE BREAKDOWN TABLE */}
-        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
-          <div style={{ fontWeight: 800, color: '#fff', fontSize: '0.95rem', marginBottom: '0.85rem' }}>
-            📜 NC A&T Annual Salary & Contribution History (2018–2026)
+        {/* Option 6-2 & 6-3 Summary Box */}
+        <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: '#cbd5e1' }}>
+          <div>
+            • <strong>Option 6-2 (Modified 100% Survivorship):</strong> Member gets <strong>$1,658.91/mo</strong> • Erin gets <strong>$1,658.91/mo</strong>
           </div>
-          
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', fontSize: '0.82rem', textAlign: 'left', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                  <th style={{ padding: '8px' }}>Year</th>
-                  <th style={{ padding: '8px' }}>Employer</th>
-                  <th style={{ padding: '8px' }}>Annual Salary</th>
-                  <th style={{ padding: '8px' }}>6% Pre-Tax Contrib</th>
-                  <th style={{ padding: '8px' }}>Interest Earned</th>
-                  <th style={{ padding: '8px' }}>Total Year Balance</th>
-                  <th style={{ padding: '8px' }}>Service Credit</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2026</td>
-                  <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$47,307.92</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$2,838.46</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$0.00</td>
-                  <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$2,838.46</td>
-                  <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>0.5 Yrs</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2025</td>
-                  <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$94,615.96</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$5,676.90</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$1,231.77</td>
-                  <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$6,908.67</td>
-                  <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2024</td>
-                  <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$76,285.50</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$4,577.10</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$1,008.35</td>
-                  <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$5,585.45</td>
-                  <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2023</td>
-                  <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$81,742.43</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$4,904.59</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$780.93</td>
-                  <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$5,685.52</td>
-                  <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2022</td>
-                  <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$77,086.32</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$4,625.17</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$573.01</td>
-                  <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$5,198.18</td>
-                  <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2021</td>
-                  <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$68,120.04</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$4,087.20</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$393.77</td>
-                  <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$4,480.97</td>
-                  <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2020</td>
-                  <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$66,060.04</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$3,963.60</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$226.18</td>
-                  <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$4,189.78</td>
-                  <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2019</td>
-                  <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$62,000.04</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$3,720.00</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$74.40</td>
-                  <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$3,794.40</td>
-                  <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
-                </tr>
-                <tr>
-                  <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2018</td>
-                  <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$31,000.02</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$1,860.00</td>
-                  <td style={{ padding: '8px' }} className="font-mono">$0.00</td>
-                  <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$1,860.00</td>
-                  <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>0.5 Yrs</td>
-                </tr>
-              </tbody>
-            </table>
+          <div>
+            • <strong>Option 6-3 (Modified 50% Survivorship):</strong> Member gets <strong>$1,728.16/mo</strong> • Erin gets <strong>$864.08/mo</strong>
           </div>
         </div>
 
+      </div>
+
+      {/* 📜 HISTORICAL SALARY & SERVICE BREAKDOWN TABLE */}
+      <div className="card">
+        <div style={{ fontWeight: 800, color: '#fff', fontSize: '0.95rem', marginBottom: '0.85rem' }}>
+          📜 NC A&T Annual Salary & Contribution History (2018–2026)
+        </div>
+        
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', fontSize: '0.82rem', textAlign: 'left', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
+                <th style={{ padding: '8px' }}>Year</th>
+                <th style={{ padding: '8px' }}>Employer</th>
+                <th style={{ padding: '8px' }}>Annual Salary</th>
+                <th style={{ padding: '8px' }}>6% Pre-Tax Contrib</th>
+                <th style={{ padding: '8px' }}>Interest Earned</th>
+                <th style={{ padding: '8px' }}>Total Year Balance</th>
+                <th style={{ padding: '8px' }}>Service Credit</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2026</td>
+                <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
+                <td style={{ padding: '8px' }} className="font-mono">$47,307.92</td>
+                <td style={{ padding: '8px' }} className="font-mono">$2,838.46</td>
+                <td style={{ padding: '8px' }} className="font-mono">$0.00</td>
+                <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$2,838.46</td>
+                <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>0.5 Yrs</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2025</td>
+                <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
+                <td style={{ padding: '8px' }} className="font-mono">$94,615.96</td>
+                <td style={{ padding: '8px' }} className="font-mono">$5,676.90</td>
+                <td style={{ padding: '8px' }} className="font-mono">$1,231.77</td>
+                <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$6,908.67</td>
+                <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2024</td>
+                <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
+                <td style={{ padding: '8px' }} className="font-mono">$76,285.50</td>
+                <td style={{ padding: '8px' }} className="font-mono">$4,577.10</td>
+                <td style={{ padding: '8px' }} className="font-mono">$1,008.35</td>
+                <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$5,585.45</td>
+                <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2023</td>
+                <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
+                <td style={{ padding: '8px' }} className="font-mono">$81,742.43</td>
+                <td style={{ padding: '8px' }} className="font-mono">$4,904.59</td>
+                <td style={{ padding: '8px' }} className="font-mono">$780.93</td>
+                <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$5,685.52</td>
+                <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2022</td>
+                <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
+                <td style={{ padding: '8px' }} className="font-mono">$77,086.32</td>
+                <td style={{ padding: '8px' }} className="font-mono">$4,625.17</td>
+                <td style={{ padding: '8px' }} className="font-mono">$573.01</td>
+                <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$5,198.18</td>
+                <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2021</td>
+                <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
+                <td style={{ padding: '8px' }} className="font-mono">$68,120.04</td>
+                <td style={{ padding: '8px' }} className="font-mono">$4,087.20</td>
+                <td style={{ padding: '8px' }} className="font-mono">$393.77</td>
+                <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$4,480.97</td>
+                <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2020</td>
+                <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
+                <td style={{ padding: '8px' }} className="font-mono">$66,060.04</td>
+                <td style={{ padding: '8px' }} className="font-mono">$3,963.60</td>
+                <td style={{ padding: '8px' }} className="font-mono">$226.18</td>
+                <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$4,189.78</td>
+                <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2019</td>
+                <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
+                <td style={{ padding: '8px' }} className="font-mono">$62,000.04</td>
+                <td style={{ padding: '8px' }} className="font-mono">$3,720.00</td>
+                <td style={{ padding: '8px' }} className="font-mono">$74.40</td>
+                <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$3,794.40</td>
+                <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>1.0 Yrs</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '8px', fontWeight: 700, color: '#fff' }}>2018</td>
+                <td style={{ padding: '8px' }}>NC A&T UNIVERSITY</td>
+                <td style={{ padding: '8px' }} className="font-mono">$31,000.02</td>
+                <td style={{ padding: '8px' }} className="font-mono">$1,860.00</td>
+                <td style={{ padding: '8px' }} className="font-mono">$0.00</td>
+                <td style={{ padding: '8px', color: 'var(--success)' }} className="font-mono">$1,860.00</td>
+                <td style={{ padding: '8px', color: '#FDB927', fontWeight: 800 }}>0.5 Yrs</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* 🏛️ NOVO BANK CONNECTION GUIDE (CHRIS'S BUSINESS BANKING) */}
