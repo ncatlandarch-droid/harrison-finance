@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useFinance } from '../context/FinanceContext';
 import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
-import { PlayerProfileModal } from './PlayerProfileModal';
+import { PlayerProfilePage } from './PlayerProfilePage';
 import { FamilyProfilePortalModal } from './FamilyProfilePortalModal';
 import { 
   TrendingUp, 
@@ -62,6 +62,11 @@ export const Dashboard = () => {
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+  // If a player is selected, render their Dedicated Full-Page Workspace!
+  if (selectedPlayer) {
+    return <PlayerProfilePage player={selectedPlayer} onBack={() => setSelectedPlayer(null)} />;
+  }
+
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.25rem' }}>
       
@@ -84,7 +89,7 @@ export const Dashboard = () => {
               </button>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-              👉 <strong>Click any player avatar</strong> to open their document vault (Birth Certificates, Passports, Pet Records) & Gamified XP!
+              👉 <strong>Click any player avatar</strong> to open their full-page document vault & Gamified XP Command Center!
             </p>
           </div>
 
@@ -163,7 +168,7 @@ export const Dashboard = () => {
                 </div>
               )}
 
-              {/* GIANT AVATAR HEADER (150px Frames!) */}
+              {/* GIANT AVATAR HEADER (145px Frames!) */}
               <div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1.25rem' }}>
                   
@@ -200,7 +205,7 @@ export const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Click to Drill Down Footer */}
+              {/* Click to Open Full Page Workspace */}
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -213,7 +218,7 @@ export const Dashboard = () => {
                 color: p.color,
                 fontWeight: 800
               }}>
-                <span>Open Passport & Vault</span>
+                <span>Open Full Page Workspace</span>
                 <ChevronRight size={18} />
               </div>
 
@@ -372,7 +377,6 @@ export const Dashboard = () => {
       {/* Modals */}
       <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
       <FamilyProfilePortalModal isOpen={isFamilyPortalOpen} onClose={() => setIsFamilyPortalOpen(false)} />
-      <PlayerProfileModal player={selectedPlayer} onClose={() => setSelectedPlayer(null)} />
 
     </div>
   );

@@ -18,8 +18,7 @@ import {
   MapPin,
   Trophy,
   ChevronLeft,
-  ChevronRight,
-  MessageSquare
+  ChevronRight
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -29,10 +28,9 @@ export const Sidebar = () => {
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  // Streamlined 7 Core Non-Redundant Navigation Items
+  // Streamlined Core Non-Redundant Navigation Items
   const navItems = [
     { id: 'dashboard', label: 'Dashboard & Roster', icon: LayoutDashboard },
-    { id: 'familyvault', label: 'Encrypted Family Vault', icon: Lock },
     { id: 'thinkeco', label: 'Think! Ecosystem Hub', icon: Building2 },
     { id: 'strategy', label: 'Debt & HELOC Payoff', icon: Flame },
     { id: 'recurring', label: 'Subscriptions & Bills', icon: RefreshCw },
@@ -43,7 +41,7 @@ export const Sidebar = () => {
   return (
     <>
       <aside style={{
-        width: isCollapsed ? '88px' : '270px',
+        width: isCollapsed ? '90px' : '280px',
         background: 'var(--bg-surface)',
         borderRight: '1px solid var(--border-color)',
         padding: isCollapsed ? '1.25rem 0.5rem' : '1.25rem 1rem',
@@ -139,15 +137,15 @@ export const Sidebar = () => {
           </nav>
         </div>
 
-        {/* 🐶 3X LARGER ISLA BULLDOG FINANCIAL WIZARD ASSISTANT CARD */}
+        {/* 🐶 2X LARGER ISLA BULLDOG FINANCIAL WIZARD ASSISTANT CARD (115px) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
           
           <div
             onClick={() => setIsAiModalOpen(true)}
             style={{
-              background: 'linear-gradient(180deg, rgba(0, 70, 132, 0.4), rgba(15, 23, 42, 0.95))',
-              border: '2px solid #FDB927',
-              borderRadius: '16px',
+              background: 'linear-gradient(180deg, rgba(0, 70, 132, 0.45), rgba(15, 23, 42, 0.98))',
+              border: '2.5px solid #FDB927',
+              borderRadius: '20px',
               padding: isCollapsed ? '0.75rem 0.4rem' : '1.25rem 1rem',
               cursor: 'pointer',
               display: 'flex',
@@ -156,7 +154,7 @@ export const Sidebar = () => {
               textAlign: 'center',
               gap: '0.65rem',
               transition: 'all 0.25s ease',
-              boxShadow: '0 8px 24px rgba(253, 185, 39, 0.25)'
+              boxShadow: '0 10px 30px rgba(253, 185, 39, 0.3)'
             }}
             className="card-hover"
             title={isCollapsed ? "ISLA Bulldog Financial Wizard AI" : ""}
@@ -166,8 +164,8 @@ export const Sidebar = () => {
               <div style={{
                 background: 'rgba(253, 185, 39, 0.15)',
                 border: '1px solid #FDB927',
-                padding: '4px 10px',
-                borderRadius: '12px',
+                padding: '4px 12px',
+                borderRadius: '14px',
                 fontSize: '0.74rem',
                 color: '#FDB927',
                 fontWeight: 800,
@@ -180,14 +178,14 @@ export const Sidebar = () => {
               </div>
             )}
 
-            {/* 3X LARGER ISLA PHOTO AVATAR FRAME (100px) */}
+            {/* 2X LARGER ISLA PHOTO AVATAR FRAME (115px) */}
             <div style={{
               position: 'relative',
-              width: isCollapsed ? '54px' : '100px',
-              height: isCollapsed ? '54px' : '100px',
+              width: isCollapsed ? '56px' : '115px',
+              height: isCollapsed ? '56px' : '115px',
               borderRadius: '50%',
-              border: '3.5px solid #FDB927',
-              boxShadow: '0 0 25px rgba(253, 185, 39, 0.65)',
+              border: '4px solid #FDB927',
+              boxShadow: '0 0 30px rgba(253, 185, 39, 0.75)',
               overflow: 'hidden',
               flexShrink: 0,
               background: '#004684',
@@ -213,20 +211,20 @@ export const Sidebar = () => {
 
             {!isCollapsed && (
               <div>
-                <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '0.98rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+                <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
                   <span>ISLA Bulldog AI</span>
                   <Sparkles size={14} color="#FDB927" />
                 </h4>
                 <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
-                  Financial Wizard & Family Mascot 🐶
+                  Financial Wizard & Mascot 🐶
                 </p>
                 <button 
                   className="btn btn-primary"
                   style={{
                     background: 'linear-gradient(135deg, #004684, #4f46e5)',
                     color: '#fff',
-                    fontSize: '0.76rem',
-                    padding: '4px 12px',
+                    fontSize: '0.78rem',
+                    padding: '5px 14px',
                     borderRadius: '20px',
                     fontWeight: 800,
                     marginTop: '0.5rem',
