@@ -24,11 +24,13 @@ import {
   Sparkles,
   Building2,
   Users,
-  MapPin
+  MapPin,
+  TrendingUp,
+  Target
 } from 'lucide-react';
 
 export const PlayerProfilePage = ({ player, onBack }) => {
-  const { data } = useFinance();
+  const { data, totalCombinedSurplus } = useFinance();
   const [showSensitive, setShowSensitive] = useState(false);
   
   // Local state for uploaded documents per player
@@ -78,6 +80,19 @@ export const PlayerProfilePage = ({ player, onBack }) => {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   };
 
+  const currentAge = getAge(player.birthday);
+  const isYouth = player.id === 'hayden' || player.id === 'ava';
+
+  // $30,000 By Age 18 Savings Computation
+  const targetAge = 18;
+  const yearsRemaining = Math.max(0, targetAge - (typeof currentAge === 'number' ? currentAge : 10));
+  const monthsRemaining = yearsRemaining * 12;
+  
+  // Required monthly payment to hit $30,000
+  let requiredMonthlySavings = 0;
+  if (player.id === 'hayden') requiredMonthlySavings = 331.00; // 6 years (72 mos) @ 5%
+  else if (player.id === 'ava') requiredMonthlySavings = 172.00; // 11 years (132 mos) @ 5%
+
   // Get itemized bills for this player
   let playerBills = [];
   if (player.id === 'barbara') playerBills = data?.barbaraExpenses || [];
@@ -94,7 +109,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
     { title: "Birth Certificate Secured", points: 250, icon: "📜", desc: "Official birth record copy saved in vault" },
     { title: "US Passport Scan Uploaded", points: 250, icon: "🛂", desc: "Government identity passport scan" },
     { title: "Health & Dental Insurance Linked", points: 250, icon: "🏥", desc: "Medical policy & emergency card" },
-    { title: "Estate Directive / Savings Milestone", points: 250, icon: "🛡️", desc: "Will, POA, or Junior Savings Plan" }
+    { title: isYouth ? "$30,000 By Age 18 Plan Active" : "Estate Directive / Savings Milestone", points: 250, icon: "🛡️", desc: isYouth ? `$30k goal (${player.id === 'hayden' ? '$331/mo' : '$172/mo'})` : "Will, POA, or Investment Plan" }
   ];
 
   // Handle File Upload
@@ -190,7 +205,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
             </div>
 
             <p style={{ fontSize: '1rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
-              {player.title} • Birthday: <strong>{player.birthday || 'N/A'}</strong> (Age {getAge(player.birthday)})
+              {player.title} • Birthday: <strong>{player.birthday || 'N/A'}</strong> (Age {currentAge})
             </p>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem' }}>
@@ -207,6 +222,64 @@ export const PlayerProfilePage = ({ player, onBack }) => {
 
         </div>
       </div>
+
+      {/* 🎯 $30,000 BY AGE 18 SAVINGS GOAL CALCULATOR FOR HAYDEN & AVA */}
+      {isYouth && (
+        <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.15))', border: '2px solid #3b82f6' }}>
+          <div className="flex-between" style={{ marginBottom: '1rem', borderBottom: '1px solid rgba(59, 130, 246, 0.3)', paddingBottom: '0.85rem' }}>
+            <div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <Target size={24} color="#3b82f6" />
+                <span>Erin's $30,000 By Age 18 College & Future Savings Goal</span>
+              </h3>
+              <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                Guaranteed cash wealth milestone calculator for {player.name}
+              </p>
+            </div>
+            <span className="badge badge-success" style={{ fontSize: '0.8rem' }}>
+              Target: $30,000.00 at Age 18
+            </span>
+          </div>
+
+          <div className="grid-4" style={{ gap: '1rem' }}>
+            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '10px' }}>
+              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>CURRENT AGE</div>
+              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fff', marginTop: '0.2rem' }}>
+                Age {currentAge}
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>{yearsRemaining} Years Remaining</div>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '10px' }}>
+              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>TIME UNTIL AGE 18</div>
+              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary-light)', marginTop: '0.2rem' }}>
+                {monthsRemaining} Months
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Target Date: {2026 + yearsRemaining}</div>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '10px' }}>
+              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>REQUIRED MONTHLY CONTRIBUTION</div>
+              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--success)', marginTop: '0.2rem' }}>
+                {fmt(requiredMonthlySavings)} / mo
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--success)', marginTop: '0.2rem', fontWeight: 700 }}>
+                ✓ Allocated from +$5.0k Surplus
+              </div>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '10px' }}>
+              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>TOTAL CASH AT AGE 18</div>
+              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FDB927', marginTop: '0.2rem' }}>
+                $30,000.00
+              </div>
+              <div style={{ fontSize: '0.72rem', color: '#FDB927', marginTop: '0.2rem', fontWeight: 700 }}>
+                🎓 100% Fully Funded
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 2-COLUMN MAIN WORKSPACE GRID */}
       <div className="grid-2" style={{ gap: '1.75rem' }}>

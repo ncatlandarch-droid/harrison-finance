@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useFinance } from '../context/FinanceContext';
-import { CoachHarrisonModal } from './CoachHarrisonModal';
+import { ISLAAssistantModal } from './ISLAAssistantModal';
 import { 
   LayoutDashboard, 
   Wallet, 
@@ -41,7 +41,7 @@ export const Sidebar = () => {
   return (
     <>
       <aside style={{
-        width: isCollapsed ? '90px' : '280px',
+        width: isCollapsed ? '90px' : '290px',
         background: 'var(--bg-surface)',
         borderRight: '1px solid var(--border-color)',
         padding: isCollapsed ? '1.25rem 0.5rem' : '1.25rem 1rem',
@@ -137,24 +137,24 @@ export const Sidebar = () => {
           </nav>
         </div>
 
-        {/* 🐶 2X LARGER ISLA BULLDOG FINANCIAL WIZARD ASSISTANT CARD (115px) */}
+        {/* 🐶 2X LARGER ISLA BULLDOG FINANCIAL WIZARD ASSISTANT CARD (160px) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
           
           <div
             onClick={() => setIsAiModalOpen(true)}
             style={{
-              background: 'linear-gradient(180deg, rgba(0, 70, 132, 0.45), rgba(15, 23, 42, 0.98))',
-              border: '2.5px solid #FDB927',
-              borderRadius: '20px',
-              padding: isCollapsed ? '0.75rem 0.4rem' : '1.25rem 1rem',
+              background: 'linear-gradient(180deg, rgba(0, 70, 132, 0.5), rgba(15, 23, 42, 0.98))',
+              border: '3px solid #FDB927',
+              borderRadius: '24px',
+              padding: isCollapsed ? '0.75rem 0.4rem' : '1.35rem 1rem',
               cursor: 'pointer',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               textAlign: 'center',
-              gap: '0.65rem',
+              gap: '0.75rem',
               transition: 'all 0.25s ease',
-              boxShadow: '0 10px 30px rgba(253, 185, 39, 0.3)'
+              boxShadow: '0 12px 35px rgba(253, 185, 39, 0.35)'
             }}
             className="card-hover"
             title={isCollapsed ? "ISLA Bulldog Financial Wizard AI" : ""}
@@ -162,30 +162,30 @@ export const Sidebar = () => {
             {/* Speech Bubble Header */}
             {!isCollapsed && (
               <div style={{
-                background: 'rgba(253, 185, 39, 0.15)',
+                background: 'rgba(253, 185, 39, 0.2)',
                 border: '1px solid #FDB927',
-                padding: '4px 12px',
-                borderRadius: '14px',
-                fontSize: '0.74rem',
+                padding: '4px 14px',
+                borderRadius: '16px',
+                fontSize: '0.76rem',
                 color: '#FDB927',
-                fontWeight: 800,
+                fontWeight: 900,
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.3rem'
               }}>
                 <Sparkles size={12} color="#FDB927" />
-                <span>"Woof! Ready to guide your wealth!"</span>
+                <span>"Woof! Ask ISLA AI!"</span>
               </div>
             )}
 
-            {/* 2X LARGER ISLA PHOTO AVATAR FRAME (115px) */}
+            {/* 2X LARGER ISLA PHOTO AVATAR FRAME (150px) */}
             <div style={{
               position: 'relative',
-              width: isCollapsed ? '56px' : '115px',
-              height: isCollapsed ? '56px' : '115px',
+              width: isCollapsed ? '58px' : '150px',
+              height: isCollapsed ? '58px' : '150px',
               borderRadius: '50%',
-              border: '4px solid #FDB927',
-              boxShadow: '0 0 30px rgba(253, 185, 39, 0.75)',
+              border: '4.5px solid #FDB927',
+              boxShadow: '0 0 35px rgba(253, 185, 39, 0.8)',
               overflow: 'hidden',
               flexShrink: 0,
               background: '#004684',
@@ -199,10 +199,10 @@ export const Sidebar = () => {
               />
               <span style={{
                 position: 'absolute',
-                bottom: '4px',
-                right: '4px',
-                width: '12px',
-                height: '12px',
+                bottom: '6px',
+                right: '6px',
+                width: '14px',
+                height: '14px',
                 borderRadius: '50%',
                 background: '#10b981',
                 border: '2px solid var(--bg-surface)'
@@ -211,7 +211,7 @@ export const Sidebar = () => {
 
             {!isCollapsed && (
               <div>
-                <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+                <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
                   <span>ISLA Bulldog AI</span>
                   <Sparkles size={14} color="#FDB927" />
                 </h4>
@@ -221,14 +221,15 @@ export const Sidebar = () => {
                 <button 
                   className="btn btn-primary"
                   style={{
-                    background: 'linear-gradient(135deg, #004684, #4f46e5)',
-                    color: '#fff',
-                    fontSize: '0.78rem',
-                    padding: '5px 14px',
+                    background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
+                    color: '#004684',
+                    fontSize: '0.82rem',
+                    padding: '6px 16px',
                     borderRadius: '20px',
-                    fontWeight: 800,
-                    marginTop: '0.5rem',
-                    width: '100%'
+                    fontWeight: 900,
+                    marginTop: '0.6rem',
+                    width: '100%',
+                    boxShadow: '0 4px 14px rgba(253, 185, 39, 0.4)'
                   }}
                 >
                   Ask ISLA AI 💬
@@ -256,7 +257,7 @@ export const Sidebar = () => {
       </aside>
 
       {/* AI Assistant Modal */}
-      <CoachHarrisonModal isOpen={isAiModalOpen} onClose={() => setIsAiModalOpen(false)} />
+      <ISLAAssistantModal isOpen={isAiModalOpen} onClose={() => setIsAiModalOpen(false)} />
     </>
   );
 };

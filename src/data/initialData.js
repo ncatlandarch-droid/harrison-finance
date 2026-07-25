@@ -64,7 +64,8 @@ export const INITIAL_DATA = {
     { id: "boa_4717", name: "Adv Plus Banking - 4717", type: "Checking", memberId: "chris", institution: "Bank of America", balance: 443.12, status: "Active" },
     { id: "boa_0495", name: "Advantage Savings - 0495", type: "Savings", memberId: "chris", institution: "Bank of America", balance: 2392.91, status: "Active" },
     { id: "boa_6343", name: "BankAmericard Visa - 6343", type: "Credit Card", memberId: "chris", institution: "Bank of America", balance: 4560.47, status: "Credit Card" },
-    { id: "penfed_savings", name: "Mom's PenFed / BoA Savings", type: "Savings", memberId: "barbara", institution: "PenFed", balance: 76155.00, status: "Active" }
+    { id: "penfed_savings", name: "Mom's PenFed / BoA Savings", type: "Savings", memberId: "barbara", institution: "PenFed", balance: 76155.00, status: "Active" },
+    { id: "capone_savings", name: "Capital One High-Yield Savings", type: "Savings", memberId: "chris", institution: "Capital One", balance: 5000.00, status: "Active High-Yield" }
   ],
 
   // 50 REAL LIVE RECENT TRANSACTIONS PARSED DIRECTLY FROM YOUR BOA FEED

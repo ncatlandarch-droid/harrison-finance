@@ -175,12 +175,13 @@ export const FinanceProvider = ({ children }) => {
   const spendingMoney = boaAccounts.find(a => a.mask === '4866') || { balance: 468.24 };
   const advPlusBanking = boaAccounts.find(a => a.mask === '4717') || { balance: 443.12 };
   const advantageSavings = boaAccounts.find(a => a.mask === '0495') || { balance: 2392.91 };
-  const bankAmericardCreditCard = boaAccounts.find(a => a.mask === '6343') || { balance: 4500.00 };
+  const bankAmericardCreditCard = boaAccounts.find(a => a.mask === '6343') || { balance: 4560.47 };
   const barbaraCheckingAccount = accounts.find(a => a.id === 'acc_barbara_checking') || { balance: 76155.00 };
+  const capitalOneSavings = accounts.find(a => a.id === 'capone_savings') || { balance: 5000.00 };
 
   const totalCheckingCash = (papiChecking.balance || 0) + (spendingMoney.balance || 0) + (advPlusBanking.balance || 0);
   const totalBoACash = totalCheckingCash + (advantageSavings.balance || 0);
-  const totalLiquidityBalance = totalBoACash + (barbaraCheckingAccount.balance || 0);
+  const totalLiquidityBalance = totalBoACash + (barbaraCheckingAccount.balance || 0) + (capitalOneSavings.balance || 0);
 
   return (
     <FinanceContext.Provider value={{
@@ -207,7 +208,8 @@ export const FinanceProvider = ({ children }) => {
       advPlusBanking,
       advantageSavings,
       bankAmericardCreditCard,
-      barbaraCheckingAccount
+      barbaraCheckingAccount,
+      capitalOneSavings
     }}>
       {children}
     </FinanceContext.Provider>
