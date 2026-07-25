@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useFinance } from '../context/FinanceContext';
 import { ISLAAssistantModal } from './ISLAAssistantModal';
 import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
-import { Plus, Bot, FileText, Sparkles, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { AnnualStatementRefreshQuestModal } from './AnnualStatementRefreshQuestModal';
+import { Plus, Bot, FileText, Sparkles, RefreshCw, CheckCircle2, Calendar } from 'lucide-react';
 
 export const Header = ({ onOpenAddModal }) => {
   const { totalCombinedSurplus, activeTab } = useFinance();
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isAnnualQuestOpen, setIsAnnualQuestOpen] = useState(false);
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -42,11 +44,21 @@ export const Header = ({ onOpenAddModal }) => {
         {/* Right Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           
+          {/* Annual Checkup Quest Button */}
+          <button 
+            className="btn btn-secondary"
+            onClick={() => setIsAnnualQuestOpen(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid rgba(253, 185, 39, 0.4)', color: '#FDB927', fontWeight: 700 }}
+          >
+            <Calendar size={16} />
+            <span>Annual Checkup 🗓️</span>
+          </button>
+
           {/* Real Talk Strategy Report PDF Modal Button */}
           <button 
             className="btn btn-secondary"
             onClick={() => setIsReportOpen(true)}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid rgba(253, 185, 39, 0.4)', color: '#FDB927', fontWeight: 700 }}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid rgba(99, 102, 241, 0.4)', color: 'var(--primary-light)', fontWeight: 700 }}
           >
             <FileText size={16} />
             <span>Strategy Report</span>
@@ -58,7 +70,6 @@ export const Header = ({ onOpenAddModal }) => {
             onClick={() => setIsAiModalOpen(true)}
             style={{
               background: 'linear-gradient(135deg, #004684, #4f46e5)',
-              border: '1px solid rgba(253, 185, 39, 0.4)',
               color: '#fff',
               fontWeight: 800,
               display: 'flex',
@@ -67,34 +78,35 @@ export const Header = ({ onOpenAddModal }) => {
               boxShadow: '0 4px 14px rgba(0, 70, 132, 0.4)'
             }}
           >
-            <div style={{ width: '22px', height: '22px', borderRadius: '50%', overflow: 'hidden', border: '1px solid #FDB927' }}>
-              <img src="/avatars/isla-bulldog.jpg" alt="ISLA AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </div>
-            <span>ISLA Bulldog AI</span>
-            <Sparkles size={14} color="#FDB927" />
+            <Bot size={18} color="#FDB927" />
+            <span>Ask ISLA AI 🐶</span>
           </button>
 
-          {/* Plaid Connection Status Badge */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(16, 185, 129, 0.1)', padding: '6px 12px', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.3)', color: 'var(--success)', fontSize: '0.78rem', fontWeight: 700 }}>
-            <CheckCircle2 size={15} />
-            <span>Bank Sync Active</span>
-          </div>
-
-          {/* Add Transaction Button */}
+          {/* Connect Bank Account Plaid Button */}
           <button 
-            className="btn btn-secondary"
+            className="btn"
             onClick={onOpenAddModal}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+            style={{
+              background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
+              color: '#004684',
+              fontWeight: 800,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              boxShadow: '0 4px 14px rgba(253, 185, 39, 0.3)'
+            }}
           >
             <Plus size={16} />
-            <span>Add Transaction</span>
+            <span>Connect Bank Account</span>
           </button>
+
         </div>
       </header>
 
       {/* Modals */}
       <ISLAAssistantModal isOpen={isAiModalOpen} onClose={() => setIsAiModalOpen(false)} />
       <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
+      <AnnualStatementRefreshQuestModal isOpen={isAnnualQuestOpen} onClose={() => setIsAnnualQuestOpen(false)} />
     </>
   );
 };
