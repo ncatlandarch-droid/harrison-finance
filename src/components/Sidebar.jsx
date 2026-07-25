@@ -9,17 +9,21 @@ import {
   ArrowLeftRight,
   ShieldCheck,
   Building2,
-  Flame
+  Flame,
+  Bot,
+  RefreshCw,
+  Sparkles
 } from 'lucide-react';
 
 export const Sidebar = () => {
-  const { activeTab, setActiveTab, data } = useFinance();
+  const { activeTab, setActiveTab, totalBoACash, barbaraCheckingAccount } = useFinance();
 
-  const totalBalance = data.accounts.reduce((sum, a) => sum + (a.balance || 0), 0);
+  const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'strategy', label: 'Debt & Spending Strategy', icon: Flame },
+    { id: 'recurring', label: 'Recurring & Subscriptions', icon: RefreshCw },
     { id: 'bills', label: 'Bills & Allocation', icon: Receipt },
     { id: 'budget', label: 'Budget Tracker', icon: Wallet },
     { id: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
@@ -59,15 +63,13 @@ export const Sidebar = () => {
             <h1 style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '-0.02em', background: 'linear-gradient(135deg, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Harrison Finance
             </h1>
-            <span style={{ fontSize: '0.7rem', color: 'var(--primary-light)', fontWeight: 600, letterSpacing: '0.05em' }}>
-              FAMILY PLATFORM v2.8
-            </span>
+            <span className="badge badge-primary" style={{ fontSize: '0.68rem', padding: '2px 6px' }}>FAMILY PLATFORM v3.3</span>
           </div>
         </div>
 
-        {/* Navigation Links */}
+        {/* Navigation Items */}
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          {navItems.map(item => {
+          {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
@@ -81,17 +83,17 @@ export const Sidebar = () => {
                   padding: '0.75rem 1rem',
                   borderRadius: 'var(--radius-md)',
                   border: 'none',
-                  background: isActive ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.1))' : 'transparent',
+                  background: isActive ? 'linear-gradient(135deg, var(--primary), #4f46e5)' : 'transparent',
                   color: isActive ? '#fff' : 'var(--text-muted)',
-                  fontWeight: isActive ? 600 : 500,
-                  fontSize: '0.92rem',
+                  fontWeight: isActive ? 700 : 500,
+                  fontSize: '0.9rem',
                   cursor: 'pointer',
                   textAlign: 'left',
                   transition: 'all 0.2s ease',
-                  boxShadow: isActive ? 'inset 0 0 0 1px rgba(99, 102, 241, 0.3)' : 'none'
+                  boxShadow: isActive ? '0 4px 14px var(--primary-glow)' : 'none'
                 }}
               >
-                <Icon size={18} color={isActive ? 'var(--primary-light)' : 'var(--text-muted)'} />
+                <Icon size={18} color={isActive ? '#fff' : 'var(--text-muted)'} />
                 <span>{item.label}</span>
               </button>
             );
@@ -99,22 +101,20 @@ export const Sidebar = () => {
         </nav>
       </div>
 
-      {/* Family Footer Summary */}
+      {/* Sidebar Footer Account Widget */}
       <div style={{
-        background: 'rgba(255, 255, 255, 0.03)',
-        borderRadius: 'var(--radius-md)',
         padding: '1rem',
+        background: 'rgba(0, 0, 0, 0.3)',
+        borderRadius: 'var(--radius-md)',
         border: '1px solid var(--border-color)'
       }}>
-        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600, marginBottom: '0.25rem' }}>
-          Total Net Liquidity
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>BOA LIQUID CASH</div>
+        <div className="font-mono" style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--success)', marginTop: '0.2rem' }}>
+          {fmt(totalBoACash)}
         </div>
-        <div className="font-mono" style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--success)' }}>
-          ${totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.5rem', fontSize: '0.72rem', color: 'var(--text-subtle)' }}>
-          <ShieldCheck size={14} color="var(--success)" />
-          <span>BoA + Capital One + BMO</span>
+        <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+          <ShieldCheck size={12} color="var(--success)" />
+          <span>4 BoA Accounts Connected</span>
         </div>
       </div>
     </aside>

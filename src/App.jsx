@@ -4,6 +4,7 @@ import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
 import { DebtStrategySection } from './components/DebtStrategySection';
+import { RecurringTrackerSection } from './components/RecurringTrackerSection';
 import { BillsSection } from './components/BillsSection';
 import { BudgetSection } from './components/BudgetSection';
 import { TransactionsSection } from './components/TransactionsSection';
@@ -21,6 +22,8 @@ const AppContent = () => {
         return <Dashboard />;
       case 'strategy':
         return <DebtStrategySection />;
+      case 'recurring':
+        return <RecurringTrackerSection />;
       case 'bills':
         return <BillsSection />;
       case 'budget':
