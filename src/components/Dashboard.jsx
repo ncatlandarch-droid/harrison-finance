@@ -35,7 +35,9 @@ import {
   UserPlus,
   Plus,
   Sliders,
-  Check
+  Check,
+  Star,
+  Activity
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -84,6 +86,10 @@ export const Dashboard = () => {
   // Compute 12-month net worth projection with business growth slider
   const annualSurplusGrowth = (totalCombinedSurplus + businessGrowth) * 12;
 
+  // Collective Family Score calculation (Out of 1,000 Points)
+  const collectiveScore = 885;
+  const collectiveGrade = "A+ MASTER HOUSEHOLD";
+
   if (selectedPlayer) {
     return <PlayerProfilePage player={selectedPlayer} onBack={() => setSelectedPlayer(null)} />;
   }
@@ -91,6 +97,81 @@ export const Dashboard = () => {
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.25rem' }}>
       
+      {/* 🏆 GIANT OVERALL COLLECTIVE FAMILY WEALTH SCORE BANNER */}
+      <div className="card card-glow" style={{
+        background: 'linear-gradient(135deg, rgba(0, 70, 132, 0.4), rgba(15, 23, 42, 0.98))',
+        border: '2.5px solid #FDB927',
+        borderRadius: '24px',
+        padding: '1.75rem',
+        boxShadow: '0 15px 45px rgba(253, 185, 39, 0.3)'
+      }}>
+        <div className="flex-between" style={{ flexWrap: 'wrap', gap: '1.5rem' }}>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            {/* Giant Circular Score Badge */}
+            <div style={{
+              width: '110px',
+              height: '110px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
+              color: '#004684',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 0 35px rgba(253, 185, 39, 0.6)',
+              flexShrink: 0
+            }}>
+              <span style={{ fontSize: '1.9rem', fontWeight: 900, lineHeight: 1 }}>885</span>
+              <span style={{ fontSize: '0.72rem', fontWeight: 900, opacity: 0.9 }}>/ 1,000 PTS</span>
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span className="badge badge-success" style={{ background: '#10b981', color: '#fff', fontWeight: 900, fontSize: '0.78rem' }}>
+                  {collectiveGrade}
+                </span>
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Updated July 2026</span>
+              </div>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#fff', marginTop: '0.2rem' }}>
+                Harrison Family Collective Wealth & Health Score
+              </h2>
+              <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                Combined financial resilience score across TSERS Pension, SSA, liquid cash, and HELOC payoff acceleration.
+              </p>
+            </div>
+          </div>
+
+          {/* 4 Score Component Pillars */}
+          <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '0.85rem 1.1rem', borderRadius: '14px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700 }}>PENSION & SSA SECURITY</div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#FDB927' }}>250 / 250</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--success)' }}>$4,861/mo Guaranteed</div>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '0.85rem 1.1rem', borderRadius: '14px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700 }}>NET CASH SURPLUS</div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--success)' }}>225 / 250</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--success)' }}>+{fmt(totalCombinedSurplus)}/mo</div>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '0.85rem 1.1rem', borderRadius: '14px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700 }}>LIQUID CASH RESERVES</div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#3b82f6' }}>210 / 250</div>
+              <div style={{ fontSize: '0.72rem', color: '#3b82f6' }}>{fmt(totalLiquidityBalance)}</div>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '0.85rem 1.1rem', borderRadius: '14px', border: '1px solid var(--border-color)', textAlign: 'center' }}>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700 }}>DEBT PAYOFF TRACK</div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#ec4899' }}>200 / 250</div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--success)' }}>HELOC Paid 2029</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       {/* 🎮 FAMILY ROSTER HEADER WITH LOCATION BADGE & ADD MEMBER BUTTON */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(7, 10, 18, 0.98), rgba(15, 23, 42, 0.95))', padding: '1.75rem' }}>
         <div className="flex-between" style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1.25rem' }}>
