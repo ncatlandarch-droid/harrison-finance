@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useFinance } from '../context/FinanceContext';
+import { AddAccountModal } from './AddAccountModal';
 import { 
   ArrowLeft, 
   CheckCircle2, 
@@ -29,13 +30,15 @@ import {
   Target,
   DollarSign,
   Wallet,
-  Check
+  Check,
+  Plus
 } from 'lucide-react';
 
 export const PlayerProfilePage = ({ player, onBack }) => {
-  const { data, totalCombinedSurplus, novoBusinessChecking, capitalOneSavings, barbaraCheckingAccount } = useFinance();
+  const { data, totalCombinedSurplus, novoBusinessChecking, capitalOneSavings, barbaraCheckingAccount, advPlusBanking, advantageSavings } = useFinance();
   const [showSensitive, setShowSensitive] = useState(false);
   const [lastUploadedItem, setLastUploadedItem] = useState('');
+  const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   
   // Local state for uploaded documents per player
   const [userDocs, setUserDocs] = useState(() => {
@@ -78,6 +81,29 @@ export const PlayerProfilePage = ({ player, onBack }) => {
 
   const currentAge = getAge(player.birthday);
   const isYouth = player.id === 'hayden' || player.id === 'ava';
+
+  // Member connected accounts map
+  const memberAccountsMap = {
+    chris: [
+      { id: 'acc_novo', name: 'Novo Business Checking', institution: 'Novo Bank', balance: novoBusinessChecking.balance, status: '🟢 Live Sync' },
+      { id: 'adv_plus', name: 'BoA Adv Plus Checking - 4717', institution: 'Bank of America', balance: advPlusBanking.balance, status: '🟢 Live Sync' },
+      { id: 'acc_capone', name: 'Capital One 360 HYSA', institution: 'Capital One 360', balance: capitalOneSavings.balance, status: '🟢 Live Sync' }
+    ],
+    erin: [
+      { id: 'acc_wf_erin', name: 'Wells Fargo Educator Checking & CD', institution: 'Wells Fargo', balance: 12500.00, status: '🟢 Connected' }
+    ],
+    barbara: [
+      { id: 'acc_barbara_penfed', name: "Mom's PenFed Reserve Account", institution: 'PenFed Credit Union', balance: barbaraCheckingAccount.balance, status: '🟢 Connected' }
+    ],
+    hayden: [
+      { id: 'acc_hayden_hysa', name: 'Hayden $30k College Reserve', institution: 'High-Yield Savings', balance: 4500.00, status: '🟢 Auto-Funded' }
+    ],
+    ava: [
+      { id: 'acc_ava_hysa', name: 'Ava $30k College Reserve', institution: 'High-Yield Savings', balance: 2100.00, status: '🟢 Auto-Funded' }
+    ]
+  };
+
+  const memberAccounts = memberAccountsMap[player.id] || memberAccountsMap.chris;
 
   // Itemized checklist slots with individual upload targets
   const personChecklists = {
@@ -135,7 +161,6 @@ export const PlayerProfilePage = ({ player, onBack }) => {
       type: itemTitle
     };
 
-    // Remove old document for this slot if exists and add new
     setUserDocs(prev => [newDoc, ...prev.filter(d => d.slotId !== slotId)]);
     setLastUploadedItem(itemTitle);
   };
@@ -261,14 +286,61 @@ export const PlayerProfilePage = ({ player, onBack }) => {
               </div>
 
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>PERSONAL VAULT DOCS</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>CONNECTED ACCOUNTS</span>
                 <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem' }}>
-                  {userDocs.length} Verified Files
+                  {memberAccounts.length} Active Accounts
                 </div>
               </div>
             </div>
           </div>
 
+        </div>
+      </div>
+
+      {/* 💳 PERSONAL CONNECTED BANK ACCOUNTS & CARDS (ADD / REMOVE ON USER PROFILE!) */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))', border: `2px solid ${player.color}` }}>
+        <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+          <div>
+            <span className="badge badge-primary" style={{ background: player.color, color: '#fff', fontWeight: 900, padding: '4px 12px' }}>
+              PERSONAL CONNECTED ACCOUNTS & CREDIT CARDS
+            </span>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Building2 size={22} color={player.color} />
+              <span>{player.name}'s Financial Accounts ({memberAccounts.length})</span>
+            </h3>
+          </div>
+
+          <button 
+            className="btn btn-primary"
+            onClick={() => setIsAddAccountOpen(true)}
+            style={{
+              background: `linear-gradient(135deg, ${player.color}, #004684)`,
+              color: '#fff',
+              fontWeight: 800,
+              fontSize: '0.84rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem'
+            }}
+          >
+            <Plus size={16} />
+            <span>+ Link Account for {player.name}</span>
+          </button>
+        </div>
+
+        <div className="grid-3" style={{ gap: '1.25rem' }}>
+          {memberAccounts.map(acc => (
+            <div key={acc.id} style={{ background: 'rgba(0,0,0,0.35)', border: `1.5px solid ${player.color}60`, borderRadius: '16px', padding: '1.25rem' }}>
+              <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
+                <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>{acc.name}</span>
+                <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>{acc.status}</span>
+              </div>
+              <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 900, color: player.color }}>
+                {fmt(acc.balance)}
+              </div>
+              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>{acc.institution}</div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -508,6 +580,9 @@ export const PlayerProfilePage = ({ player, onBack }) => {
           ))}
         </div>
       </div>
+
+      {/* Add Account Modal */}
+      <AddAccountModal isOpen={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} />
 
     </div>
   );
