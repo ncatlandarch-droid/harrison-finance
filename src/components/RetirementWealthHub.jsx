@@ -19,7 +19,8 @@ import {
   Heart,
   UserCheck,
   Mail,
-  Shield
+  Shield,
+  CheckSquare
 } from 'lucide-react';
 
 export const RetirementWealthHub = () => {
@@ -58,7 +59,7 @@ export const RetirementWealthHub = () => {
               The Harrison Family Complete Net Worth
             </h2>
             <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
-              Combines Liquid Cash + NC Pension ($1.8k/mo) + NC 401(k) + CDs + Business Assets
+              Combines Liquid Cash + NC Pension ($1.8k/mo) + Social Security ($3.0k/mo) + NC 401(k) + CDs
             </p>
           </div>
 
@@ -82,19 +83,19 @@ export const RetirementWealthHub = () => {
           </div>
 
           <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>2. MAY 2040 TSERS PENSION</div>
+            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>2. NC PENSION (TSERS AGE 60)</div>
             <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FDB927', marginTop: '0.2rem' }}>
               $1,803.55 / mo
             </div>
-            <div style={{ fontSize: '0.74rem', color: '#FDB927', marginTop: '0.3rem', fontWeight: 700 }}>22.0 Yrs Service (Age 60)</div>
+            <div style={{ fontSize: '0.74rem', color: '#FDB927', marginTop: '0.3rem', fontWeight: 700 }}>$1,682.89/mo 100% Option 2 to Erin</div>
           </div>
 
           <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>3. NC 401(K) RETIREMENT</div>
-            <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary-light)', marginTop: '0.2rem' }}>
-              {fmt(totalRetirementAssets)}
+            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>3. SOCIAL SECURITY (FULL AGE 67)</div>
+            <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#3b82f6', marginTop: '0.2rem' }}>
+              $3,058.00 / mo
             </div>
-            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Empower NC State & Educator</div>
+            <div style={{ fontSize: '0.74rem', color: '#3b82f6', marginTop: '0.3rem', fontWeight: 700 }}>Fully Vested (40 Work Credits)</div>
           </div>
 
           <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
@@ -103,6 +104,72 @@ export const RetirementWealthHub = () => {
               {fmt(totalCDAssets)}
             </div>
             <div style={{ fontSize: '0.74rem', color: '#c084fc', marginTop: '0.3rem', fontWeight: 700 }}>Fixed High-Yield CD</div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* 🇺🇸 VERIFIED FEDERAL SOCIAL SECURITY ADMINISTRATION (SSA) STATEMENT CARD */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(15, 23, 42, 0.98))', border: '2.5px solid #3b82f6' }}>
+        <div className="flex-between" style={{ borderBottom: '1px solid rgba(59, 130, 246, 0.3)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
+          <div>
+            <span className="badge badge-success" style={{ padding: '4px 12px', fontWeight: 900 }}>
+              VERIFIED SSA STATEMENT • 40 WORK CREDITS FULLY VESTED
+            </span>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <ShieldCheck size={26} color="#3b82f6" />
+              <span>William C. Harrison — Social Security Benefit Statement</span>
+            </h3>
+            <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              2025 Reported Earnings: <strong>$92,996.00</strong> • Work Credits: <strong>40 / 40 (Fully Qualified for Life)</strong>
+            </p>
+          </div>
+
+          <a 
+            href="https://www.ssa.gov" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="btn btn-secondary"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.86rem' }}
+          >
+            <span>SSA.gov Portal</span>
+            <ExternalLink size={15} />
+          </a>
+        </div>
+
+        <div className="grid-3" style={{ gap: '1.25rem' }}>
+          
+          {/* Full Retirement Age 67 Benefit */}
+          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1.25rem', borderRadius: '16px', border: '1.5px solid #3b82f6' }}>
+            <div style={{ fontSize: '0.76rem', color: '#3b82f6', fontWeight: 800 }}>FULL RETIREMENT BENEFIT (AGE 67)</div>
+            <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 900, color: '#fff', marginTop: '0.2rem' }}>
+              $3,058.00 / mo
+            </div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--success)', marginTop: '0.3rem', fontWeight: 700 }}>
+              ✓ Full Retirement Age (FRA) Monthly Payment
+            </div>
+          </div>
+
+          {/* Disability Protection */}
+          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', fontWeight: 800 }}>DISABILITY BENEFIT (IF NEEDED NOW)</div>
+            <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 900, color: 'var(--primary-light)', marginTop: '0.2rem' }}>
+              $2,543.00 / mo
+            </div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
+              Immediate Monthly Disability Coverage
+            </div>
+          </div>
+
+          {/* Combined Pension + SSA Inflow */}
+          <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '1.25rem', borderRadius: '16px', border: '1.5px solid #10b981' }}>
+            <div style={{ fontSize: '0.76rem', color: '#10b981', fontWeight: 900 }}>COMBINED PENSION + SSA TOTAL</div>
+            <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 900, color: '#fff', marginTop: '0.2rem' }}>
+              $4,861.55 / mo
+            </div>
+            <div style={{ fontSize: '0.74rem', color: '#10b981', marginTop: '0.3rem', fontWeight: 800 }}>
+              🎓 TSERS Pension ($1.8k) + SSA ($3.0k)
+            </div>
           </div>
 
         </div>
