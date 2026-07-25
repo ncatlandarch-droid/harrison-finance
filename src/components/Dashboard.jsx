@@ -3,6 +3,7 @@ import { useFinance } from '../context/FinanceContext';
 import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
 import { PlayerProfilePage } from './PlayerProfilePage';
 import { FamilyProfilePortalModal } from './FamilyProfilePortalModal';
+import { AddAccountModal } from './AddAccountModal';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -31,7 +32,8 @@ import {
   Crown,
   ChevronRight,
   MapPin,
-  UserPlus
+  UserPlus,
+  Plus
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -53,14 +55,21 @@ export const Dashboard = () => {
     advPlusBanking,
     advantageSavings,
     bankAmericardCreditCard,
-    barbaraCheckingAccount
+    barbaraCheckingAccount,
+    capitalOneSavings,
+    novoBusinessChecking
   } = useFinance();
 
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isFamilyPortalOpen, setIsFamilyPortalOpen] = useState(false);
+  const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  // Get custom user-added accounts from data.accounts
+  const allAccounts = data?.accounts || [];
+  const customAccounts = allAccounts.filter(a => a.id.startsWith('acc_custom_'));
 
   // If a player is selected, render their Dedicated Full-Page Workspace!
   if (selectedPlayer) {
@@ -227,66 +236,38 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* 🕊️ PAPI ACCOUNT CLOSURE & HELOC PAYOFF PROJECTION CARDS */}
-      <div className="grid-2" style={{ gap: '1.5rem' }}>
-        
-        {/* Papi Bank of America Closure Guide */}
-        <div className="card" style={{ background: 'rgba(99, 102, 241, 0.12)', border: '1px solid rgba(99, 102, 241, 0.4)', padding: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1rem' }}>
-            <span style={{ fontSize: '1.6rem' }}>🕊️</span>
-            <div>
-              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.1rem' }}>Papi Checking - 7333 Closure Checklist</h4>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Bank of America Estate Care Team Official Procedure</p>
-            </div>
-          </div>
-
-          <div style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-            <div>• <strong>BoA Estate Servicing Phone:</strong> <strong>888-689-4466</strong> (Mon–Fri 9am–8pm ET)</div>
-            <div>• <strong>Online Case Portal:</strong> bankofamerica.com/estateservices</div>
-            <div>• <strong>Documents Required:</strong> Original Death Certificate + Photo ID (Chris/Barbara)</div>
-            <div>• <strong>Action Plan:</strong> Settle `-$36.00` balance into Adv Plus 4717 & close account 7333 cleanly.</div>
-          </div>
-        </div>
-
-        {/* Figure HELOC +$1,000 Extra Payment Payoff Simulator */}
-        <div className="card" style={{ background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.4)', padding: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1rem' }}>
-            <TrendingUp size={26} color="#f59e0b" />
-            <div>
-              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.1rem' }}>Figure HELOC +$1,000 Extra Payoff Simulator</h4>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Accelerated Principal Payoff Plan</p>
-            </div>
-          </div>
-
-          <div style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-            <div>• <strong>Min Payment Plan ($1k/mo):</strong> 25+ years • Rate reset to 15.3% in Aug 2029</div>
-            <div>• <strong>Accelerated Plan ($3.2k/mo total):</strong> Paid off in <strong>36 Months (August 2029!)</strong></div>
-            <div style={{ color: 'var(--success)', fontWeight: 800 }}>• Total Interest Saved: +$87,400 Cash Saved!</div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* 💳 REAL LIVE BANK OF AMERICA ACCOUNTS & BALANCES WIDGET */}
+      {/* 💳 REAL LIVE BANK ACCOUNTS & BALANCES WIDGET WITH + ADD ACCOUNT BUTTON */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))' }}>
         <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Building2 size={22} color="var(--primary-light)" />
-              <span>Real Live Bank of America Accounts & Balances</span>
+              <span>Real Live Bank & Financial Accounts</span>
             </h3>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Direct from your Bank of America online banking portal • Last Synced: Live
+              Bank of America, PenFed, Capital One, Novo, Wells Fargo • Last Synced: Live
             </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>ACTIVE CHECKING CASH</div>
-              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--warning)' }}>
-                {fmt(totalCheckingCash)}
-              </div>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button 
+              className="btn btn-primary"
+              onClick={() => setIsAddAccountOpen(true)}
+              style={{
+                background: 'linear-gradient(135deg, #004684, #4f46e5)',
+                color: '#fff',
+                fontWeight: 800,
+                fontSize: '0.86rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                boxShadow: '0 4px 14px rgba(0, 70, 132, 0.4)'
+              }}
+            >
+              <Plus size={16} />
+              <span>+ Add Bank Account</span>
+            </button>
+
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>TOTAL LIQUID RESERVES</div>
               <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--success)' }}>
@@ -296,7 +277,7 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        {/* 5 Accounts Grid */}
+        {/* 6 Accounts Grid */}
         <div className="grid-3" style={{ gap: '1rem' }}>
           
           {/* Papi Checking 7333 */}
@@ -347,16 +328,16 @@ export const Dashboard = () => {
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Reserve Savings Account</div>
           </div>
 
-          {/* BankAmericard Visa 6343 */}
-          <div style={{ background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
+          {/* Capital One High-Yield Savings */}
+          <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
             <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>BankAmericard Visa - 6343</span>
-              <span className="badge badge-warning">Credit Card</span>
+              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>Capital One High-Yield</span>
+              <span className="badge badge-success">4.25% HYSA</span>
             </div>
-            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--warning)' }}>
-              {fmt(bankAmericardCreditCard.balance)}
+            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: '#3b82f6' }}>
+              {fmt(capitalOneSavings.balance)}
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Credit Balance ($3.5k paid May/July)</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>High-Yield Cash Reserve</div>
           </div>
 
           {/* Mom's PenFed Savings */}
@@ -371,12 +352,67 @@ export const Dashboard = () => {
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Liquid Capital Reserve</div>
           </div>
 
+          {/* Render Any Custom Added Accounts */}
+          {customAccounts.map(acc => (
+            <div key={acc.id} style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
+              <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
+                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>{acc.name}</span>
+                <span className="badge badge-success">{acc.type}</span>
+              </div>
+              <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--success)' }}>
+                {fmt(acc.balance)}
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>{acc.institution}</div>
+            </div>
+          ))}
+
         </div>
+      </div>
+
+      {/* 🕊️ PAPI ACCOUNT CLOSURE & HELOC PAYOFF PROJECTION CARDS */}
+      <div className="grid-2" style={{ gap: '1.5rem' }}>
+        
+        {/* Papi Bank of America Closure Guide */}
+        <div className="card" style={{ background: 'rgba(99, 102, 241, 0.12)', border: '1px solid rgba(99, 102, 241, 0.4)', padding: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1rem' }}>
+            <span style={{ fontSize: '1.6rem' }}>🕊️</span>
+            <div>
+              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.1rem' }}>Papi Checking - 7333 Closure Checklist</h4>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Bank of America Estate Care Team Official Procedure</p>
+            </div>
+          </div>
+
+          <div style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            <div>• <strong>BoA Estate Servicing Phone:</strong> <strong>888-689-4466</strong> (Mon–Fri 9am–8pm ET)</div>
+            <div>• <strong>Online Case Portal:</strong> bankofamerica.com/estateservices</div>
+            <div>• <strong>Documents Required:</strong> Original Death Certificate + Photo ID (Chris/Barbara)</div>
+            <div>• <strong>Action Plan:</strong> Settle `-$36.00` balance into Adv Plus 4717 & close account 7333 cleanly.</div>
+          </div>
+        </div>
+
+        {/* Figure HELOC +$1,000 Extra Payment Payoff Simulator */}
+        <div className="card" style={{ background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.4)', padding: '1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1rem' }}>
+            <TrendingUp size={26} color="#f59e0b" />
+            <div>
+              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.1rem' }}>Figure HELOC +$1,000 Extra Payoff Simulator</h4>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Accelerated Principal Payoff Plan</p>
+            </div>
+          </div>
+
+          <div style={{ fontSize: '0.88rem', color: '#cbd5e1', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+            <div>• <strong>Min Payment Plan ($1k/mo):</strong> 25+ years • Rate reset to 15.3% in Aug 2029</div>
+            <div>• <strong>Accelerated Plan ($3.2k/mo total):</strong> Paid off in <strong>36 Months (August 2029!)</strong></div>
+            <div style={{ color: 'var(--success)', fontWeight: 800 }}>• Total Interest Saved: +$87,400 Cash Saved!</div>
+          </div>
+        </div>
+
       </div>
 
       {/* Modals */}
       <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
       <FamilyProfilePortalModal isOpen={isFamilyPortalOpen} onClose={() => setIsFamilyPortalOpen(false)} />
+      <AddAccountModal isOpen={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} />
 
     </div>
   );
