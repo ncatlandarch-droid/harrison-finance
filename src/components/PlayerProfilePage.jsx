@@ -28,13 +28,14 @@ import {
   TrendingUp,
   Target,
   DollarSign,
-  Wallet
+  Wallet,
+  Check
 } from 'lucide-react';
 
 export const PlayerProfilePage = ({ player, onBack }) => {
   const { data, totalCombinedSurplus, novoBusinessChecking, capitalOneSavings, barbaraCheckingAccount } = useFinance();
   const [showSensitive, setShowSensitive] = useState(false);
-  const [questCompleted, setQuestCompleted] = useState(false);
+  const [lastUploadedItem, setLastUploadedItem] = useState('');
   
   // Local state for uploaded documents per player
   const [userDocs, setUserDocs] = useState(() => {
@@ -43,9 +44,9 @@ export const PlayerProfilePage = ({ player, onBack }) => {
       if (saved) return JSON.parse(saved);
 
       return [
-        { id: 'd1', name: 'Birth Certificate Copy.pdf', size: '1.1 MB', date: '2026-07-20', type: 'Birth Certificate' },
-        { id: 'd2', name: 'US Passport Scan.pdf', size: '2.3 MB', date: '2026-07-20', type: 'Passport' },
-        { id: 'd3', name: 'Health Insurance Card.pdf', size: '650 KB', date: '2026-07-21', type: 'Health Card' }
+        { id: 'd1', name: 'Birth Certificate Copy.pdf', slotId: 'birth_cert', size: '1.1 MB', date: '2026-07-20', type: 'Birth Certificate' },
+        { id: 'd2', name: 'US Passport Scan.pdf', slotId: 'passport', size: '2.3 MB', date: '2026-07-20', type: 'Passport' },
+        { id: 'd3', name: 'Health Insurance Card.pdf', slotId: 'health_card', size: '650 KB', date: '2026-07-21', type: 'Health Card' }
       ];
     } catch (e) {
       return [];
@@ -78,48 +79,65 @@ export const PlayerProfilePage = ({ player, onBack }) => {
   const currentAge = getAge(player.birthday);
   const isYouth = player.id === 'hayden' || player.id === 'ava';
 
-  // Person-specific annual checkup document checklists
+  // Itemized checklist slots with individual upload targets
   const personChecklists = {
     chris: [
-      { id: 'mars', title: 'NC TSERS Pension MARS Statement (orbit.myretirement.gov)', status: 'Verified' },
-      { id: 'ssa', title: 'Social Security Administration Statement (ssa.gov)', status: 'Verified' },
-      { id: 'empower', title: 'NC A&T 401(k) Empower Statement (myNCPlans.gov)', status: 'Pending Upload' },
-      { id: 'novo', title: 'Think! Design & Planning LLC Annual Financial Record', status: 'Active' }
+      { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
+      { slotId: 'passport', title: 'US Passport Scan', req: 'Identity' },
+      { slotId: 'health_card', title: 'Health & Dental Insurance Card', req: 'Medical' },
+      { slotId: 'mars', title: 'NC TSERS Pension MARS Statement (orbit.myretirement.gov)', req: 'Pension' },
+      { slotId: 'ssa', title: 'Social Security Administration Statement (ssa.gov)', req: 'SSA' },
+      { slotId: 'empower', title: 'NC A&T 401(k) Empower Statement (myNCPlans.gov)', req: '401(k)' },
+      { slotId: 'novo', title: 'Think! Design & Planning LLC Annual Tax / Financial Record', req: 'Business' }
     ],
     erin: [
-      { id: 'mars_erin', title: 'NC Educator TSERS Pension MARS Statement (ORBIT)', status: 'Pending Upload' },
-      { id: 'empower_erin', title: 'NC Educator 401(k) Empower Statement', status: 'Pending Upload' },
-      { id: 'cd_erin', title: 'Wells Fargo / Credit Union 5.15% High-Yield CD Record', status: 'Verified' }
+      { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
+      { slotId: 'passport', title: 'US Passport Scan', req: 'Identity' },
+      { slotId: 'health_card', title: 'Health & Dental Insurance Card', req: 'Medical' },
+      { slotId: 'mars_erin', title: 'NC Educator TSERS Pension MARS Statement (ORBIT)', req: 'Pension' },
+      { slotId: 'empower_erin', title: 'NC Educator 401(k) Empower Statement', req: '401(k)' },
+      { slotId: 'cd_erin', title: 'Wells Fargo / Credit Union 5.15% High-Yield CD Record', req: 'Investment' }
     ],
     barbara: [
-      { id: 'penfed', title: 'PenFed / BoA Reserve Account Statement', status: 'Verified' },
-      { id: 'estate', title: 'Healthcare Proxy & Will Directive Records', status: 'Verified' }
+      { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
+      { slotId: 'passport', title: 'US Passport Scan', req: 'Identity' },
+      { slotId: 'health_card', title: 'Medicare & Health Insurance Card', req: 'Medical' },
+      { slotId: 'opm', title: 'OPM Federal Civil Service Pension Statement', req: 'Pension' },
+      { slotId: 'penfed', title: 'PenFed / BoA Reserve Account Statement', req: 'Reserve' },
+      { slotId: 'estate', title: 'Healthcare Proxy & Will Directive Records', req: 'Legal' }
     ],
     hayden: [
-      { id: 'savings_hayden', title: 'Hayden $30,000 College Savings Goal Progress Statement', status: 'Active Goal' }
+      { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
+      { slotId: 'passport', title: 'US Passport Scan / ID', req: 'Identity' },
+      { slotId: 'health_card', title: 'Pediatric Health Insurance Card', req: 'Medical' },
+      { slotId: 'savings_hayden', title: 'Hayden $30,000 College Savings Goal Progress Statement', req: 'Goal Tracker' }
     ],
     ava: [
-      { id: 'savings_ava', title: 'Ava $30,000 College Savings Goal Progress Statement', status: 'Active Goal' }
+      { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
+      { slotId: 'passport', title: 'US Passport Scan / ID', req: 'Identity' },
+      { slotId: 'health_card', title: 'Pediatric Health Insurance Card', req: 'Medical' },
+      { slotId: 'savings_ava', title: 'Ava $30,000 College Savings Goal Progress Statement', req: 'Goal Tracker' }
     ]
   };
 
   const currentChecklist = personChecklists[player.id] || personChecklists.chris;
 
-  // Handle File Upload
-  const handleFileUpload = (e) => {
-    const files = e.target.files ? Array.from(e.target.files) : [];
-    if (!files.length) return;
+  // Handle individual slot file upload
+  const handleItemizedFileUpload = (slotId, itemTitle, file) => {
+    if (!file) return;
 
-    const newDocs = files.map(file => ({
+    const newDoc = {
       id: 'doc_' + Date.now() + Math.random().toString(36).substr(2, 4),
+      slotId: slotId,
       name: file.name,
       size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
       date: new Date().toISOString().split('T')[0],
-      type: 'Annual Checkup Document'
-    }));
+      type: itemTitle
+    };
 
-    setUserDocs(prev => [...newDocs, ...prev]);
-    setQuestCompleted(true);
+    // Remove old document for this slot if exists and add new
+    setUserDocs(prev => [newDoc, ...prev.filter(d => d.slotId !== slotId)]);
+    setLastUploadedItem(itemTitle);
   };
 
   const handleDeleteDoc = (id) => {
@@ -159,7 +177,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
             }}
           >
             <Calendar size={16} />
-            <span>{player.name}'s Annual Checkup 🗓️</span>
+            <span>{player.name}'s Checkup Checklist 🗓️</span>
           </button>
 
           <button 
@@ -344,88 +362,109 @@ export const PlayerProfilePage = ({ player, onBack }) => {
               Target: $30,000.00 Cash by Age 18
             </div>
             <div style={{ fontSize: '0.9rem', color: 'var(--success)', fontWeight: 800, marginTop: '0.5rem' }}>
-              🚀 Monthly Auto-Allocation: ${player.id === 'hayden' ? '331.00' : '172.00'} / mo ({yearsRemaining} Years Remaining!)
+              🚀 Monthly Auto-Allocation: ${player.id === 'hayden' ? '172.00' : '105.00'} / mo
             </div>
           </div>
         )}
       </div>
 
-      {/* 🎯 PERSON-SPECIFIC ANNUAL CHECKUP QUEST CARD */}
+      {/* 🎯 PERSON-SPECIFIC ITEMIZED CHECKLIST & DIRECT SLOT UPLOADERS */}
       <div id="personal-annual-quest-card" className="card card-glow" style={{ background: `linear-gradient(135deg, ${player.color}25, rgba(15, 23, 42, 0.98))`, border: `2.5px solid ${player.color}` }}>
         <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
           <div>
             <span className="badge badge-primary" style={{ background: player.color, color: '#fff', fontWeight: 900, padding: '4px 12px' }}>
-              🎯 PERSONAL ANNUAL CHECKUP QUEST (+1,000 XP)
+              🎯 ITEMIZED DOCUMENT LOCKBOX & CHECKLIST
             </span>
             <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <Calendar size={24} color={player.color} />
-              <span>{player.name}'s Annual Financial Checkup & Statement Refresh</span>
+              <span>{player.name}'s Individual Document Slots (1-Click Upload)</span>
             </h3>
             <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Refresh your annual statements to level up your character status and keep your net worth 100% accurate!
+              Upload or update individual items one-by-one anytime. Each item links directly to your encrypted vault!
             </p>
           </div>
-
-          <div style={{ textAlign: 'right' }}>
-            <span className="badge badge-success" style={{ fontSize: '0.82rem', padding: '6px 14px', fontWeight: 900 }}>
-              {questCompleted ? '✓ 2026 QUEST COMPLETED (+1,000 XP)' : '⏳ ANNUAL CHECKUP READY'}
-            </span>
-          </div>
         </div>
 
-        {/* Member Specific Checklist */}
-        <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)', marginBottom: '1.25rem' }}>
-          <div style={{ fontWeight: 800, color: '#fff', fontSize: '0.95rem', marginBottom: '0.75rem' }}>
-            📋 {player.name}'s Annual Document Checklist:
-          </div>
+        {/* Itemized Direct Slot Uploader Grid */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+          {currentChecklist.map((item) => {
+            const uploadedDoc = userDocs.find(d => d.slotId === item.slotId);
 
-          <div className="grid-2" style={{ gap: '0.85rem' }}>
-            {currentChecklist.map((item, idx) => (
-              <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', padding: '0.85rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ color: '#cbd5e1', fontWeight: 600, fontSize: '0.84rem' }}>• {item.title}</div>
-                <span className="badge" style={{ background: `${player.color}25`, color: player.color, border: `1px solid ${player.color}50`, fontWeight: 800, fontSize: '0.72rem' }}>
-                  {item.status}
-                </span>
+            return (
+              <div 
+                key={item.slotId}
+                style={{
+                  background: uploadedDoc ? 'rgba(16, 185, 129, 0.12)' : 'rgba(0, 0, 0, 0.35)',
+                  border: uploadedDoc ? '1.5px solid #10b981' : '1px solid var(--border-color)',
+                  borderRadius: '16px',
+                  padding: '1.1rem 1.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '1rem',
+                  flexWrap: 'wrap'
+                }}
+              >
+                <div style={{ flex: 1, minWidth: '240px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
+                    <span className="badge" style={{ background: `${player.color}25`, color: player.color, border: `1px solid ${player.color}50`, fontWeight: 800, fontSize: '0.72rem' }}>
+                      {item.req}
+                    </span>
+                    <span style={{ fontWeight: 800, color: '#fff', fontSize: '0.98rem' }}>
+                      {item.title}
+                    </span>
+                  </div>
+
+                  {uploadedDoc ? (
+                    <div style={{ fontSize: '0.78rem', color: 'var(--success)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                      <CheckCircle2 size={14} />
+                      <span>Linked: {uploadedDoc.name} ({uploadedDoc.size}) • Saved {uploadedDoc.date}</span>
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                      ⏳ Pending upload — Click button to link this specific document.
+                    </div>
+                  )}
+                </div>
+
+                {/* Individual Slot Upload Button */}
+                <div>
+                  <label 
+                    className={`btn ${uploadedDoc ? 'btn-secondary' : 'btn-primary'}`}
+                    style={{
+                      cursor: 'pointer',
+                      background: uploadedDoc ? 'rgba(255,255,255,0.08)' : `linear-gradient(135deg, ${player.color}, #004684)`,
+                      color: '#fff',
+                      fontWeight: 800,
+                      fontSize: '0.82rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      padding: '0.55rem 1rem'
+                    }}
+                  >
+                    <Upload size={14} />
+                    <span>{uploadedDoc ? 'Re-upload / Update' : 'Upload File'}</span>
+                    <input 
+                      type="file" 
+                      accept=".pdf,.png,.jpg,.csv"
+                      style={{ display: 'none' }}
+                      onChange={(e) => handleItemizedFileUpload(item.slotId, item.title, e.target.files[0])}
+                    />
+                  </label>
+                </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
 
-        {/* Uploader Box */}
-        <div 
-          style={{
-            border: `2px dashed ${player.color}`,
-            borderRadius: '16px',
-            padding: '1.75rem',
-            textAlign: 'center',
-            background: 'rgba(0,0,0,0.3)',
-            cursor: 'pointer'
-          }}
-          onClick={() => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.multiple = true;
-            input.accept = '.pdf,.png,.jpg,.csv';
-            input.onchange = handleFileUpload;
-            input.click();
-          }}
-        >
-          <Upload size={38} color={player.color} style={{ marginBottom: '0.5rem' }} />
-          <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#fff' }}>
-            Upload {player.name}'s New Annual Statement PDF / Screenshot
-          </h4>
-          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-            Saves directly to {player.name}'s encrypted lockbox • Unlocks <strong>+1,000 Family XP</strong>
-          </p>
-        </div>
-
-        {questCompleted && (
-          <div style={{ marginTop: '1rem', background: 'rgba(16, 185, 129, 0.15)', border: '1.5px solid #10b981', padding: '1rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        {lastUploadedItem && (
+          <div style={{ marginTop: '1.25rem', background: 'rgba(16, 185, 129, 0.18)', border: '1.5px solid #10b981', padding: '1rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <CheckCircle2 size={24} color="var(--success)" />
             <div>
-              <div style={{ fontWeight: 900, color: '#fff', fontSize: '0.95rem' }}>🎉 CONGRATULATIONS {player.name.toUpperCase()}!</div>
+              <div style={{ fontWeight: 900, color: '#fff', fontSize: '0.95rem' }}>🎉 "{lastUploadedItem.toUpperCase()}" UPDATED SUCCESSFULLY!</div>
               <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                You have completed your 2026 Annual Financial Checkup! +1,000 XP has been added to your profile level.
+                Item linked directly to {player.name}'s document vault and verified for 2026.
               </div>
             </div>
           </div>
@@ -439,18 +478,12 @@ export const PlayerProfilePage = ({ player, onBack }) => {
           <div>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Lock size={22} color={player.color} />
-              <span>{player.name}'s Encrypted Document Repository</span>
+              <span>{player.name}'s Encrypted Document Repository ({userDocs.length} Files)</span>
             </h3>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
               AES-256 Encrypted Private Storage for Passports, Certificates, and Statements
             </p>
           </div>
-
-          <label className="btn btn-primary" style={{ cursor: 'pointer', background: player.color, color: '#fff', fontWeight: 800, fontSize: '0.84rem' }}>
-            <Upload size={16} />
-            <span>Upload Document</span>
-            <input type="file" onChange={handleFileUpload} style={{ display: 'none' }} />
-          </label>
         </div>
 
         <div className="grid-3" style={{ gap: '1rem' }}>
