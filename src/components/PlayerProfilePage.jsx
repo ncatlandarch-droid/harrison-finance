@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useFinance } from '../context/FinanceContext';
 import { AddAccountModal } from './AddAccountModal';
+import { EditAccountModal } from './EditAccountModal';
 import { 
   ArrowLeft, 
   CheckCircle2, 
@@ -31,7 +32,8 @@ import {
   DollarSign,
   Wallet,
   Check,
-  Plus
+  Plus,
+  Edit3
 } from 'lucide-react';
 
 export const PlayerProfilePage = ({ player, onBack }) => {
@@ -39,47 +41,44 @@ export const PlayerProfilePage = ({ player, onBack }) => {
   const [showSensitive, setShowSensitive] = useState(false);
   const [lastUploadedItem, setLastUploadedItem] = useState('');
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
+  const [editingAccount, setEditingAccount] = useState(null);
   
-  // Custom accounts added per member profile stored in localStorage
-  const [profileAccounts, setProfileAccounts] = useState(() => {
-    try {
-      const saved = localStorage.getItem(`harrison_profile_accounts_${player?.id}`);
-      if (saved) return JSON.parse(saved);
+  // Member accounts dynamically computed with live balances from FinanceContext
+  const memberAccountsMap = {
+    chris: [
+      { id: 'acc_novo', name: 'Novo Business Checking', institution: 'Novo Bank', balance: novoBusinessChecking.balance, status: '🟢 Live Sync' },
+      { id: 'adv_plus', name: 'BoA Adv Plus Checking - 4717', institution: 'Bank of America', balance: advPlusBanking.balance, status: '🟢 Live Sync' },
+      { id: 'acc_capone', name: 'Capital One 360 HYSA', institution: 'Capital One 360', balance: capitalOneSavings.balance, status: '🟢 Live Sync' }
+    ],
+    erin: [
+      { id: 'acc_wf_erin', name: 'Wells Fargo Educator Checking & CD', institution: 'Wells Fargo', balance: 12500.00, status: '🟢 Connected' }
+    ],
+    barbara: [
+      { id: 'acc_barbara_penfed', name: "Mom's PenFed Reserve Account", institution: 'PenFed Credit Union', balance: barbaraCheckingAccount.balance, status: '🟢 Connected' }
+    ],
+    hayden: [
+      { id: 'acc_hayden_hysa', name: 'Hayden $30k College Reserve', institution: 'High-Yield Savings', balance: 4500.00, status: '🟢 Auto-Funded' }
+    ],
+    ava: [
+      { id: 'acc_ava_hysa', name: 'Ava $30k College Reserve', institution: 'High-Yield Savings', balance: 2100.00, status: '🟢 Auto-Funded' }
+    ]
+  };
 
-      const defaultMap = {
-        chris: [
-          { id: 'acc_novo', name: 'Novo Business Checking', institution: 'Novo Bank', balance: novoBusinessChecking.balance, status: '🟢 Live Sync' },
-          { id: 'adv_plus', name: 'BoA Adv Plus Checking - 4717', institution: 'Bank of America', balance: advPlusBanking.balance, status: '🟢 Live Sync' },
-          { id: 'acc_capone', name: 'Capital One 360 HYSA', institution: 'Capital One 360', balance: capitalOneSavings.balance, status: '🟢 Live Sync' }
-        ],
-        erin: [
-          { id: 'acc_wf_erin', name: 'Wells Fargo Educator Checking & CD', institution: 'Wells Fargo', balance: 12500.00, status: '🟢 Connected' }
-        ],
-        barbara: [
-          { id: 'acc_barbara_penfed', name: "Mom's PenFed Reserve Account", institution: 'PenFed Credit Union', balance: barbaraCheckingAccount.balance, status: '🟢 Connected' }
-        ],
-        hayden: [
-          { id: 'acc_hayden_hysa', name: 'Hayden $30k College Reserve', institution: 'High-Yield Savings', balance: 4500.00, status: '🟢 Auto-Funded' }
-        ],
-        ava: [
-          { id: 'acc_ava_hysa', name: 'Ava $30k College Reserve', institution: 'High-Yield Savings', balance: 2100.00, status: '🟢 Auto-Funded' }
-        ]
-      };
-      return defaultMap[player?.id] || defaultMap.chris;
-    } catch (e) {
+  // Add custom accounts saved in context
+  const customAccounts = (data?.accounts || []).filter(a => a.memberId === player?.id || a.id.startsWith('acc_custom_'));
+
+  const baseAccounts = memberAccountsMap[player?.id] || memberAccountsMap.chris;
+  
+  // Filter out any accounts removed by user
+  const removedIds = (() => {
+    try {
+      return JSON.parse(localStorage.getItem(`harrison_removed_accs_${player?.id}`) || '[]');
+    } catch {
       return [];
     }
-  });
+  })();
 
-  useEffect(() => {
-    if (player?.id) {
-      try {
-        localStorage.setItem(`harrison_profile_accounts_${player.id}`, JSON.stringify(profileAccounts));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, [profileAccounts, player]);
+  const activeMemberAccounts = [...baseAccounts, ...customAccounts].filter(a => !removedIds.includes(a.id));
 
   // Local state for uploaded documents per player
   const [userDocs, setUserDocs] = useState(() => {
@@ -123,8 +122,10 @@ export const PlayerProfilePage = ({ player, onBack }) => {
   const currentAge = getAge(player.birthday);
 
   const handleRemoveProfileAccount = (accId) => {
-    setProfileAccounts(prev => prev.filter(a => a.id !== accId));
+    const updatedRemoved = [...removedIds, accId];
+    localStorage.setItem(`harrison_removed_accs_${player.id}`, JSON.stringify(updatedRemoved));
     removeAccount(accId);
+    window.location.reload();
   };
 
   // Itemized checklist slots with individual upload targets
@@ -309,7 +310,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
               <div>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>CONNECTED ACCOUNTS</span>
                 <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem' }}>
-                  {profileAccounts.length} Active Accounts
+                  {activeMemberAccounts.length} Active Accounts
                 </div>
               </div>
             </div>
@@ -318,7 +319,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
         </div>
       </div>
 
-      {/* 💳 PERSONAL CONNECTED BANK ACCOUNTS & CARDS (ADD / REMOVE ON USER PROFILE!) */}
+      {/* 💳 PERSONAL CONNECTED BANK ACCOUNTS & CARDS (WITH LIVE EDIT BALANCE & REMOVE BUTTONS!) */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))', border: `2px solid ${player.color}` }}>
         <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
@@ -327,10 +328,10 @@ export const PlayerProfilePage = ({ player, onBack }) => {
             </span>
             <h3 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Building2 size={22} color={player.color} />
-              <span>{player.name}'s Financial Accounts ({profileAccounts.length})</span>
+              <span>{player.name}'s Financial Accounts ({activeMemberAccounts.length})</span>
             </h3>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Directly link or remove accounts for {player.name}!
+              Click "Edit Balance ✏️" to set your exact live balance, or "+ Link Account" to attach new accounts!
             </p>
           </div>
 
@@ -353,17 +354,31 @@ export const PlayerProfilePage = ({ player, onBack }) => {
         </div>
 
         <div className="grid-3" style={{ gap: '1.25rem' }}>
-          {profileAccounts.map(acc => (
+          {activeMemberAccounts.map(acc => (
             <div key={acc.id} style={{ background: 'rgba(0,0,0,0.35)', border: `1.5px solid ${player.color}60`, borderRadius: '16px', padding: '1.25rem', position: 'relative' }}>
               <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
                 <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>{acc.name}</span>
                 <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>{acc.status}</span>
               </div>
+              
               <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 900, color: player.color }}>
                 {fmt(acc.balance)}
               </div>
-              <div className="flex-between" style={{ marginTop: '0.75rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>{acc.institution}</span>
+              
+              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.2rem', marginBottom: '0.85rem' }}>
+                {acc.institution}
+              </div>
+
+              {/* Edit Balance & Remove Action Buttons */}
+              <div style={{ display: 'flex', gap: '0.5rem', paddingTop: '0.6rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <button 
+                  onClick={() => setEditingAccount({ id: acc.id, name: acc.name, balance: acc.balance })}
+                  className="btn btn-secondary"
+                  style={{ flex: 1, padding: '4px 8px', fontSize: '0.74rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.2rem' }}
+                >
+                  <Edit3 size={12} /> Edit Balance ✏️
+                </button>
+
                 <button 
                   onClick={() => handleRemoveProfileAccount(acc.id)}
                   style={{
@@ -371,8 +386,8 @@ export const PlayerProfilePage = ({ player, onBack }) => {
                     border: '1px solid var(--danger)',
                     color: 'var(--danger)',
                     borderRadius: '8px',
-                    padding: '3px 8px',
-                    fontSize: '0.72rem',
+                    padding: '4px 8px',
+                    fontSize: '0.74rem',
                     fontWeight: 800,
                     cursor: 'pointer',
                     display: 'flex',
@@ -383,6 +398,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
                   <Trash2 size={12} /> Remove
                 </button>
               </div>
+
             </div>
           ))}
         </div>
@@ -462,7 +478,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
             <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.35rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
               <div style={{ fontSize: '0.8rem', color: '#c084fc', fontWeight: 800, marginBottom: '0.3rem' }}>PENFED / BOA ESTATE RESERVE ACCOUNT</div>
               <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: '#c084fc' }}>{fmt(barbaraCheckingAccount.balance)}</div>
-              <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
+              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
                 Liquid Estate & Healthcare Capital Reserve
               </div>
             </div>
@@ -625,8 +641,9 @@ export const PlayerProfilePage = ({ player, onBack }) => {
         </div>
       </div>
 
-      {/* Add Account Modal */}
+      {/* Modals */}
       <AddAccountModal isOpen={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} />
+      <EditAccountModal isOpen={!!editingAccount} onClose={() => setEditingAccount(null)} account={editingAccount} />
 
     </div>
   );
