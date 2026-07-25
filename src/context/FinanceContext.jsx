@@ -114,6 +114,43 @@ export const FinanceProvider = ({ children }) => {
     ];
   });
 
+  // Function to merge Plaid API live response directly into accounts
+  const mergePlaidData = (plaidAccounts = [], plaidTransactions = []) => {
+    setData(prev => {
+      let updatedAccounts = [...(prev.accounts || [])];
+      let updatedBoa = [...(prev.boaAccounts || [])];
+
+      plaidAccounts.forEach(pa => {
+        const liveBal = pa.balances?.current || pa.balances?.available || 0;
+        const lowerName = (pa.name || '').toLowerCase();
+
+        if (lowerName.includes('novo')) {
+          updatedAccounts = updatedAccounts.map(a => a.id === 'acc_novo' ? { ...a, balance: liveBal } : a);
+        } else if (lowerName.includes('capital one') || lowerName.includes('360')) {
+          updatedAccounts = updatedAccounts.map(a => a.id === 'acc_capone' ? { ...a, balance: liveBal } : a);
+        } else if (lowerName.includes('penfed')) {
+          updatedAccounts = updatedAccounts.map(a => a.id === 'acc_barbara_penfed' ? { ...a, balance: liveBal } : a);
+        } else if (lowerName.includes('adv') || lowerName.includes('checking') || lowerName.includes('4717')) {
+          updatedBoa = updatedBoa.map(a => a.id === 'adv_plus' ? { ...a, balance: liveBal } : a);
+        } else {
+          updatedAccounts.push({
+            id: 'acc_plaid_' + (pa.account_id || Date.now()),
+            name: pa.name,
+            institution: pa.official_name || 'Connected Bank',
+            balance: liveBal,
+            status: '🟢 Plaid Live Sync'
+          });
+        }
+      });
+
+      return {
+        ...prev,
+        accounts: updatedAccounts,
+        boaAccounts: updatedBoa
+      };
+    });
+  };
+
   // Function to update any account balance (Novo, Capital One, BoA, PenFed)
   const updateAccountBalance = (accountId, newBalance) => {
     setData(prev => {
@@ -198,6 +235,7 @@ export const FinanceProvider = ({ children }) => {
       setMembers,
       updateAccountBalance,
       removeAccount,
+      mergePlaidData,
       totalBaseIncome,
       barbaraTotalExpenses,
       erinTotalExpenses,
