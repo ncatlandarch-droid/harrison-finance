@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useFinance } from '../context/FinanceContext';
-import { ISLAAssistantModal } from './ISLAAssistantModal';
 import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
 import { AnnualStatementRefreshQuestModal } from './AnnualStatementRefreshQuestModal';
-import { Plus, Bot, FileText, Sparkles, RefreshCw, CheckCircle2, Calendar } from 'lucide-react';
+import { Plus, FileText, Sparkles, RefreshCw, CheckCircle2, Calendar } from 'lucide-react';
 
 export const Header = ({ onOpenAddModal }) => {
   const { totalCombinedSurplus, activeTab } = useFinance();
-  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isAnnualQuestOpen, setIsAnnualQuestOpen] = useState(false);
 
@@ -44,7 +42,7 @@ export const Header = ({ onOpenAddModal }) => {
         {/* Right Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           
-          {/* Annual Checkup Quest Button */}
+          {/* Person-Specific Annual Checkup Quest Button */}
           <button 
             className="btn btn-secondary"
             onClick={() => setIsAnnualQuestOpen(true)}
@@ -62,24 +60,6 @@ export const Header = ({ onOpenAddModal }) => {
           >
             <FileText size={16} />
             <span>Strategy Report</span>
-          </button>
-
-          {/* ISLA Bulldog AI Assistant Button */}
-          <button 
-            className="btn btn-primary"
-            onClick={() => setIsAiModalOpen(true)}
-            style={{
-              background: 'linear-gradient(135deg, #004684, #4f46e5)',
-              color: '#fff',
-              fontWeight: 800,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              boxShadow: '0 4px 14px rgba(0, 70, 132, 0.4)'
-            }}
-          >
-            <Bot size={18} color="#FDB927" />
-            <span>Ask ISLA AI 🐶</span>
           </button>
 
           {/* Connect Bank Account Plaid Button */}
@@ -104,7 +84,6 @@ export const Header = ({ onOpenAddModal }) => {
       </header>
 
       {/* Modals */}
-      <ISLAAssistantModal isOpen={isAiModalOpen} onClose={() => setIsAiModalOpen(false)} />
       <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
       <AnnualStatementRefreshQuestModal isOpen={isAnnualQuestOpen} onClose={() => setIsAnnualQuestOpen(false)} />
     </>
