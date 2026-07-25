@@ -76,7 +76,6 @@ export const Sidebar = () => {
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard & Roster', icon: LayoutDashboard },
-    { id: 'wealth', label: 'Retirement & Wealth', icon: Award },
     { id: 'thinkeco', label: 'Think! Ecosystem Hub', icon: Building2 },
     { id: 'strategy', label: 'Debt & HELOC Payoff', icon: Flame },
     { id: 'recurring', label: 'Subscriptions & Bills', icon: RefreshCw },
