@@ -3,7 +3,7 @@ import { useFinance } from '../context/FinanceContext';
 import { PlaidLinkButton } from './PlaidLinkButton';
 import { X, Building2, Plus, ShieldCheck, DollarSign, Wallet, Lock, Sparkles, CheckCircle2 } from 'lucide-react';
 
-export const AddAccountModal = ({ isOpen, onClose }) => {
+export const AddAccountModal = ({ isOpen, onClose, defaultMemberId }) => {
   const { setMembers, members } = useFinance();
   const [mode, setMode] = useState('select'); // 'select' | 'manual'
   
@@ -12,7 +12,7 @@ export const AddAccountModal = ({ isOpen, onClose }) => {
   const [institution, setInstitution] = useState('');
   const [accountType, setAccountType] = useState('Checking');
   const [balance, setBalance] = useState('');
-  const [memberId, setMemberId] = useState('chris');
+  const [memberId, setMemberId] = useState(defaultMemberId || 'chris');
   const [status, setStatus] = useState('Active');
 
   if (!isOpen) return null;

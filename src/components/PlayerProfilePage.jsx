@@ -757,7 +757,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
       </div>
 
       {/* Modals */}
-      <AddAccountModal isOpen={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} />
+      <AddAccountModal isOpen={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} defaultMemberId={player.id} />
       <EditAccountModal isOpen={!!editingAccount} onClose={() => setEditingAccount(null)} account={editingAccount} />
 
     </div>
