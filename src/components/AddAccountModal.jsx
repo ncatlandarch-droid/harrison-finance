@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useFinance } from '../context/FinanceContext';
-import { X, Building2, Plus, ShieldCheck, DollarSign, Wallet, Lock, Sparkles } from 'lucide-react';
+import { PlaidLinkButton } from './PlaidLinkButton';
+import { X, Building2, Plus, ShieldCheck, DollarSign, Wallet, Lock, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export const AddAccountModal = ({ isOpen, onClose }) => {
   const { setMembers, members } = useFinance();
-  const [mode, setMode] = useState('select'); // 'select' | 'manual' | 'plaid'
+  const [mode, setMode] = useState('select'); // 'select' | 'manual'
   
   // Form fields for manual entry
   const [accountName, setAccountName] = useState('');
@@ -20,7 +21,6 @@ export const AddAccountModal = ({ isOpen, onClose }) => {
     e.preventDefault();
     if (!accountName || !balance) return;
 
-    // Retrieve existing custom accounts or initialize empty array
     try {
       const savedData = localStorage.getItem('harrison_finance_v4_data');
       let dataObj = savedData ? JSON.parse(savedData) : {};
@@ -45,16 +45,6 @@ export const AddAccountModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const handlePlaidTrigger = () => {
-    // Trigger Plaid Link handler if initialized
-    if (window.Plaid) {
-      alert("Opening Plaid Bank Connection... Choose your bank (Wells Fargo, Novo, Capital One, BoA, Chase, Empower)");
-    } else {
-      alert("Plaid Link initialised! Choose your institution (Wells Fargo, Novo, Capital One, BoA, Chase).");
-    }
-    onClose();
-  };
-
   return (
     <div style={{
       position: 'fixed',
@@ -72,7 +62,7 @@ export const AddAccountModal = ({ isOpen, onClose }) => {
     }}>
       <div className="card card-glow" style={{
         width: '100%',
-        maxWidth: '560px',
+        maxWidth: '580px',
         background: 'var(--bg-surface)',
         borderRadius: '24px',
         border: '2px solid #004684',
@@ -112,33 +102,37 @@ export const AddAccountModal = ({ isOpen, onClose }) => {
         {mode === 'select' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             
-            {/* Option 1: Plaid Bank Link */}
+            {/* Option 1: Live Plaid Link Button */}
             <div 
-              onClick={handlePlaidTrigger}
               style={{
-                padding: '1.25rem',
-                background: 'linear-gradient(135deg, rgba(0, 70, 132, 0.3), rgba(79, 70, 229, 0.2))',
-                border: '2px solid #004684',
-                borderRadius: '16px',
-                cursor: 'pointer',
+                padding: '1.5rem',
+                background: 'linear-gradient(135deg, rgba(0, 70, 132, 0.35), rgba(79, 70, 229, 0.25))',
+                border: '2px solid #FDB927',
+                borderRadius: '18px',
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
+                flexDirection: 'column',
+                gap: '1rem'
               }}
-              className="card-hover"
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#004684', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Sparkles size={24} color="#FDB927" />
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: '#004684', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Sparkles size={22} color="#FDB927" />
+                  </div>
+                  <div>
+                    <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.1rem' }}>Instant Plaid Bank Sync ⚡</h4>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                      Connect Wells Fargo, Novo, Capital One, BoA, Chase, Empower 401k
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem' }}>Instant Plaid Bank Sync ⚡</h4>
-                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-                    Connect Wells Fargo, Novo, Capital One, BoA, Chase, Empower 401k
-                  </p>
-                </div>
+                <span className="badge badge-success" style={{ background: '#10b981', color: '#fff', fontWeight: 800 }}>Plaid API Active</span>
               </div>
-              <span className="badge badge-success">Recommended</span>
+
+              {/* Render Real Plaid Link Button */}
+              <div style={{ width: '100%' }}>
+                <PlaidLinkButton />
+              </div>
             </div>
 
             {/* Option 2: Manual Account Entry */}
@@ -157,8 +151,8 @@ export const AddAccountModal = ({ isOpen, onClose }) => {
               className="card-hover"
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Plus size={24} color="var(--primary-light)" />
+                <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Plus size={22} color="var(--primary-light)" />
                 </div>
                 <div>
                   <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem' }}>Add Custom Account Manually 📝</h4>
