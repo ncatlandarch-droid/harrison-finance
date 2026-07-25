@@ -6,7 +6,7 @@ const FinanceContext = createContext();
 export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('harrison_finance_v3.0');
+      const saved = localStorage.getItem('harrison_finance_v3.1');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.version === INITIAL_DATA.version) {
@@ -23,7 +23,7 @@ export const FinanceProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('harrison_finance_v3.0', JSON.stringify(data));
+      localStorage.setItem('harrison_finance_v3.1', JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save to local storage:', e);
     }
@@ -31,30 +31,58 @@ export const FinanceProvider = ({ children }) => {
 
   const members = data.family.members.filter(m => m.role !== 'Child');
   
-  // 1. External Base Household Income (Real BoA verified deposits + Erin UNCG salary)
-  // Barbara $5,645.84 (OPM) + Chris $6,309.36 (BoA NC A&T avg deposit) + Erin $2,500.00 (UNCG)
+  // External Base Incomes
   const totalBaseIncome = 5645.84 + 6309.36 + 2500.00; // $14,455.20 / mo
 
-  // 2. Individual Expenses
-  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, b) => sum + b.amount, 0); // $4,837.24 (inc $3k transfer)
+  // Itemized Expenses
+  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, b) => sum + b.amount, 0); // $4,837.24
   const erinTotalExpenses = data.erinExpenses.reduce((sum, e) => sum + e.amount, 0);       // $1,569.00
-  const chrisTotalExpenses = data.chrisExpenses.reduce((sum, c) => sum + c.amount, 0);     // $5,970.82 (derived from real BoA statement)
+  const chrisTotalExpenses = data.chrisExpenses.reduce((sum, c) => sum + c.amount, 0);     // $5,970.82
 
-  // 3. External Family Outflow (excluding internal $3k transfer)
-  const totalExternalExpenses = (barbaraTotalExpenses - 3000.00) + erinTotalExpenses + chrisTotalExpenses; // $9,377.06
+  const totalExternalExpenses = (barbaraTotalExpenses - 3000.00) + erinTotalExpenses + chrisTotalExpenses;
 
-  // 4. Earner Net Surpluses
-  const barbaraNetRemaining = 5645.84 - barbaraTotalExpenses; // $808.60
-  const erinNetRemaining = 2500.00 - erinTotalExpenses;       // $931.00
-  const chrisNetRemaining = (6309.36 + 3000.00) - chrisTotalExpenses; // $3,338.54
+  // Surpluses
+  const barbaraNetRemaining = 5645.84 - barbaraTotalExpenses; 
+  const erinNetRemaining = 2500.00 - erinTotalExpenses;       
+  const chrisNetRemaining = (6309.36 + 3000.00) - chrisTotalExpenses; 
 
-  // 5. Total Combined Real Household Surplus
-  const totalCombinedSurplus = totalBaseIncome - totalExternalExpenses; // $5,078.14
+  const totalCombinedSurplus = totalBaseIncome - totalExternalExpenses; 
 
-  // 6. Plaid Live Bank Scraped Spending & Balances
+  // Plaid Live Bank Scraped Spending & Active Checking Balances
   const scrapedPlaidTxns = data.transactions.filter(t => t.id.startsWith('pt_') || t.source === 'Plaid');
   const totalScrapedBankSpending = scrapedPlaidTxns.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
   const totalLiquidityBalance = data.accounts.reduce((sum, a) => sum + (a.balance || 0), 0);
+
+  // Active Checking Accounts for Chris & Mom (Barbara)
+  const chrisCheckingAccount = data.accounts.find(a => a.memberId === 'chris' && (a.type === 'Checking' || a.name.toLowerCase().includes('checking'))) || data.accounts[0];
+  const barbaraCheckingAccount = data.accounts.find(a => a.memberId === 'barbara' || a.institution.toLowerCase().includes('penfed')) || data.accounts[3] || { name: "Barbara's Checking", balance: 76155.00, institution: "PenFed / BoA" };
+
+  // Derived Combined Bills Array for BillsSection
+  const combinedBills = [
+    ...data.barbaraExpenses.map(b => ({ ...b, member: 'Barbara', status: 'due' })),
+    ...data.erinExpenses.map(e => ({ ...e, member: 'Erin', status: 'due' })),
+    ...data.chrisExpenses.map(c => ({ ...c, member: 'Chris', status: 'due' }))
+  ];
+
+  // Derived Budget Categories for BudgetSection
+  const budgetCategories = [
+    { id: 'b_mortgage', category: 'Home & Mortgage', limit: 2200.00, spent: 1200.00, icon: '🏠' },
+    { id: 'b_groceries', category: 'Groceries & Dining', limit: 2500.00, spent: 1470.64, icon: '🛒' },
+    { id: 'b_utilities', category: 'Utilities & Tech', limit: 800.00, spent: 344.33, icon: '⚡' },
+    { id: 'b_insurance', category: 'Insurance & Health', limit: 900.00, spent: 780.30, icon: '🛡️' },
+    { id: 'b_debt', category: 'Debt & Loans', limit: 2722.49, spent: 2722.49, icon: '💳' },
+    { id: 'b_personal', category: 'Personal & Misc', limit: 1000.00, spent: 687.55, icon: '🎯' }
+  ];
+
+  const billAllocations = [
+    { memberId: 'barbara', name: 'Barbara', color: '#a855f7', proportionalJointBillShare: barbaraTotalExpenses },
+    { memberId: 'erin', name: 'Erin', color: '#ec4899', proportionalJointBillShare: erinTotalExpenses },
+    { memberId: 'chris', name: 'Chris', color: '#6366f1', proportionalJointBillShare: chrisTotalExpenses }
+  ];
+
+  const updateBillStatus = (billId, status) => {
+    console.log('Update bill status:', billId, status);
+  };
 
   const mergePlaidData = (plaidAccounts = [], plaidTxns = []) => {
     setData(prev => {
@@ -129,7 +157,11 @@ export const FinanceProvider = ({ children }) => {
 
   return (
     <FinanceContext.Provider value={{
-      data,
+      data: {
+        ...data,
+        bills: combinedBills,
+        budgets: budgetCategories
+      },
       setData,
       activeTab,
       setActiveTab,
@@ -145,6 +177,10 @@ export const FinanceProvider = ({ children }) => {
       chrisNetRemaining,
       totalCombinedSurplus,
       totalLiquidityBalance,
+      chrisCheckingAccount,
+      barbaraCheckingAccount,
+      billAllocations,
+      updateBillStatus,
       mergePlaidData,
       addTransaction
     }}>

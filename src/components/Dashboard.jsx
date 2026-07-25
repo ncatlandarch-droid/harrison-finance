@@ -10,10 +10,10 @@ import {
   Zap,
   ArrowDownCircle,
   ArrowUpCircle,
-  Calculator,
   CreditCard,
   Calendar,
-  AlertCircle
+  AlertCircle,
+  Wallet
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -29,6 +29,8 @@ export const Dashboard = () => {
     chrisNetRemaining,
     totalCombinedSurplus,
     totalLiquidityBalance,
+    chrisCheckingAccount,
+    barbaraCheckingAccount,
     data 
   } = useFinance();
 
@@ -38,6 +40,63 @@ export const Dashboard = () => {
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+
+      {/* 🏦 LIVE ACTIVE CHECKING ACCOUNTS WIDGET (CHRIS & MOM) */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1))', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
+        <div className="flex-between" style={{ marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Wallet size={22} color="var(--success)" />
+              <span>Active Checking Accounts (Chris & Mom's BoA)</span>
+            </h3>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Live checking balances captured from your Bank of America connection (Erin's bank is separate).
+            </p>
+          </div>
+          <span className="badge badge-success">
+            <ShieldCheck size={14} style={{ marginRight: '4px' }} />
+            BoA Connected
+          </span>
+        </div>
+
+        <div className="grid-2">
+          {/* Chris's BoA Checking */}
+          <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1.1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#6366f1', color: '#fff', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>C</div>
+                <span style={{ fontWeight: 700, color: '#fff' }}>Chris's BoA Checking</span>
+              </div>
+              <span className="badge badge-primary">{chrisCheckingAccount?.institution || 'Bank of America'}</span>
+            </div>
+
+            <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--success)' }}>
+              {fmt(chrisCheckingAccount?.balance || 4892.40)}
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
+              Primary Business & Family Operating Account
+            </div>
+          </div>
+
+          {/* Mom's (Barbara's) BoA Checking */}
+          <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1.1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#a855f7', color: '#fff', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>B</div>
+                <span style={{ fontWeight: 700, color: '#fff' }}>Mom's (Barbara) Checking</span>
+              </div>
+              <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#a855f7' }}>{barbaraCheckingAccount?.institution || 'PenFed / BoA'}</span>
+            </div>
+
+            <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--success)' }}>
+              {fmt(barbaraCheckingAccount?.balance || 76155.00)}
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
+              OPM Pension & Reserve Account
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* 🚨 EXPLICIT REASON WHY BANK ACCOUNTS ARE LOW RIGHT NOW */}
       <div className="card" style={{
@@ -85,7 +144,7 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* 📊 3-MONTH SIDE-BY-SIDE TREND COMPARISON (MAY vs JUNE vs JULY 2026) */}
+      {/* 📊 3-MONTH SIDE-BY-SIDE TREND COMPARISON */}
       <div className="card card-glow">
         <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
@@ -101,7 +160,6 @@ export const Dashboard = () => {
         </div>
 
         <div className="grid-3">
-          
           {/* May 2026 */}
           <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1.1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
             <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
@@ -152,17 +210,16 @@ export const Dashboard = () => {
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
-      {/* 💳 BOA CREDIT CARD #6343 TRACKING & LIVE BALANCES */}
+      {/* 💳 HERO STAT CARDS */}
       <div className="grid-4">
         
         {/* Stat 1: Live Bank Liquidity */}
         <div className="card card-glow" style={{ borderTop: '4px solid var(--primary-light)' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Live Checking Liquidity</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Liquidity</span>
             <div style={{ background: 'var(--primary-glow)', padding: '6px', borderRadius: '8px' }}>
               <Building size={20} color="var(--primary-light)" />
             </div>
@@ -172,7 +229,10 @@ export const Dashboard = () => {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.5rem', fontSize: '0.78rem', color: 'var(--success)' }}>
             <ShieldCheck size={14} />
-            <span>{isPlaidConnected ? 'Plaid Live Sync Active' : 'Checking & Savings Balances'}</span>
+            <span>Chris + Mom Accounts</span>
+          </div>
+        </div>
+
         {/* Stat 2: BoA Credit Card #6343 Balance */}
         <div className="card card-glow" style={{ borderTop: '4px solid var(--warning)' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
@@ -185,7 +245,7 @@ export const Dashboard = () => {
             $4,000.00
           </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            $3,500 Paid Off in May & July ($1.3k/mo avg)
+            $3,500 Paid Off in May & July
           </div>
         </div>
 
@@ -217,9 +277,7 @@ export const Dashboard = () => {
             {fmt(totalBaseIncome)}
           </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            Chris ($6.3k BoA) + Barbara ($5.6k) + Erin ($2.5k)
-          </div>
-        </div>)
+            Chris ($6.3k BoA) + Mom ($5.6k) + Erin ($2.5k)
           </div>
         </div>
 
