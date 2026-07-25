@@ -195,14 +195,14 @@ export const Sidebar = () => {
         gap: '0.65rem',
         boxShadow: '0 8px 25px rgba(253, 185, 39, 0.25)'
       }}>
-        {/* ISLA 185px Giant Portrait Frame */}
+        {/* ISLA 240px Giant 35% Larger Portrait Frame */}
         <div style={{
           position: 'relative',
-          width: isCollapsed ? '64px' : '185px',
-          height: isCollapsed ? '64px' : '185px',
+          width: isCollapsed ? '72px' : '240px',
+          height: isCollapsed ? '72px' : '240px',
           borderRadius: '50%',
-          border: '5px solid #FDB927',
-          boxShadow: '0 0 45px rgba(253, 185, 39, 0.95)',
+          border: '6px solid #FDB927',
+          boxShadow: '0 0 55px rgba(253, 185, 39, 0.95)',
           overflow: 'hidden',
           flexShrink: 0,
           background: '#004684',

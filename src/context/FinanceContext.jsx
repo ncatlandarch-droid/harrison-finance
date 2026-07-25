@@ -215,7 +215,7 @@ export const FinanceProvider = ({ children }) => {
   const spendingMoney = data?.boaAccounts?.find(a => a.id === 'spending_money') || { balance: 0.00 };
 
   // External Bank Balances
-  const barbaraCheckingAccount = data?.accounts?.find(a => a.id === 'acc_barbara_penfed') || { balance: 52400.00 };
+  const barbaraCheckingAccount = data?.accounts?.find(a => a.id === 'acc_barbara_penfed' || a.id === 'penfed_savings') || { balance: 76155.00 };
   const capitalOneSavings = data?.accounts?.find(a => a.id === 'acc_capone') || { balance: 24300.00 };
   const novoBusinessChecking = data?.accounts?.find(a => a.id === 'acc_novo' || a.id === 'novo_business') || { balance: 350.00 };
 
