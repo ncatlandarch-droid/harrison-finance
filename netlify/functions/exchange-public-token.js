@@ -5,7 +5,7 @@ const PLAID_SECRET = process.env.PLAID_SECRET || '0df407f5dafe42da809d45ece1f468
 const PLAID_ENV = process.env.PLAID_ENV || 'production';
 
 const configuration = new Configuration({
-  basePath: PlaidEnvironments[PLAID_ENV] || PlaidEnvironments.production,
+  basePath: PlaidEnvironments[PLAID_ENV],
   baseOptions: {
     headers: {
       'PLAID-CLIENT-ID': PLAID_CLIENT_ID,
@@ -16,7 +16,7 @@ const configuration = new Configuration({
 
 const client = new PlaidApi(configuration);
 
-exports.handler = async function(event, context) {
+exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
@@ -24,51 +24,62 @@ exports.handler = async function(event, context) {
   try {
     const { public_token } = JSON.parse(event.body);
 
-    // 1. Exchange public token for access token
-    const tokenResponse = await client.itemPublicTokenExchange({
+    // Exchange public token for permanent access token
+    const response = await client.itemPublicTokenExchange({
       public_token: public_token,
     });
 
-    const accessToken = tokenResponse.data.access_token;
-    const itemId = tokenResponse.data.item_id;
+    const accessToken = response.data.access_token;
+    const itemId = response.data.item_id;
 
-    // 2. Fetch real account balances
+    // Fetch account balances immediately
     const accountsResponse = await client.accountsGet({
       access_token: accessToken,
     });
 
-    // 3. Fetch real transactions (last 30 days)
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - 30);
-    const endDate = new Date();
+    // Fetch last 30 days of transactions including pending transactions
+    const now = new Date();
+    const thirtyDaysAgo = new Date(now.setDate(now.getDate() - 30)).toISOString().split('T')[0];
+    const todayStr = new Date().toISOString().split('T')[0];
 
     let transactions = [];
     try {
-      const txnResponse = await client.transactionsGet({
+      const txnsResponse = await client.transactionsGet({
         access_token: accessToken,
-        start_date: startDate.toISOString().split('T')[0],
-        end_date: endDate.toISOString().split('T')[0],
+        start_date: thirtyDaysAgo,
+        end_date: todayStr,
+        options: {
+          include_original_description: true,
+          include_personal_finance_category: true
+        }
       });
-      transactions = txnResponse.data.transactions || [];
-    } catch (txnErr) {
-      console.warn('Transactions get error (falling back to accounts):', txnErr.message);
+      transactions = txnsResponse.data.transactions;
+    } catch (txnError) {
+      console.log('Transactions initial fetch warning:', txnError.message);
     }
 
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
       body: JSON.stringify({
         access_token: accessToken,
         item_id: itemId,
         accounts: accountsResponse.data.accounts,
-        transactions: transactions
-      })
+        transactions: transactions,
+      }),
     };
   } catch (error) {
-    console.error('Error exchanging public token:', error.response ? error.response.data : error.message);
+    console.error('Error exchanging public token:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message })
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+      body: JSON.stringify({ error: error.message }),
     };
   }
 };
