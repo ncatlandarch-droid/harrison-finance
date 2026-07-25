@@ -60,12 +60,16 @@ body {
   line-height: 1.5;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
 }
 
-/* App Shell */
+/* App Shell Responsive Layout */
 .app-container {
   display: flex;
   min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .main-wrapper {
@@ -74,6 +78,7 @@ body {
   flex-direction: column;
   min-width: 0;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .page-content {
@@ -121,14 +126,43 @@ body {
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
 
+/* 📱 MOBILE RESPONSIVE QUERIES */
 @media (max-width: 1024px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .grid-3 { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
-  .grid-2, .grid-4 { grid-template-columns: 1fr; }
-  .page-content { padding: 1rem; }
+  .app-container {
+    flex-direction: column;
+  }
+
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .page-content {
+    padding: 1rem 0.85rem !important;
+  }
+
+  .card {
+    padding: 1.15rem !important;
+    border-radius: 16px !important;
+  }
+
+  /* Make touch buttons comfortable for fingers */
+  .btn {
+    min-height: 44px;
+    padding: 0.65rem 1.1rem !important;
+    font-size: 0.88rem !important;
+  }
+
+  /* Stack header elements cleanly */
+  .flex-between {
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
 }
 
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
