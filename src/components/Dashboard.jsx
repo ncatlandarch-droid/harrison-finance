@@ -4,6 +4,7 @@ import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
 import { PlayerProfilePage } from './PlayerProfilePage';
 import { FamilyProfilePortalModal } from './FamilyProfilePortalModal';
 import { AddAccountModal } from './AddAccountModal';
+import { ISLAFloatingBar } from './ISLAFloatingBar';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -33,7 +34,9 @@ import {
   ChevronRight,
   MapPin,
   UserPlus,
-  Plus
+  Plus,
+  Sliders,
+  Check
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -65,13 +68,23 @@ export const Dashboard = () => {
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
+  // Business Growth Slider state (+ $0/mo up to + $10,000/mo)
+  const [businessGrowth, setBusinessGrowth] = useState(2500);
+
+  // Allocator Action states
+  const [allocatedHayden, setAllocatedHayden] = useState(false);
+  const [allocatedAva, setAllocatedAva] = useState(false);
+  const [allocatedHeloc, setAllocatedHeloc] = useState(false);
+
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  // Get custom user-added accounts from data.accounts
+  // Custom user-added accounts
   const allAccounts = data?.accounts || [];
   const customAccounts = allAccounts.filter(a => a.id.startsWith('acc_custom_'));
 
-  // If a player is selected, render their Dedicated Full-Page Workspace!
+  // Compute 12-month net worth projection with business growth slider
+  const annualSurplusGrowth = (totalCombinedSurplus + businessGrowth) * 12;
+
   if (selectedPlayer) {
     return <PlayerProfilePage player={selectedPlayer} onBack={() => setSelectedPlayer(null)} />;
   }
@@ -181,7 +194,6 @@ export const Dashboard = () => {
               <div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1.25rem' }}>
                   
-                  {/* GIANT PHOTO AVATAR FRAME (145px) */}
                   <div style={{
                     width: '145px',
                     height: '145px',
@@ -236,16 +248,16 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* 💳 REAL LIVE BANK ACCOUNTS & BALANCES WIDGET WITH + ADD ACCOUNT BUTTON */}
+      {/* 💳 REAL LIVE BANK ACCOUNTS WIDGET WITH OFFICIAL BRAND CARDS & PLAID SYNC STATUS */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))' }}>
         <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Building2 size={22} color="var(--primary-light)" />
-              <span>Real Live Bank & Financial Accounts</span>
+              <span>Real Live Connected Bank & Business Accounts</span>
             </h3>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Bank of America, PenFed, Capital One, Novo, Wells Fargo • Last Synced: Live
+              Novo Business, Capital One 360, Bank of America, PenFed • Plaid Encrypted Live Sync
             </p>
           </div>
 
@@ -277,89 +289,104 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        {/* 6 Accounts Grid */}
-        <div className="grid-3" style={{ gap: '1rem' }}>
+        {/* 6 Official Styled Bank Cards */}
+        <div className="grid-3" style={{ gap: '1.25rem' }}>
           
-          {/* Papi Checking 7333 */}
-          <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
-            <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>Papi Checking - 7333</span>
-              <span className="badge badge-danger">-$36.00 Low Alert</span>
+          {/* Novo Business Checking (Think! Design & Planning) */}
+          <div style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(15, 23, 42, 0.6))', border: '1.5px solid #3b82f6', borderRadius: '16px', padding: '1.25rem' }}>
+            <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Building2 size={18} color="#3b82f6" />
+                <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>Novo Business Checking</span>
+              </div>
+              <span className="badge badge-success" style={{ background: '#10b981', color: '#fff', fontWeight: 800, fontSize: '0.7rem' }}>
+                🟢 Plaid Live Sync
+              </span>
             </div>
-            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--danger)' }}>
-              -${Math.abs(papiChecking.balance).toFixed(2)}
+            <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 900, color: '#3b82f6' }}>
+              {fmt(novoBusinessChecking.balance)}
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Checking Operating Account</div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>Think! Design & Planning LLC Operating</div>
           </div>
 
-          {/* Spending Money 4866 */}
-          <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
-            <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>Spending Money - 4866</span>
-              <span className="badge badge-success">Active Checking</span>
+          {/* Capital One 360 High-Yield Savings */}
+          <div style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(15, 23, 42, 0.6))', border: '1.5px solid #10b981', borderRadius: '16px', padding: '1.25rem' }}>
+            <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Wallet size={18} color="#10b981" />
+                <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>Capital One 360 HYSA</span>
+              </div>
+              <span className="badge badge-success" style={{ background: '#10b981', color: '#fff', fontWeight: 800, fontSize: '0.7rem' }}>
+                🟢 Plaid Live Sync
+              </span>
             </div>
-            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--success)' }}>
-              {fmt(spendingMoney.balance)}
+            <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--success)' }}>
+              {fmt(capitalOneSavings.balance)}
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Checking Operating Account</div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>4.25% High-Yield Cash Reserves</div>
+          </div>
+
+          {/* Mom's PenFed Savings */}
+          <div style={{ background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.18), rgba(15, 23, 42, 0.6))', border: '1.5px solid #a855f7', borderRadius: '16px', padding: '1.25rem' }}>
+            <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <ShieldCheck size={18} color="#a855f7" />
+                <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>Mom's PenFed Reserve</span>
+              </div>
+              <span className="badge" style={{ background: '#a855f7', color: '#fff', fontWeight: 800, fontSize: '0.7rem' }}>
+                Barbara Reserve
+              </span>
+            </div>
+            <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 900, color: '#c084fc' }}>
+              {fmt(barbaraCheckingAccount.balance)}
+            </div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>Liquid Estate Capital Reserve</div>
           </div>
 
           {/* Adv Plus Banking 4717 */}
-          <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
-            <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>Adv Plus Banking - 4717</span>
-              <span className="badge badge-success">Active Checking</span>
+          <div style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.25rem' }}>
+            <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
+              <span style={{ fontSize: '0.84rem', fontWeight: 800, color: '#fff' }}>BoA Adv Plus - 4717</span>
+              <span className="badge badge-primary">Active Checking</span>
             </div>
-            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--success)' }}>
+            <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--success)' }}>
               {fmt(advPlusBanking.balance)}
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Primary Business Checking</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Primary Household Checking</div>
           </div>
 
           {/* Advantage Savings 0495 */}
-          <div style={{ background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.3)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
-            <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>Advantage Savings - 0495</span>
+          <div style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.25rem' }}>
+            <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
+              <span style={{ fontSize: '0.84rem', fontWeight: 800, color: '#fff' }}>BoA Advantage Savings - 0495</span>
               <span className="badge badge-primary">BoA Savings</span>
             </div>
-            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--primary-light)' }}>
+            <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary-light)' }}>
               {fmt(advantageSavings.balance)}
             </div>
             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Reserve Savings Account</div>
           </div>
 
-          {/* Capital One High-Yield Savings */}
-          <div style={{ background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
-            <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>Capital One High-Yield</span>
-              <span className="badge badge-success">4.25% HYSA</span>
+          {/* Papi Checking 7333 */}
+          <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '16px', padding: '1.25rem' }}>
+            <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
+              <span style={{ fontSize: '0.84rem', fontWeight: 800, color: '#fff' }}>Papi Checking - 7333</span>
+              <span className="badge badge-danger">-$36.00 Low Alert</span>
             </div>
-            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: '#3b82f6' }}>
-              {fmt(capitalOneSavings.balance)}
+            <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--danger)' }}>
+              -${Math.abs(papiChecking.balance).toFixed(2)}
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>High-Yield Cash Reserve</div>
-          </div>
-
-          {/* Mom's PenFed Savings */}
-          <div style={{ background: 'rgba(168, 85, 247, 0.1)', border: '1px solid rgba(168, 85, 247, 0.3)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
-            <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
-              <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>Mom's PenFed Reserve</span>
-              <span className="badge" style={{ background: '#a855f7', color: '#fff' }}>Barbara Savings</span>
-            </div>
-            <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: '#c084fc' }}>
-              {fmt(barbaraCheckingAccount.balance)}
-            </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Liquid Capital Reserve</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Estate Settlement Account</div>
           </div>
 
           {/* Render Any Custom Added Accounts */}
           {customAccounts.map(acc => (
-            <div key={acc.id} style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
-              <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#fff' }}>{acc.name}</span>
+            <div key={acc.id} style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '16px', padding: '1.25rem' }}>
+              <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
+                <span style={{ fontSize: '0.84rem', fontWeight: 800, color: '#fff' }}>{acc.name}</span>
                 <span className="badge badge-success">{acc.type}</span>
               </div>
-              <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--success)' }}>
+              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--success)' }}>
                 {fmt(acc.balance)}
               </div>
               <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>{acc.institution}</div>
@@ -367,6 +394,149 @@ export const Dashboard = () => {
           ))}
 
         </div>
+      </div>
+
+      {/* ⚡ 1-CLICK CASH SURPLUS ALLOCATOR & BUSINESS GROWTH SLIDER */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(15, 23, 42, 0.98))', border: '2px solid var(--primary-light)' }}>
+        <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1.25rem', marginBottom: '1.5rem' }}>
+          <div>
+            <span className="badge badge-primary" style={{ background: '#4f46e5', color: '#fff', fontWeight: 800, padding: '4px 10px' }}>
+              CASH SURPLUS ALLOCATOR (+ {fmt(totalCombinedSurplus)}/mo)
+            </span>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <Zap size={24} color="#FDB927" />
+              <span>1-Click Monthly Cash Allocation Engine</span>
+            </h3>
+            <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Directly assign your net cash surplus to kids savings goals or debt payoffs!
+            </p>
+          </div>
+
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>AVAILABLE MONTHLY SURPLUS</div>
+            <div className="font-mono" style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--success)' }}>
+              +{fmt(totalCombinedSurplus)}/mo
+            </div>
+          </div>
+        </div>
+
+        {/* 3 Interactive Allocator Action Buttons */}
+        <div className="grid-3" style={{ gap: '1.25rem', marginBottom: '1.75rem' }}>
+          
+          {/* Action 1: Hayden $331/mo */}
+          <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: allocatedHayden ? '2px solid #10b981' : '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--primary-light)', fontWeight: 800 }}>HAYDEN $30K GOAL</div>
+              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff', margin: '0.2rem 0' }}>
+                $331.00 / mo
+              </div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Hits $30,000 cash by Age 18 (6 years)</div>
+            </div>
+
+            <button 
+              className={`btn ${allocatedHayden ? 'btn-success' : 'btn-primary'}`}
+              onClick={() => setAllocatedHayden(!allocatedHayden)}
+              style={{ marginTop: '1rem', width: '100%', fontSize: '0.82rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
+            >
+              {allocatedHayden ? (
+                <>
+                  <Check size={16} />
+                  <span>Auto-Funded ✓</span>
+                </>
+              ) : (
+                <span>Auto-Fund Hayden ($331/mo)</span>
+              )}
+            </button>
+          </div>
+
+          {/* Action 2: Ava $172/mo */}
+          <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: allocatedAva ? '2px solid #10b981' : '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ fontSize: '0.78rem', color: '#ec4899', fontWeight: 800 }}>AVA $30K GOAL</div>
+              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff', margin: '0.2rem 0' }}>
+                $172.00 / mo
+              </div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Hits $30,000 cash by Age 18 (11 years)</div>
+            </div>
+
+            <button 
+              className={`btn ${allocatedAva ? 'btn-success' : 'btn-primary'}`}
+              onClick={() => setAllocatedAva(!allocatedAva)}
+              style={{ marginTop: '1rem', width: '100%', fontSize: '0.82rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
+            >
+              {allocatedAva ? (
+                <>
+                  <Check size={16} />
+                  <span>Auto-Funded ✓</span>
+                </>
+              ) : (
+                <span>Auto-Fund Ava ($172/mo)</span>
+              )}
+            </button>
+          </div>
+
+          {/* Action 3: Figure HELOC Payoff +$1,000/mo */}
+          <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: allocatedHeloc ? '2px solid #10b981' : '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ fontSize: '0.78rem', color: '#f59e0b', fontWeight: 800 }}>HELOC ACCELERATED PAYOFF</div>
+              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff', margin: '0.2rem 0' }}>
+                +$1,000.00 / mo
+              </div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--success)', fontWeight: 700 }}>Saves +$87,400 interest (Done 2029!)</div>
+            </div>
+
+            <button 
+              className={`btn ${allocatedHeloc ? 'btn-success' : 'btn-primary'}`}
+              onClick={() => setAllocatedHeloc(!allocatedHeloc)}
+              style={{ marginTop: '1rem', width: '100%', fontSize: '0.82rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem' }}
+            >
+              {allocatedHeloc ? (
+                <>
+                  <Check size={16} />
+                  <span>Auto-Pay Active ✓</span>
+                </>
+              ) : (
+                <span>Auto-Pay HELOC (+$1k/mo)</span>
+              )}
+            </button>
+          </div>
+
+        </div>
+
+        {/* 📈 INTERACTIVE BUSINESS GROWTH SLIDER */}
+        <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1.5rem', borderRadius: '18px', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Sliders size={20} color="#FDB927" />
+              <span style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem' }}>
+                Think! Design & Planning LLC Business Growth Simulator
+              </span>
+            </div>
+            <div className="font-mono" style={{ fontSize: '1.25rem', fontWeight: 900, color: '#FDB927' }}>
+              +{fmt(businessGrowth)} / month
+            </div>
+          </div>
+
+          <input 
+            type="range"
+            min="0"
+            max="10000"
+            step="500"
+            value={businessGrowth}
+            onChange={(e) => setBusinessGrowth(Number(e.target.value))}
+            style={{ width: '100%', accentColor: '#FDB927', cursor: 'pointer', height: '8px', borderRadius: '4px', marginBottom: '1rem' }}
+          />
+
+          <div className="flex-between" style={{ fontSize: '0.82rem', color: '#cbd5e1' }}>
+            <div>
+              12-Month Extra Cash Accumulated: <strong style={{ color: 'var(--success)' }}>+{fmt(annualSurplusGrowth)}</strong>
+            </div>
+            <div style={{ color: '#FDB927', fontWeight: 800 }}>
+              🚀 Projected 1-Year Household Net Surplus: +{fmt((totalCombinedSurplus + businessGrowth) * 12)}
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* 🕊️ PAPI ACCOUNT CLOSURE & HELOC PAYOFF PROJECTION CARDS */}
@@ -408,6 +578,9 @@ export const Dashboard = () => {
         </div>
 
       </div>
+
+      {/* Persistent Floating ISLA AI Assistant Bar */}
+      <ISLAFloatingBar />
 
       {/* Modals */}
       <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
