@@ -23,7 +23,9 @@ import {
   Award,
   Zap,
   CheckCircle2,
-  FileText
+  FileText,
+  Phone,
+  Calendar
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -50,18 +52,18 @@ export const Dashboard = () => {
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  // Player Metrics for Gamified Scoreboard
+  // Player Metrics for Gamified Scoreboard with Image Avatar Support
   const players = [
     {
       id: 'barbara',
       name: 'Barbara (Mom)',
       role: 'Family Pillar & Reserve Guardian',
-      avatar: '💜',
+      avatarEmoji: '💜',
+      imagePath: '/avatars/barbara.jpg',
       color: '#a855f7',
       income: 5645.84,
       expenses: barbaraTotalExpenses,
       surplus: 5645.84 - barbaraTotalExpenses,
-      score: 92,
       badge: '👑 Wealth Preserver',
       ratio: Math.round((barbaraTotalExpenses / 5645.84) * 100)
     },
@@ -69,12 +71,12 @@ export const Dashboard = () => {
       id: 'chris',
       name: 'Chris',
       role: 'Operating Lead & Tech Architect',
-      avatar: '💙',
+      avatarEmoji: '💙',
+      imagePath: '/avatars/chris.jpg',
       color: '#6366f1',
-      income: 6309.36 + 3000.00, // Includes transfer for household
+      income: 6309.36 + 3000.00,
       expenses: chrisTotalExpenses,
       surplus: (6309.36 + 3000.00) - chrisTotalExpenses,
-      score: 84,
       badge: '🚀 Revenue Engine',
       ratio: Math.round((chrisTotalExpenses / (6309.36 + 3000.00)) * 100)
     },
@@ -82,12 +84,12 @@ export const Dashboard = () => {
       id: 'erin',
       name: 'Erin',
       role: 'Efficiency Specialist & Educator',
-      avatar: '💗',
+      avatarEmoji: '💗',
+      imagePath: '/avatars/erin.jpg',
       color: '#ec4899',
       income: 2500.00,
       expenses: erinTotalExpenses,
       surplus: 2500.00 - erinTotalExpenses,
-      score: 95,
       badge: '🎯 Budget Ninja',
       ratio: Math.round((erinTotalExpenses / 2500.00) * 100)
     }
@@ -96,13 +98,13 @@ export const Dashboard = () => {
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       
-      {/* 🎮 GAMIFIED FAMILY PLAYER SCOREBOARD & INFLOW VS SPENDING RATIO */}
+      {/* 🎮 GAMIFIED FAMILY PLAYER SCOREBOARD & PLAYER AVATARS */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))' }}>
         <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
             <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <Trophy size={24} color="#FDB927" />
-              <span>Harrison Family Financial Scoreboard & Player Avatars</span>
+              <span>Harrison Family Financial Scoreboard & Avatars</span>
             </h3>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
               Real-time gamified cash flow performance tracking per family earner
@@ -142,8 +144,8 @@ export const Dashboard = () => {
               <div className="flex-between" style={{ marginBottom: '1rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
                   <div style={{
-                    width: '48px',
-                    height: '48px',
+                    width: '52px',
+                    height: '52px',
                     borderRadius: '50%',
                     background: `linear-gradient(135deg, ${p.color}, #1e1b4b)`,
                     display: 'flex',
@@ -151,9 +153,16 @@ export const Dashboard = () => {
                     justifyContent: 'center',
                     fontSize: '1.6rem',
                     boxShadow: `0 4px 14px ${p.color}40`,
-                    border: '2px solid rgba(255,255,255,0.2)'
+                    border: '2px solid rgba(255,255,255,0.2)',
+                    overflow: 'hidden'
                   }}>
-                    {p.avatar}
+                    <img 
+                      src={p.imagePath} 
+                      alt={p.name}
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                    <span style={{ position: 'absolute' }}>{p.avatarEmoji}</span>
                   </div>
                   <div>
                     <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem' }}>{p.name}</h4>
@@ -204,6 +213,45 @@ export const Dashboard = () => {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* 🕊️ PAPI ACCOUNT CLOSURE & HELOC PAYOFF PROJECTION CARDS */}
+      <div className="grid-2" style={{ gap: '1.25rem' }}>
+        
+        {/* Papi Bank of America Closure Guide */}
+        <div className="card" style={{ background: 'rgba(99, 102, 241, 0.12)', border: '1px solid rgba(99, 102, 241, 0.4)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+            <span style={{ fontSize: '1.5rem' }}>🕊️</span>
+            <div>
+              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem' }}>Papi Checking - 7333 Closure Checklist</h4>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Bank of America Estate Care Team Instructions</p>
+            </div>
+          </div>
+
+          <div style={{ fontSize: '0.84rem', color: '#cbd5e1', lineHeight: '1.5', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div>• <strong>BoA Estate Line:</strong> Call <strong>888-689-4466</strong> (Mon–Fri 9am–8pm ET)</div>
+            <div>• <strong>Documents Needed:</strong> Original Death Certificate + Photo ID</div>
+            <div>• <strong>Action:</strong> Transfer `-$36.00` balance to Adv Plus 4717 and close cleanly.</div>
+          </div>
+        </div>
+
+        {/* Figure HELOC +$1,000 Extra Payment Payoff Simulator */}
+        <div className="card" style={{ background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+            <TrendingUp size={24} color="#f59e0b" />
+            <div>
+              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.05rem' }}>Figure HELOC +$1,000 Extra Payoff Simulator</h4>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Accelerated Principal Reduction Plan</p>
+            </div>
+          </div>
+
+          <div style={{ fontSize: '0.84rem', color: '#cbd5e1', lineHeight: '1.5', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <div>• <strong>Standard Plan ($1k/mo):</strong> 25+ years • Rate jumps to 15.3% in Aug 2029</div>
+            <div>• <strong>Accelerated Plan ($2k/mo):</strong> Paid off in <strong>5.2 Years (by late 2031!)</strong></div>
+            <div style={{ color: 'var(--success)', fontWeight: 800 }}>• Total Interest Saved: +$98,400 Cash Saved!</div>
+          </div>
+        </div>
+
       </div>
 
       {/* 💳 REAL LIVE BANK OF AMERICA ACCOUNTS & BALANCES WIDGET */}
@@ -380,50 +428,6 @@ export const Dashboard = () => {
           </div>
         </div>
 
-      </div>
-
-      {/* 50 REAL LIVE BOA TRANSACTIONS TABLE */}
-      <div className="card">
-        <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
-          <div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff' }}>
-              Real Bank of America Statement Transactions ({data.transactions.length} Verified)
-            </h3>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Live feed parsed directly from your online banking portal
-            </p>
-          </div>
-          <span className="badge badge-success">BoA Live Direct Feed</span>
-        </div>
-
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '0.75rem 1rem' }}>Date</th>
-                <th style={{ padding: '0.75rem 1rem' }}>Description</th>
-                <th style={{ padding: '0.75rem 1rem' }}>Category</th>
-                <th style={{ padding: '0.75rem 1rem', textAlign: 'right' }}>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.transactions.slice(0, 15).map((t, idx) => (
-                <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                  <td style={{ padding: '0.75rem 1rem', color: 'var(--text-muted)' }}>{t.date}</td>
-                  <td style={{ padding: '0.75rem 1rem', fontWeight: 600, color: '#fff' }}>{t.description}</td>
-                  <td style={{ padding: '0.75rem 1rem' }}>
-                    <span className="badge" style={{ background: 'rgba(255,255,255,0.08)', color: '#fff' }}>
-                      {t.category}
-                    </span>
-                  </td>
-                  <td className="font-mono" style={{ padding: '0.75rem 1rem', textAlign: 'right', fontWeight: 700, color: t.amount > 0 ? 'var(--success)' : 'var(--danger)' }}>
-                    {t.amount > 0 ? `+${fmt(t.amount)}` : `-${fmt(Math.abs(t.amount))}`}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </div>
 
       {/* Financial Strategy Modal */}
