@@ -43,7 +43,7 @@ export const FinanceProvider = ({ children }) => {
     }
   });
 
-  // Dynamic Family Roster (5 Human Family Members: Erin, Chris, Barbara, Hayden, Ava)
+  // Dynamic Family Roster
   const [members, setMembers] = useState(() => {
     return [
       {
@@ -114,6 +114,35 @@ export const FinanceProvider = ({ children }) => {
     ];
   });
 
+  // Function to update any account balance (Novo, Capital One, BoA, PenFed)
+  const updateAccountBalance = (accountId, newBalance) => {
+    setData(prev => {
+      // Check in boaAccounts first
+      if (prev.boaAccounts && prev.boaAccounts.some(a => a.id === accountId)) {
+        return {
+          ...prev,
+          boaAccounts: prev.boaAccounts.map(a => a.id === accountId ? { ...a, balance: Number(newBalance) } : a)
+        };
+      }
+
+      // Check in accounts array
+      if (prev.accounts && prev.accounts.some(a => a.id === accountId)) {
+        return {
+          ...prev,
+          accounts: prev.accounts.map(a => a.id === accountId ? { ...a, balance: Number(newBalance) } : a)
+        };
+      }
+
+      // Default fallback: append or update in accounts
+      const existing = prev.accounts || [];
+      const updated = existing.map(a => a.id === accountId ? { ...a, balance: Number(newBalance) } : a);
+      if (!existing.some(a => a.id === accountId)) {
+        updated.push({ id: accountId, name: accountId, balance: Number(newBalance) });
+      }
+      return { ...prev, accounts: updated };
+    });
+  };
+
   // Save data state
   useEffect(() => {
     try {
@@ -161,6 +190,7 @@ export const FinanceProvider = ({ children }) => {
       setHouseholdProfile,
       members,
       setMembers,
+      updateAccountBalance,
       totalBaseIncome,
       barbaraTotalExpenses,
       erinTotalExpenses,

@@ -4,6 +4,7 @@ import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
 import { PlayerProfilePage } from './PlayerProfilePage';
 import { FamilyProfilePortalModal } from './FamilyProfilePortalModal';
 import { AddAccountModal } from './AddAccountModal';
+import { EditAccountModal } from './EditAccountModal';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -36,8 +37,7 @@ import {
   Plus,
   Sliders,
   Check,
-  Star,
-  Activity
+  Edit3
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -68,6 +68,7 @@ export const Dashboard = () => {
   const [isFamilyPortalOpen, setIsFamilyPortalOpen] = useState(false);
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [editingAccount, setEditingAccount] = useState(null);
 
   // Business Growth Slider state (+ $0/mo up to + $10,000/mo)
   const [businessGrowth, setBusinessGrowth] = useState(2500);
@@ -87,7 +88,6 @@ export const Dashboard = () => {
   const annualSurplusGrowth = (totalCombinedSurplus + businessGrowth) * 12;
 
   // Collective Family Score calculation (Out of 1,000 Points)
-  const collectiveScore = 885;
   const collectiveGrade = "A+ MASTER HOUSEHOLD";
 
   if (selectedPlayer) {
@@ -227,7 +227,7 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        {/* 6 GIANT Family Character Cards in a Clean 3-Column Grid */}
+        {/* 5 GIANT Family Character Cards in a Clean Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
           {members.map((p) => (
             <div 
@@ -270,7 +270,7 @@ export const Dashboard = () => {
                 </div>
               )}
 
-              {/* GIANT AVATAR HEADER (145px Frames!) */}
+              {/* GIANT AVATAR HEADER */}
               <div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1.25rem' }}>
                   
@@ -328,7 +328,7 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* 💳 REAL LIVE BANK ACCOUNTS WIDGET WITH OFFICIAL BRAND CARDS & PLAID SYNC STATUS */}
+      {/* 💳 REAL LIVE BANK ACCOUNTS WIDGET WITH DIRECT EDIT BALANCE BUTTONS */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))' }}>
         <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
@@ -337,7 +337,7 @@ export const Dashboard = () => {
               <span>Real Live Connected Bank & Business Accounts</span>
             </h3>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Novo Business, Capital One 360, Bank of America, PenFed • Plaid Encrypted Live Sync
+              Novo Business, Capital One 360, Bank of America, PenFed • Click any card or "Edit Balance ✏️" to set exact live balance!
             </p>
           </div>
 
@@ -373,15 +373,19 @@ export const Dashboard = () => {
         <div className="grid-3" style={{ gap: '1.25rem' }}>
           
           {/* Novo Business Checking (Think! Design & Planning) */}
-          <div style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(15, 23, 42, 0.6))', border: '1.5px solid #3b82f6', borderRadius: '16px', padding: '1.25rem' }}>
+          <div style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(15, 23, 42, 0.6))', border: '1.5px solid #3b82f6', borderRadius: '16px', padding: '1.25rem', position: 'relative' }}>
             <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <Building2 size={18} color="#3b82f6" />
                 <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>Novo Business Checking</span>
               </div>
-              <span className="badge badge-success" style={{ background: '#10b981', color: '#fff', fontWeight: 800, fontSize: '0.7rem' }}>
-                🟢 Plaid Live Sync
-              </span>
+              <button 
+                onClick={() => setEditingAccount({ id: 'acc_novo', name: 'Novo Business Checking', balance: novoBusinessChecking.balance })}
+                className="badge"
+                style={{ background: '#3b82f6', color: '#fff', fontWeight: 800, fontSize: '0.7rem', cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+              >
+                <Edit3 size={11} /> Edit Balance
+              </button>
             </div>
             <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 900, color: '#3b82f6' }}>
               {fmt(novoBusinessChecking.balance)}
@@ -396,9 +400,13 @@ export const Dashboard = () => {
                 <Wallet size={18} color="#10b981" />
                 <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>Capital One 360 HYSA</span>
               </div>
-              <span className="badge badge-success" style={{ background: '#10b981', color: '#fff', fontWeight: 800, fontSize: '0.7rem' }}>
-                🟢 Plaid Live Sync
-              </span>
+              <button 
+                onClick={() => setEditingAccount({ id: 'acc_capone', name: 'Capital One 360 HYSA', balance: capitalOneSavings.balance })}
+                className="badge"
+                style={{ background: '#10b981', color: '#fff', fontWeight: 800, fontSize: '0.7rem', cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+              >
+                <Edit3 size={11} /> Edit Balance
+              </button>
             </div>
             <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 900, color: 'var(--success)' }}>
               {fmt(capitalOneSavings.balance)}
@@ -413,9 +421,13 @@ export const Dashboard = () => {
                 <ShieldCheck size={18} color="#a855f7" />
                 <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>Mom's PenFed Reserve</span>
               </div>
-              <span className="badge" style={{ background: '#a855f7', color: '#fff', fontWeight: 800, fontSize: '0.7rem' }}>
-                Barbara Reserve
-              </span>
+              <button 
+                onClick={() => setEditingAccount({ id: 'acc_barbara_penfed', name: "Mom's PenFed Reserve", balance: barbaraCheckingAccount.balance })}
+                className="badge"
+                style={{ background: '#a855f7', color: '#fff', fontWeight: 800, fontSize: '0.7rem', cursor: 'pointer', border: 'none', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+              >
+                <Edit3 size={11} /> Edit Balance
+              </button>
             </div>
             <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 900, color: '#c084fc' }}>
               {fmt(barbaraCheckingAccount.balance)}
@@ -427,7 +439,13 @@ export const Dashboard = () => {
           <div style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.25rem' }}>
             <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
               <span style={{ fontSize: '0.84rem', fontWeight: 800, color: '#fff' }}>BoA Adv Plus - 4717</span>
-              <span className="badge badge-primary">Active Checking</span>
+              <button 
+                onClick={() => setEditingAccount({ id: 'adv_plus', name: 'BoA Adv Plus - 4717', balance: advPlusBanking.balance })}
+                className="badge badge-primary"
+                style={{ cursor: 'pointer', border: 'none', fontSize: '0.7rem' }}
+              >
+                Edit Balance ✏️
+              </button>
             </div>
             <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--success)' }}>
               {fmt(advPlusBanking.balance)}
@@ -439,7 +457,13 @@ export const Dashboard = () => {
           <div style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.25rem' }}>
             <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
               <span style={{ fontSize: '0.84rem', fontWeight: 800, color: '#fff' }}>BoA Advantage Savings - 0495</span>
-              <span className="badge badge-primary">BoA Savings</span>
+              <button 
+                onClick={() => setEditingAccount({ id: 'adv_savings', name: 'BoA Advantage Savings - 0495', balance: advantageSavings.balance })}
+                className="badge badge-primary"
+                style={{ cursor: 'pointer', border: 'none', fontSize: '0.7rem' }}
+              >
+                Edit Balance ✏️
+              </button>
             </div>
             <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary-light)' }}>
               {fmt(advantageSavings.balance)}
@@ -451,7 +475,13 @@ export const Dashboard = () => {
           <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '16px', padding: '1.25rem' }}>
             <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
               <span style={{ fontSize: '0.84rem', fontWeight: 800, color: '#fff' }}>Papi Checking - 7333</span>
-              <span className="badge badge-danger">-$36.00 Low Alert</span>
+              <button 
+                onClick={() => setEditingAccount({ id: 'papi_checking', name: 'Papi Checking - 7333', balance: papiChecking.balance })}
+                className="badge badge-danger"
+                style={{ cursor: 'pointer', border: 'none', fontSize: '0.7rem' }}
+              >
+                Edit Balance ✏️
+              </button>
             </div>
             <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--danger)' }}>
               -${Math.abs(papiChecking.balance).toFixed(2)}
@@ -464,7 +494,13 @@ export const Dashboard = () => {
             <div key={acc.id} style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '16px', padding: '1.25rem' }}>
               <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
                 <span style={{ fontSize: '0.84rem', fontWeight: 800, color: '#fff' }}>{acc.name}</span>
-                <span className="badge badge-success">{acc.type}</span>
+                <button 
+                  onClick={() => setEditingAccount({ id: acc.id, name: acc.name, balance: acc.balance })}
+                  className="badge badge-success"
+                  style={{ cursor: 'pointer', border: 'none', fontSize: '0.7rem' }}
+                >
+                  Edit Balance ✏️
+                </button>
               </div>
               <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--success)' }}>
                 {fmt(acc.balance)}
@@ -503,14 +539,14 @@ export const Dashboard = () => {
         {/* 3 Interactive Allocator Action Buttons */}
         <div className="grid-3" style={{ gap: '1.25rem', marginBottom: '1.75rem' }}>
           
-          {/* Action 1: Hayden $331/mo */}
+          {/* Action 1: Hayden $172/mo */}
           <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: allocatedHayden ? '2px solid #10b981' : '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
               <div style={{ fontSize: '0.78rem', color: 'var(--primary-light)', fontWeight: 800 }}>HAYDEN $30K GOAL</div>
               <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff', margin: '0.2rem 0' }}>
-                $331.00 / mo
+                $172.00 / mo
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Hits $30,000 cash by Age 18 (6 years)</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Hits $30,000 cash by Age 18 (11 years)</div>
             </div>
 
             <button 
@@ -524,19 +560,19 @@ export const Dashboard = () => {
                   <span>Auto-Funded ✓</span>
                 </>
               ) : (
-                <span>Auto-Fund Hayden ($331/mo)</span>
+                <span>Auto-Fund Hayden ($172/mo)</span>
               )}
             </button>
           </div>
 
-          {/* Action 2: Ava $172/mo */}
+          {/* Action 2: Ava $105/mo */}
           <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: allocatedAva ? '2px solid #10b981' : '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
               <div style={{ fontSize: '0.78rem', color: '#ec4899', fontWeight: 800 }}>AVA $30K GOAL</div>
               <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 900, color: '#fff', margin: '0.2rem 0' }}>
-                $172.00 / mo
+                $105.00 / mo
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Hits $30,000 cash by Age 18 (11 years)</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Hits $30,000 cash by Age 18 (16 years)</div>
             </div>
 
             <button 
@@ -550,7 +586,7 @@ export const Dashboard = () => {
                   <span>Auto-Funded ✓</span>
                 </>
               ) : (
-                <span>Auto-Fund Ava ($172/mo)</span>
+                <span>Auto-Fund Ava ($105/mo)</span>
               )}
             </button>
           </div>
@@ -663,6 +699,7 @@ export const Dashboard = () => {
       <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
       <FamilyProfilePortalModal isOpen={isFamilyPortalOpen} onClose={() => setIsFamilyPortalOpen(false)} />
       <AddAccountModal isOpen={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} />
+      <EditAccountModal isOpen={!!editingAccount} onClose={() => setEditingAccount(null)} account={editingAccount} />
 
     </div>
   );
