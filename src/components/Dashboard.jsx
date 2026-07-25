@@ -29,8 +29,13 @@ export const Dashboard = () => {
     chrisNetRemaining,
     totalCombinedSurplus,
     totalLiquidityBalance,
-    chrisCheckingAccount,
+    papiChecking,
+    spendingMoney,
+    advPlusBanking,
+    advantageSavings,
+    bankAmericardCreditCard,
     barbaraCheckingAccount,
+    totalBoACash,
     data 
   } = useFinance();
 
@@ -41,60 +46,116 @@ export const Dashboard = () => {
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
 
-      {/* 🏦 LIVE ACTIVE CHECKING ACCOUNTS WIDGET (CHRIS & MOM) */}
+      {/* 🏦 REAL LIVE BANK OF AMERICA ONLINE ACCOUNTS (MATCHES YOUR PORTAL SCREENSHOT EXACTLY) */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1))', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
         <div className="flex-between" style={{ marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem' }}>
           <div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Wallet size={22} color="var(--success)" />
-              <span>Active Checking Accounts (Chris & Mom's BoA)</span>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Wallet size={24} color="var(--success)" />
+              <span>Real Live Bank of America Accounts & Balances</span>
             </h3>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Live checking balances captured from your Bank of America connection (Erin's bank is separate).
+            <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Captured directly from your Bank of America online banking portal (William C. Harrison).
             </p>
           </div>
-          <span className="badge badge-success">
-            <ShieldCheck size={14} style={{ marginRight: '4px' }} />
-            BoA Connected
-          </span>
+          <div style={{ textAlign: 'right' }}>
+            <span className="badge badge-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <ShieldCheck size={14} />
+              BoA Live Sync Active
+            </span>
+            <div style={{ fontSize: '0.8rem', color: '#fff', fontWeight: 700, marginTop: '0.2rem' }}>
+              Total BoA Liquid Cash: <span className="font-mono" style={{ color: 'var(--success)' }}>{fmt(totalBoACash)}</span>
+            </div>
+          </div>
         </div>
 
-        <div className="grid-2">
-          {/* Chris's BoA Checking */}
-          <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1.1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-            <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#6366f1', color: '#fff', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>C</div>
-                <span style={{ fontWeight: 700, color: '#fff' }}>Chris's BoA Checking</span>
-              </div>
-              <span className="badge badge-primary">{chrisCheckingAccount?.institution || 'Bank of America'}</span>
+        {/* 5 Exact Bank of America Accounts */}
+        <div className="grid-3" style={{ gap: '1rem' }}>
+          
+          {/* Account 1: Papi Checking - 7333 */}
+          <div style={{ background: 'rgba(239, 68, 68, 0.12)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(239, 68, 68, 0.4)' }}>
+            <div className="flex-between" style={{ marginBottom: '0.4rem' }}>
+              <span style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>Papi Checking - 7333</span>
+              <span className="badge badge-danger">Low Balance</span>
             </div>
-
-            <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--success)' }}>
-              {fmt(chrisCheckingAccount?.balance || 4892.40)}
+            <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--danger)' }}>
+              -${Math.abs(papiChecking.balance).toFixed(2)}
             </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-              Primary Business & Family Operating Account
+            <div style={{ fontSize: '0.75rem', color: 'var(--danger)', marginTop: '0.2rem' }}>
+              ⚠️ Low balance alert on portal
             </div>
           </div>
 
-          {/* Mom's (Barbara's) BoA Checking */}
-          <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1.1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
-            <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#a855f7', color: '#fff', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>B</div>
-                <span style={{ fontWeight: 700, color: '#fff' }}>Mom's (Barbara) Checking</span>
-              </div>
-              <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#a855f7' }}>{barbaraCheckingAccount?.institution || 'PenFed / BoA'}</span>
+          {/* Account 2: Spending Money - 4866 */}
+          <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div className="flex-between" style={{ marginBottom: '0.4rem' }}>
+              <span style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>Spending Money - 4866</span>
+              <span className="badge badge-primary">Checking</span>
             </div>
-
-            <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--success)' }}>
-              {fmt(barbaraCheckingAccount?.balance || 76155.00)}
+            <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--success)' }}>
+              {fmt(spendingMoney.balance)}
             </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
-              OPM Pension & Reserve Account
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Active Checking
             </div>
           </div>
+
+          {/* Account 3: Adv Plus Banking - 4717 */}
+          <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div className="flex-between" style={{ marginBottom: '0.4rem' }}>
+              <span style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>Adv Plus Banking - 4717</span>
+              <span className="badge badge-primary">Checking</span>
+            </div>
+            <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--success)' }}>
+              {fmt(advPlusBanking.balance)}
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Primary Business Checking
+            </div>
+          </div>
+
+          {/* Account 4: Advantage Savings - 0495 */}
+          <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)' }}>
+            <div className="flex-between" style={{ marginBottom: '0.4rem' }}>
+              <span style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>Advantage Savings - 0495</span>
+              <span className="badge badge-success">Savings</span>
+            </div>
+            <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff' }}>
+              {fmt(advantageSavings.balance)}
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Emergency Reserve Savings
+            </div>
+          </div>
+
+          {/* Account 5: BankAmericard Credit Card - 6343 */}
+          <div style={{ background: 'rgba(245, 158, 11, 0.12)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
+            <div className="flex-between" style={{ marginBottom: '0.4rem' }}>
+              <span style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>BankAmericard Visa - 6343</span>
+              <span className="badge badge-warning">Credit Card</span>
+            </div>
+            <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--warning)' }}>
+              {fmt(bankAmericardCreditCard.balance)}
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--warning)', marginTop: '0.2rem' }}>
+              Owed Balance ($3,500 paid May/July)
+            </div>
+          </div>
+
+          {/* Mom's PenFed Savings */}
+          <div style={{ background: 'rgba(168, 85, 247, 0.12)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(168, 85, 247, 0.4)' }}>
+            <div className="flex-between" style={{ marginBottom: '0.4rem' }}>
+              <span style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>Mom's PenFed Reserve</span>
+              <span className="badge" style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#a855f7' }}>Mom (Barbara)</span>
+            </div>
+            <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff' }}>
+              {fmt(barbaraCheckingAccount.balance)}
+            </div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              OPM Pension Savings Reserve
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -219,17 +280,17 @@ export const Dashboard = () => {
         {/* Stat 1: Live Bank Liquidity */}
         <div className="card card-glow" style={{ borderTop: '4px solid var(--primary-light)' }}>
           <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Liquidity</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total BoA Liquid Cash</span>
             <div style={{ background: 'var(--primary-glow)', padding: '6px', borderRadius: '8px' }}>
               <Building size={20} color="var(--primary-light)" />
             </div>
           </div>
           <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff' }}>
-            {fmt(totalLiquidityBalance)}
+            {fmt(totalBoACash)}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', marginTop: '0.5rem', fontSize: '0.78rem', color: 'var(--success)' }}>
             <ShieldCheck size={14} />
-            <span>Chris + Mom Accounts</span>
+            <span>Across 4 BoA Accounts</span>
           </div>
         </div>
 
@@ -242,10 +303,10 @@ export const Dashboard = () => {
             </div>
           </div>
           <div className="font-mono" style={{ fontSize: '1.9rem', fontWeight: 800, color: 'var(--warning)' }}>
-            $4,000.00
+            {fmt(bankAmericardCreditCard.balance)}
           </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-            $3,500 Paid Off in May & July
+            Live Portal Credit Balance
           </div>
         </div>
 

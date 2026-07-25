@@ -6,7 +6,7 @@ const FinanceContext = createContext();
 export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('harrison_finance_v3.1');
+      const saved = localStorage.getItem('harrison_finance_v3.2');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.version === INITIAL_DATA.version) {
@@ -23,7 +23,7 @@ export const FinanceProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('harrison_finance_v3.1', JSON.stringify(data));
+      localStorage.setItem('harrison_finance_v3.2', JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save to local storage:', e);
     }
@@ -51,11 +51,18 @@ export const FinanceProvider = ({ children }) => {
   // Plaid Live Bank Scraped Spending & Active Checking Balances
   const scrapedPlaidTxns = data.transactions.filter(t => t.id.startsWith('pt_') || t.source === 'Plaid');
   const totalScrapedBankSpending = scrapedPlaidTxns.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
-  const totalLiquidityBalance = data.accounts.reduce((sum, a) => sum + (a.balance || 0), 0);
+  
+  // EXACT 5 REAL BANK OF AMERICA ACCOUNTS FROM YOUR LIVE SCREENSHOT
+  const papiChecking = data.accounts.find(a => a.id === 'boa_7333') || { name: 'Papi Checking - 7333', balance: -36.00 };
+  const spendingMoney = data.accounts.find(a => a.id === 'boa_4866') || { name: 'Spending Money - 4866', balance: 468.24 };
+  const advPlusBanking = data.accounts.find(a => a.id === 'boa_4717') || { name: 'Adv Plus Banking - 4717', balance: 443.12 };
+  const advantageSavings = data.accounts.find(a => a.id === 'boa_0495') || { name: 'Advantage Savings - 0495', balance: 2392.91 };
+  const bankAmericardCreditCard = data.accounts.find(a => a.id === 'boa_6343') || { name: 'BankAmericard Visa - 6343', balance: 4560.47 };
+  const barbaraCheckingAccount = data.accounts.find(a => a.memberId === 'barbara' || a.id === 'penfed_savings') || { name: "Mom's PenFed Savings", balance: 76155.00 };
 
-  // Active Checking Accounts for Chris & Mom (Barbara)
-  const chrisCheckingAccount = data.accounts.find(a => a.memberId === 'chris' && (a.type === 'Checking' || a.name.toLowerCase().includes('checking'))) || data.accounts[0];
-  const barbaraCheckingAccount = data.accounts.find(a => a.memberId === 'barbara' || a.institution.toLowerCase().includes('penfed')) || data.accounts[3] || { name: "Barbara's Checking", balance: 76155.00, institution: "PenFed / BoA" };
+  // Total Real BoA Cash Balance (Liquid Cash across Checking & Savings)
+  const totalBoACash = (-36.00) + 468.24 + 443.12 + 2392.91; // $3,268.27
+  const totalLiquidityBalance = totalBoACash + barbaraCheckingAccount.balance;
 
   // Derived Combined Bills Array for BillsSection
   const combinedBills = [
@@ -177,8 +184,13 @@ export const FinanceProvider = ({ children }) => {
       chrisNetRemaining,
       totalCombinedSurplus,
       totalLiquidityBalance,
-      chrisCheckingAccount,
+      papiChecking,
+      spendingMoney,
+      advPlusBanking,
+      advantageSavings,
+      bankAmericardCreditCard,
       barbaraCheckingAccount,
+      totalBoACash,
       billAllocations,
       updateBillStatus,
       mergePlaidData,

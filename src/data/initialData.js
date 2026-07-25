@@ -1,6 +1,6 @@
-// Real Harrison Family Financial Data derived directly from Bank of America statements
+// Real Harrison Family Financial Data derived directly from Bank of America live online portal
 export const INITIAL_DATA = {
-  version: "3.0_boa_empirical",
+  version: "3.2_boa_live_screenshot",
   family: {
     name: "Harrison Family",
     members: [
@@ -57,12 +57,14 @@ export const INITIAL_DATA = {
     { id: "c13", item: "USPS & Post Office", category: "Business Services", frequency: "Monthly", amount: 141.77, notes: "BoA statement average" }
   ],
 
-  // Real Accounts
+  // 100% REAL EXACT BANK OF AMERICA ACCOUNTS & BALANCES (From your live portal screenshot)
   accounts: [
-    { id: "a1", name: "Bank of America Business 360", type: "Checking", memberId: "chris", institution: "Bank of America", balance: 4892.40 },
-    { id: "a2", name: "Capital One 360 Savings", type: "Savings", memberId: "chris", institution: "Capital One", balance: 12500.00 },
-    { id: "a3", name: "BMO Alto Savings", type: "Savings", memberId: "chris", institution: "BMO Alto", balance: 15000.00 },
-    { id: "a4", name: "PenFed Credit Union Checking", type: "Checking", memberId: "barbara", institution: "PenFed", balance: 76155.00 }
+    { id: "boa_7333", name: "Papi Checking - 7333", type: "Checking", memberId: "chris", institution: "Bank of America", balance: -36.00, status: "Low Balance Alert" },
+    { id: "boa_4866", name: "Spending Money - 4866", type: "Checking", memberId: "chris", institution: "Bank of America", balance: 468.24, status: "Active" },
+    { id: "boa_4717", name: "Adv Plus Banking - 4717", type: "Checking", memberId: "chris", institution: "Bank of America", balance: 443.12, status: "Active" },
+    { id: "boa_0495", name: "Advantage Savings - 0495", type: "Savings", memberId: "chris", institution: "Bank of America", balance: 2392.91, status: "Active" },
+    { id: "boa_6343", name: "BankAmericard Visa - 6343", type: "Credit Card", memberId: "chris", institution: "Bank of America", balance: 4560.47, status: "Credit Card" },
+    { id: "penfed_savings", name: "Mom's PenFed / BoA Savings", type: "Savings", memberId: "barbara", institution: "PenFed", balance: 76155.00, status: "Active" }
   ],
 
   // Pre-loaded Real BoA Transactions
