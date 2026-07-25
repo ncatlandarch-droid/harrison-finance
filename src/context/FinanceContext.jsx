@@ -37,7 +37,7 @@ export const FinanceProvider = ({ children }) => {
     }
   });
 
-  // Dynamic Family Roster (Includes Hayden & Ava)
+  // Dynamic Family Roster (Includes Hayden & Ava with custom photos)
   const [members, setMembers] = useState(() => {
     try {
       const saved = localStorage.getItem('harrison_members_list');
@@ -85,7 +85,7 @@ export const FinanceProvider = ({ children }) => {
           id: 'hayden',
           name: 'Hayden Harrison',
           title: 'Junior Wealth Builder',
-          image: '/avatars/isla-bulldog.jpg',
+          image: '/avatars/hayden.jpg',
           color: '#3b82f6',
           role: 'Youth Dependent',
           birthday: '2014-06-18',
@@ -98,7 +98,7 @@ export const FinanceProvider = ({ children }) => {
           id: 'ava',
           name: 'Ava Harrison',
           title: 'Junior Innovator & Explorer',
-          image: '/avatars/isla-bulldog.jpg',
+          image: '/avatars/ava.jpg',
           color: '#10b981',
           role: 'Youth Dependent',
           birthday: '2018-09-05',
