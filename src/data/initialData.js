@@ -1,6 +1,6 @@
 // Real Harrison Family Financial Data derived directly from Bank of America live online portal
 export const INITIAL_DATA = {
-  version: "3.2_boa_live_screenshot",
+  version: "3.5_boa_live_direct",
   family: {
     name: "Harrison Family",
     members: [
@@ -40,7 +40,7 @@ export const INITIAL_DATA = {
     { id: "e09", item: "Netflix", category: "Subscriptions", frequency: "Monthly", amount: 10.00 }
   ],
 
-  // Chris REAL Empirical Expenses (Derived from Bank of America Statements)
+  // Chris REAL Empirical Expenses
   chrisExpenses: [
     { id: "c01", item: "BoA Credit Card Payment (#6343)", category: "Debt & Cards", frequency: "Monthly", amount: 1333.33, notes: "BoA statement average" },
     { id: "c02", item: "Mortgage (New American Funding)", category: "Home & Mortgage", frequency: "Monthly", amount: 1200.00, notes: "Verified in BoA" },
@@ -67,17 +67,57 @@ export const INITIAL_DATA = {
     { id: "penfed_savings", name: "Mom's PenFed / BoA Savings", type: "Savings", memberId: "barbara", institution: "PenFed", balance: 76155.00, status: "Active" }
   ],
 
-  // Pre-loaded Real BoA Transactions
+  // 50 REAL LIVE RECENT TRANSACTIONS PARSED DIRECTLY FROM YOUR BOA FEED
   transactions: [
-    { id: "t01", date: "2026-07-20", description: "New American Funding Mortgage", amount: -1200.00, category: "Home & Utilities", memberId: "chris", type: "debit" },
-    { id: "t02", date: "2026-07-18", description: "BoA Credit Card Payment #6343", amount: -1333.33, category: "Debt Payoff", memberId: "chris", type: "debit" },
-    { id: "t03", date: "2026-07-15", description: "NC A&T State Payroll Deposit", amount: 7195.07, category: "Income", memberId: "chris", type: "income" },
-    { id: "t04", date: "2026-07-14", description: "Walgreens Pharmacy", amount: -142.50, category: "Health", memberId: "chris", type: "debit" },
-    { id: "t05", date: "2026-07-12", description: "Harris Teeter Groceries", amount: -185.30, category: "Groceries", memberId: "chris", type: "debit" },
-    { id: "t06", date: "2026-07-10", description: "Duke Energy Bill", amount: -234.33, category: "Home & Utilities", memberId: "chris", type: "debit" },
-    { id: "t07", date: "2026-07-08", description: "Progressive Auto Insurance", amount: -199.93, category: "Insurance", memberId: "chris", type: "debit" },
-    { id: "t08", date: "2026-07-05", description: "DoorDash Food Delivery", amount: -68.40, category: "Restaurants & Dining", memberId: "chris", type: "debit" },
-    { id: "t09", date: "2026-07-02", description: "Amazon Prime Purchase", amount: -84.15, category: "Shopping & Entertainment", memberId: "chris", type: "debit" },
-    { id: "t10", date: "2026-07-01", description: "Support Transfer from Barbara", amount: 3000.00, category: "Income", memberId: "chris", type: "income" }
+    { id: "boa_live_001", date: "2026-07-24", description: "CHECKCARD DD *DOORDASH NAZA +XXXXX819470 ON 07/23", amount: -68.27, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_002", date: "2026-07-24", description: "Lidl #1512 07/24 MOBILE PURCHASE GREENSBORO NC", amount: -20.42, category: "Groceries", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_003", date: "2026-07-24", description: "Zelle payment to Aubery g Conf# ogvz1zcdm", amount: -100.00, category: "Transfers & Cash", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_004", date: "2026-07-24", description: "GOOGLE *Google 07/24 PURCHASE Mountain View CA", amount: -24.99, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_005", date: "2026-07-24", description: "CLV*VECTORIZERAI 07/23 PURCHASE VECTORIZER.AI CA", amount: -9.99, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_006", date: "2026-07-23", description: "MCDONALD'S F6173 07/23 PURCHASE GREENSBORO NC", amount: -7.87, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_007", date: "2026-07-23", description: "CASH APP*CHRIS HOWELL 07/22 PMNT SENT Oakland CA", amount: -150.00, category: "Transfers & Cash", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_008", date: "2026-07-21", description: "CHICK-FIL-A #01818 07/21 PURCHASE GREENSBORO NC", amount: -21.17, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_009", date: "2026-07-22", description: "LOWE'S #387 07/22 MOBILE PURCHASE GREENSBORO NC", amount: -7.00, category: "Home & Utilities", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_010", date: "2026-07-22", description: "WWP*GROWINGREEN INC 07/21 PURCHASE 336-854-7999 NC", amount: -53.00, category: "Home & Utilities", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_011", date: "2026-07-22", description: "GOOGLE *Google 07/20 PURCHASE Mountain View CA", amount: -199.99, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_012", date: "2026-07-21", description: "LOWE'S #387 07/21 PURCHASE GREENSBORO NC", amount: -26.00, category: "Home & Utilities", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_013", date: "2026-07-21", description: "Lidl #1512 07/21 MOBILE PURCHASE GREENSBORO NC", amount: -4.38, category: "Groceries", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_014", date: "2026-07-21", description: "Lidl #1512 07/21 MOBILE PURCHASE GREENSBORO NC", amount: -25.11, category: "Groceries", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_015", date: "2026-07-21", description: "GOOGLE *Google 07/20 PURCHASE Mountain View CA", amount: -24.99, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_016", date: "2026-07-21", description: "AMAZON MKTPL*1Y7MC1XU3 07/19 PURCHASE Amzn.com/bill WA", amount: -62.86, category: "Shopping & Entertainment", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_017", date: "2026-07-21", description: "Online Banking transfer from SAV 0495 Confirmation# XXXXX57601", amount: 300.00, category: "Transfers & Cash", memberId: "chris", type: "income", source: "BoA Live Direct" },
+    { id: "boa_live_018", date: "2026-07-20", description: "FOOD LION #269 07/20 MOBILE PURCHASE GREENSBORO NC", amount: -51.18, category: "Groceries", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_019", date: "2026-07-20", description: "AMAZON RETA* Q45MJ3JS3 07/19 PURCHASE WWW.AMAZON.CO WA", amount: -7.44, category: "Shopping & Entertainment", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_020", date: "2026-07-20", description: "GOOGLE *Google 07/19 PURCHASE Mountain View CA", amount: -24.99, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_021", date: "2026-07-20", description: "FOOD LION #269 07/19 MOBILE PURCHASE GREENSBORO NC", amount: -1.75, category: "Groceries", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_022", date: "2026-07-20", description: "FOOD LION #269 07/19 MOBILE PURCHASE GREENSBORO NC", amount: -30.12, category: "Groceries", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_023", date: "2026-07-20", description: "GOOGLE *Google 07/19 PURCHASE Mountain View CA", amount: -24.99, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_024", date: "2026-07-20", description: "Greensboro Coliseum 07/18 MOBILE PURCHASE Greensboro NC", amount: -7.95, category: "Shopping & Entertainment", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_025", date: "2026-07-20", description: "Greensboro Coliseum 07/18 PURCHASE Greensboro NC", amount: -20.36, category: "Shopping & Entertainment", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_026", date: "2026-07-20", description: "Greensboro Coliseum 07/18 PURCHASE Greensboro NC", amount: -20.43, category: "Shopping & Entertainment", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_027", date: "2026-07-20", description: "OVG360 GREENSBORO 07/18 PURCHASE GREENSBORO NC", amount: -30.00, category: "Shopping & Entertainment", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_028", date: "2026-07-20", description: "GOOGLE *Google 07/18 PURCHASE Mountain View CA", amount: -24.99, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_029", date: "2026-07-20", description: "GENCRAFT 07/18 PURCHASE WWW.GENCRAFT. WA", amount: -9.99, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_030", date: "2026-07-20", description: "GOOGLE *Google 07/18 PURCHASE Mountain View CA", amount: -24.99, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_031", date: "2026-07-20", description: "YEMENI & ARABIC RESTAUR 07/17 MOBILE PURCHASE GREENSBORO NC", amount: -43.04, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_032", date: "2026-07-20", description: "ELEVENLABS.IO 07/17 PURCHASE ELEVENLABS.IO NY", amount: -22.00, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_033", date: "2026-07-20", description: "TST* BOXCAR GREENSBORO 07/16 PURCHASE GREENSBORO NC", amount: -6.49, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_034", date: "2026-07-20", description: "Nyx*NAYAX VENDING 47 07/16 PURCHASE HUNT VALLEY MD", amount: -5.00, category: "Shopping & Entertainment", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_035", date: "2026-07-20", description: "NC SEC OF STATE CORP 07/16 PURCHASE 919-814-5325 NC", amount: -128.00, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_036", date: "2026-07-20", description: "AMAZON MKTPL*WH3WI87B3 07/16 PURCHASE Amzn.com/bill WA", amount: -28.79, category: "Shopping & Entertainment", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_037", date: "2026-07-20", description: "PF GREENSBORO GO DES:IClub Fees ID:PRXXXXX01192191 INDN:CHRIS HARRISON...", amount: -22.06, category: "Health & Fitness", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_038", date: "2026-07-20", description: "GOOGLE *Google 07/17 PURCHASE Mountain View CA", amount: -24.99, category: "Software & Business", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_039", date: "2026-07-20", description: "NAYAX VENDING 69 07/14 MOBILE PURCHASE HUNT VALLEY MD", amount: -20.00, category: "Shopping & Entertainment", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_040", date: "2026-07-20", description: "Online Banking transfer from CHK 4717 Confirmation# XXXXX27814", amount: 1000.00, category: "Transfers & Cash", memberId: "chris", type: "income", source: "BoA Live Direct" },
+    { id: "boa_live_041", date: "2026-07-20", description: "Lidl #1512 07/16 MOBILE PURCHASE GREENSBORO NC", amount: -53.88, category: "Groceries", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_042", date: "2026-07-20", description: "FOUR SEASONS SMOOTHIE 07/15 MOBILE PURCHASE GREENSBORO NC", amount: -15.75, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_043", date: "2026-07-20", description: "SHEETZ 0356 07/15 MOBILE PURCHASE GREENSBORO NC", amount: -4.57, category: "Shopping & Entertainment", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_044", date: "2026-07-20", description: "CAROLINA VETERINARY SPE 07/15 PURCHASE GREENSBORO NC", amount: -293.50, category: "Health & Fitness", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_045", date: "2026-07-20", description: "TST* THE QUARTER 07/14 PURCHASE GREENSBORO NC", amount: -34.36, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_046", date: "2026-07-20", description: "TST* BOXCAR GREENSBORO 07/14 PURCHASE GREENSBORO NC", amount: -22.74, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_047", date: "2026-07-20", description: "TST* BOXCAR GREENSBORO 07/14 PURCHASE GREENSBORO NC", amount: -10.70, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_048", date: "2026-07-20", description: "TST* BOXCAR GREENSBORO 07/14 PURCHASE GREENSBORO NC", amount: -23.40, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_049", date: "2026-07-20", description: "TST* BOXCAR GREENSBORO 07/14 PURCHASE GREENSBORO NC", amount: -15.04, category: "Restaurants & Dining", memberId: "chris", type: "debit", source: "BoA Live Direct" },
+    { id: "boa_live_050", date: "2026-07-20", description: "DUKEENERGY DES:BILL PAY ID:XXXXX7529642 INDN:WILLIAM HARRISON CO ID:DECJPM4638...", amount: -232.00, category: "Home & Utilities", memberId: "chris", type: "debit", source: "BoA Live Direct" }
   ]
 };

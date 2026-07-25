@@ -6,7 +6,7 @@ const FinanceContext = createContext();
 export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('harrison_finance_v3.3');
+      const saved = localStorage.getItem('harrison_finance_v3.5_boa_live_direct');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.version === INITIAL_DATA.version) {
@@ -23,7 +23,7 @@ export const FinanceProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('harrison_finance_v3.3', JSON.stringify(data));
+      localStorage.setItem('harrison_finance_v3.5_boa_live_direct', JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save to local storage:', e);
     }
@@ -49,7 +49,7 @@ export const FinanceProvider = ({ children }) => {
   const totalCombinedSurplus = totalBaseIncome - totalExternalExpenses; 
 
   // Plaid Live Bank Scraped Spending & Active Checking Balances
-  const scrapedPlaidTxns = data.transactions.filter(t => t.id.startsWith('pt_') || t.source === 'Plaid');
+  const scrapedPlaidTxns = data.transactions.filter(t => t.id.startsWith('pt_') || t.source.includes('Plaid') || t.source.includes('BoA Live Direct'));
   const totalScrapedBankSpending = scrapedPlaidTxns.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
   
   // EXACT 5 REAL BANK OF AMERICA ACCOUNTS FROM YOUR LIVE SCREENSHOT
@@ -91,7 +91,6 @@ export const FinanceProvider = ({ children }) => {
     console.log('Update bill status:', billId, status);
   };
 
-  // Ultra-precise Plaid Account Matching by Last 4 Digits (Mask)
   const mergePlaidData = (plaidAccounts = [], plaidTxns = []) => {
     setData(prev => {
       const updatedAccounts = [...prev.accounts];
@@ -100,7 +99,6 @@ export const FinanceProvider = ({ children }) => {
         const mask = pa.mask || '';
         const liveBal = pa.balances.current ?? pa.balances.available ?? 0;
 
-        // Find existing account by mask (e.g. 7333, 4866, 4717, 0495, 6343) or name
         const existingIdx = updatedAccounts.findIndex(a => 
           (mask && (a.id.includes(mask) || a.name.includes(mask))) ||
           a.name.toLowerCase().includes(pa.name.toLowerCase())
@@ -133,7 +131,7 @@ export const FinanceProvider = ({ children }) => {
 
         if (upper.includes('DOORDASH') || upper.includes('CHICK') || upper.includes('CHIPOTLE') || upper.includes('PANERA') || upper.includes('MCDONALD') || upper.includes('STARBUCKS') || upper.includes('COOKOUT')) {
           category = 'Restaurants & Dining';
-        } else if (upper.includes('HARRIS TEETER') || upper.includes('COSTCO') || upper.includes('ALDI') || upper.includes('WALMART') || upper.includes('FOOD LION')) {
+        } else if (upper.includes('HARRIS TEETER') || upper.includes('COSTCO') || upper.includes('ALDI') || upper.includes('WALMART') || upper.includes('FOOD LION') || upper.includes('LIDL')) {
           category = 'Groceries';
         } else if (upper.includes('DUKE') || upper.includes('SPECTRUM') || upper.includes('WATER') || upper.includes('MORTGAGE')) {
           category = 'Home & Utilities';
