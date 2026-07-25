@@ -3,6 +3,9 @@ import { FinanceProvider, useFinance } from './context/FinanceContext';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
+import { FamilyVaultSection } from './components/FamilyVaultSection';
+import { ThinkEcosystemSection } from './components/ThinkEcosystemSection';
+import { LocalResourcesSection } from './components/LocalResourcesSection';
 import { DebtStrategySection } from './components/DebtStrategySection';
 import { RecurringTrackerSection } from './components/RecurringTrackerSection';
 import { BillsSection } from './components/BillsSection';
@@ -20,6 +23,12 @@ const AppContent = () => {
     switch (activeTab) {
       case 'dashboard':
         return <Dashboard />;
+      case 'familyvault':
+        return <FamilyVaultSection />;
+      case 'thinkeco':
+        return <ThinkEcosystemSection />;
+      case 'localres':
+        return <LocalResourcesSection />;
       case 'strategy':
         return <DebtStrategySection />;
       case 'recurring':
