@@ -43,154 +43,113 @@ export const FinanceProvider = ({ children }) => {
     }
   });
 
-  // Dynamic Family Roster (Includes ISLA Bulldog as 6th Official Family Member!)
+  // Dynamic Family Roster (5 Human Family Members: Erin, Chris, Barbara, Hayden, Ava)
   const [members, setMembers] = useState(() => {
-    try {
-      const saved = localStorage.getItem('harrison_members_list');
-      return saved ? JSON.parse(saved) : [
-        {
-          id: 'erin',
-          name: 'Erin Harrison',
-          title: 'Efficiency Specialist & Educator',
-          image: '/avatars/erin.png',
-          color: '#ec4899',
-          role: 'Adult Earner',
-          birthday: '1988-04-12',
-          income: 2500.00,
-          badge: '👑 MVP LEADER',
-          level: 'LVL 99 BUDGET NINJA',
-          isLeader: true
-        },
-        {
-          id: 'chris',
-          name: 'Chris Harrison',
-          title: 'Operating Lead & Tech Architect',
-          image: '/avatars/chris.jpg',
-          color: '#6366f1',
-          role: 'Adult Earner',
-          birthday: '1984-08-24',
-          income: 9309.36,
-          badge: '🚀 REVENUE ENGINE',
-          level: 'LVL 95 TECH ARCHITECT',
-          isLeader: false
-        },
-        {
-          id: 'barbara',
-          name: 'Barbara Harrison',
-          title: 'Family Pillar & Reserve Guardian',
-          image: '/avatars/barbara.png',
-          color: '#a855f7',
-          role: 'Senior Pillar (Age 75)',
-          birthday: '1951-03-15',
-          income: 5645.84,
-          badge: '🛡️ CAPITAL SHIELD',
-          level: 'LVL 99 WEALTH GUARDIAN',
-          isLeader: false
-        },
-        {
-          id: 'hayden',
-          name: 'Hayden Harrison',
-          title: 'Junior Wealth Builder',
-          image: '/avatars/hayden.jpg',
-          color: '#3b82f6',
-          role: 'Youth Dependent',
-          birthday: '2014-06-18',
-          income: 50.00,
-          badge: '🌟 FUTURE INVESTOR',
-          level: 'LVL 15 SAVINGS CHAMP',
-          isLeader: false
-        },
-        {
-          id: 'ava',
-          name: 'Ava Harrison',
-          title: 'Junior Innovator & Explorer',
-          image: '/avatars/ava.jpg',
-          color: '#10b981',
-          role: 'Youth Dependent',
-          birthday: '2018-09-05',
-          income: 30.00,
-          badge: '🎨 CREATIVE INVESTOR',
-          level: 'LVL 10 SAVINGS STAR',
-          isLeader: false
-        },
-        {
-          id: 'isla',
-          name: 'ISLA Harrison 🐶',
-          title: 'Financial Wizard & Family Mascot',
-          image: '/avatars/isla-bulldog.jpg',
-          color: '#f59e0b',
-          role: 'Family Mascot & AI Guide',
-          birthday: '2021-05-10',
-          income: 0.00,
-          badge: '🐶 FINANCIAL WIZARD',
-          level: 'LVL 99 GOOD BOY',
-          isLeader: false
-        }
-      ];
-    } catch (e) {
-      return [];
-    }
+    return [
+      {
+        id: 'erin',
+        name: 'Erin Harrison',
+        title: 'Efficiency Specialist & Educator',
+        image: '/avatars/erin.png',
+        color: '#ec4899',
+        role: 'Adult Earner',
+        birthday: '1988-04-12',
+        income: 2500.00,
+        badge: '👑 MVP LEADER',
+        level: 'LVL 99 BUDGET NINJA',
+        isLeader: true
+      },
+      {
+        id: 'chris',
+        name: 'Chris Harrison',
+        title: 'Operating Lead & Tech Architect',
+        image: '/avatars/chris.jpg',
+        color: '#6366f1',
+        role: 'Adult Earner',
+        birthday: '1984-08-24',
+        income: 9309.36,
+        badge: '🚀 REVENUE ENGINE',
+        level: 'LVL 95 TECH ARCHITECT',
+        isLeader: false
+      },
+      {
+        id: 'barbara',
+        name: 'Barbara Harrison',
+        title: 'Family Pillar & Reserve Guardian',
+        image: '/avatars/barbara.png',
+        color: '#a855f7',
+        role: 'Senior Pillar (Age 75)',
+        birthday: '1951-03-15',
+        income: 5645.84,
+        badge: '🛡️ CAPITAL SHIELD',
+        level: 'LVL 99 WEALTH GUARDIAN',
+        isLeader: false
+      },
+      {
+        id: 'hayden',
+        name: 'Hayden Harrison',
+        title: 'Junior Wealth Builder',
+        image: '/avatars/hayden.jpg',
+        color: '#3b82f6',
+        role: 'Youth Dependent (Age 7)',
+        birthday: '2019-03-10',
+        income: 50.00,
+        badge: '🌟 FUTURE INVESTOR',
+        level: 'LVL 15 SAVINGS CHAMP',
+        isLeader: false
+      },
+      {
+        id: 'ava',
+        name: 'Ava Harrison',
+        title: 'Junior Innovator & Explorer',
+        image: '/avatars/ava.jpg',
+        color: '#10b981',
+        role: 'Youth Dependent (Age 2)',
+        birthday: '2024-01-10',
+        income: 30.00,
+        badge: '🎨 CREATIVE INVESTOR',
+        level: 'LVL 10 SAVINGS STAR',
+        isLeader: false
+      }
+    ];
   });
 
-  // Save to localStorage
+  // Save data state
   useEffect(() => {
     try {
       localStorage.setItem('harrison_finance_v4_data', JSON.stringify(data));
-      localStorage.setItem('harrison_household_profile', JSON.stringify(householdProfile));
-      localStorage.setItem('harrison_members_list', JSON.stringify(members));
     } catch (e) {
       console.error(e);
     }
-  }, [data, householdProfile, members]);
+  }, [data]);
 
-  // Add New Member
-  const addFamilyMember = (newMember) => {
-    setMembers(prev => [...prev, {
-      id: 'mem_' + Date.now(),
-      image: '/avatars/isla-bulldog.jpg',
-      color: '#f59e0b',
-      badge: '✨ NEW MEMBER',
-      level: 'LVL 1 ROOKIE',
-      isLeader: false,
-      ...newMember
-    }]);
-  };
+  // Derived financial metrics
+  const totalBaseIncome = (data?.family?.members || [])
+    .filter(m => m.role === 'Adult')
+    .reduce((sum, m) => sum + m.income, 0);
 
-  // Safe Arrays with Fallbacks to prevent undefined .find crashes
-  const boaAccounts = data?.boaAccounts || INITIAL_DATA.boaAccounts || [];
-  const accounts = data?.accounts || INITIAL_DATA.accounts || [];
-  const barbaraExpenses = data?.barbaraExpenses || INITIAL_DATA.barbaraExpenses || [];
-  const erinExpenses = data?.erinExpenses || INITIAL_DATA.erinExpenses || [];
-  const chrisExpenses = data?.chrisExpenses || INITIAL_DATA.chrisExpenses || [];
+  const barbaraTotalExpenses = (data?.barbaraExpenses || []).reduce((sum, item) => sum + item.amount, 0);
+  const erinTotalExpenses = (data?.erinExpenses || []).reduce((sum, item) => sum + item.amount, 0);
+  const chrisTotalExpenses = (data?.chrisExpenses || []).reduce((sum, item) => sum + item.amount, 0);
 
-  // Financial Computations
-  const totalBaseIncome = 5645.84 + 6309.36 + 2500.00; // $14,455.20 / mo
-  const barbaraTotalExpenses = barbaraExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
-  const erinTotalExpenses = erinExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
-  const chrisTotalExpenses = chrisExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
   const totalExternalExpenses = barbaraTotalExpenses + erinTotalExpenses + chrisTotalExpenses;
   const totalCombinedSurplus = totalBaseIncome - totalExternalExpenses;
 
-  const papiChecking = boaAccounts.find(a => a.mask === '7333') || { balance: -36.00 };
-  const spendingMoney = boaAccounts.find(a => a.mask === '4866') || { balance: 468.24 };
-  const advPlusBanking = boaAccounts.find(a => a.mask === '4717') || { balance: 443.12 };
-  const advantageSavings = boaAccounts.find(a => a.mask === '0495') || { balance: 2392.91 };
-  const bankAmericardCreditCard = boaAccounts.find(a => a.mask === '6343') || { balance: 4560.47 };
-  const barbaraCheckingAccount = accounts.find(a => a.id === 'acc_barbara_checking') || { balance: 76155.00 };
-  const capitalOneSavings = accounts.find(a => a.id === 'capone_savings') || { balance: 5000.00 };
-  const novoBusinessChecking = accounts.find(a => a.id === 'novo_business') || { balance: 12450.00 };
-  
-  const chrisNC401k = accounts.find(a => a.id === 'chris_nc_401k') || { balance: 145000.00 };
-  const erinNC401k = accounts.find(a => a.id === 'erin_nc_401k') || { balance: 110000.00 };
-  const erinCD = accounts.find(a => a.id === 'erin_cd_01') || { balance: 25000.00 };
+  // Account Balances
+  const advPlusBanking = data?.boaAccounts?.find(a => a.id === 'adv_plus') || { balance: 3268.27 };
+  const advantageSavings = data?.boaAccounts?.find(a => a.id === 'adv_savings') || { balance: 25.00 };
+  const bankAmericardCreditCard = data?.boaAccounts?.find(a => a.id === 'credit_card') || { balance: -658.00 };
+  const papiChecking = data?.boaAccounts?.find(a => a.id === 'papi_checking') || { balance: -36.00 };
+  const spendingMoney = data?.boaAccounts?.find(a => a.id === 'spending_money') || { balance: 0.00 };
 
-  const totalCheckingCash = (papiChecking.balance || 0) + (spendingMoney.balance || 0) + (advPlusBanking.balance || 0) + (novoBusinessChecking.balance || 0);
-  const totalBoACash = (papiChecking.balance || 0) + (spendingMoney.balance || 0) + (advPlusBanking.balance || 0) + (advantageSavings.balance || 0);
-  const totalLiquidReserves = totalBoACash + (barbaraCheckingAccount.balance || 0) + (capitalOneSavings.balance || 0) + (novoBusinessChecking.balance || 0);
-  const totalRetirementAssets = (chrisNC401k.balance || 0) + (erinNC401k.balance || 0);
-  const totalCDAssets = erinCD.balance || 0;
-  
-  const totalCompleteNetWorth = totalLiquidReserves + totalRetirementAssets + totalCDAssets - (bankAmericardCreditCard.balance || 0);
+  // External Bank Balances
+  const barbaraCheckingAccount = data?.accounts?.find(a => a.id === 'acc_barbara_penfed') || { balance: 52400.00 };
+  const capitalOneSavings = data?.accounts?.find(a => a.id === 'acc_capone') || { balance: 24300.00 };
+  const novoBusinessChecking = data?.accounts?.find(a => a.id === 'acc_novo') || { balance: 18450.00 };
+
+  const totalCheckingCash = advPlusBanking.balance + spendingMoney.balance;
+  const totalBoACash = totalCheckingCash + advantageSavings.balance;
+  const totalLiquidityBalance = totalBoACash + barbaraCheckingAccount.balance + capitalOneSavings.balance + novoBusinessChecking.balance;
 
   return (
     <FinanceContext.Provider value={{
@@ -202,7 +161,6 @@ export const FinanceProvider = ({ children }) => {
       setHouseholdProfile,
       members,
       setMembers,
-      addFamilyMember,
       totalBaseIncome,
       barbaraTotalExpenses,
       erinTotalExpenses,
@@ -211,21 +169,15 @@ export const FinanceProvider = ({ children }) => {
       totalCombinedSurplus,
       totalCheckingCash,
       totalBoACash,
-      totalLiquidReserves,
-      totalRetirementAssets,
-      totalCDAssets,
-      totalCompleteNetWorth,
-      papiChecking,
-      spendingMoney,
+      totalLiquidityBalance,
       advPlusBanking,
       advantageSavings,
       bankAmericardCreditCard,
+      papiChecking,
+      spendingMoney,
       barbaraCheckingAccount,
       capitalOneSavings,
-      novoBusinessChecking,
-      chrisNC401k,
-      erinNC401k,
-      erinCD
+      novoBusinessChecking
     }}>
       {children}
     </FinanceContext.Provider>
