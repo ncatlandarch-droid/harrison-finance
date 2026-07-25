@@ -16,6 +16,7 @@ import { SettingsSection } from './components/SettingsSection';
 import { AddTransactionModal } from './components/AddTransactionModal';
 import { AddAccountModal } from './components/AddAccountModal';
 import { MasterPasscodeModal } from './components/MasterPasscodeModal';
+import { IslaFloatingWidget } from './components/IslaFloatingWidget';
 
 const AppContent = () => {
   const { activeTab } = useFinance();
@@ -66,6 +67,7 @@ const AppContent = () => {
       </div>
       <AddTransactionModal isOpen={isAddTransactionOpen} onClose={() => setIsAddTransactionOpen(false)} />
       <AddAccountModal isOpen={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} />
+      <IslaFloatingWidget />
     </div>
   );
 };
