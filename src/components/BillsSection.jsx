@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFinance } from '../context/FinanceContext';
-import { CheckCircle2, Clock, Calendar, Plus, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, Clock, Calendar, Plus, ShieldCheck, Building2 } from 'lucide-react';
 
 export const BillsSection = () => {
   const { data, billAllocations, updateBillStatus } = useFinance();
@@ -12,11 +12,15 @@ export const BillsSection = () => {
       
       {/* Allocation Summary Card */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(168, 85, 247, 0.1))' }}>
-        <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', marginBottom: '0.5rem' }}>
-          Monthly Bill Transfer & Allocation Guide
-        </h3>
+        <div className="flex-between" style={{ marginBottom: '0.75rem' }}>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff' }}>
+            1st-of-the-Month Family Transfer & Bill Allocation Guide
+          </h3>
+          <span className="badge badge-primary">No Joint Account Needed</span>
+        </div>
+        
         <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
-          To ensure all joint family expenses (Mortgage, Utilities, Insurance) are covered seamlessly, each member transfers their proportional share into the primary checking account.
+          Since there is no single joint bank account, each family member transfers their share on the 1st of the month into <strong>Chris's BoA Primary Family Operating Account</strong> to cover shared mortgage, food, and utility commitments.
         </p>
 
         <div className="grid-3">
@@ -39,67 +43,59 @@ export const BillsSection = () => {
               </div>
 
               <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                Transfer to BoA Joint Account by 1st of month.
+                Transfer to Chris's BoA Account by 1st of month.
               </p>
             </div>
           ))}
         </div>
       </div>
 
+      {/* ERIN WELLS FARGO SYNC STATUS CARD */}
+      <div className="card" style={{ background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
+        <div className="flex-between">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+            <Building2 size={24} color="var(--success)" />
+            <div>
+              <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1rem' }}>Erin's Wells Fargo Account Ready for Live Sync</h4>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                When Erin is ready, click <strong>`Connect Bank Account`</strong> to link her Wells Fargo account. Her balance and transactions will stream right alongside your BoA accounts!
+              </p>
+            </div>
+          </div>
+          <span className="badge badge-success">Wells Fargo Ready</span>
+        </div>
+      </div>
+
       {/* Itemized Bills List */}
       <div className="card">
         <div className="flex-between" style={{ marginBottom: '1.25rem' }}>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#fff' }}>Itemized Monthly Bills</h3>
+          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#fff' }}>Itemized Monthly Bills (34 Commitments)</h3>
           <div className="badge badge-primary">Total: {fmt(data.bills.reduce((s, b) => s + b.amount, 0))}</div>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          {data.bills.map(bill => {
-            const isPaid = bill.status === 'paid';
-            return (
-              <div key={bill.id} style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '1rem 1.25rem',
-                background: 'rgba(255, 255, 255, 0.02)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <button 
-                    onClick={() => updateBillStatus(bill.id, isPaid ? 'upcoming' : 'paid')}
-                    style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}
-                  >
-                    {isPaid ? (
-                      <CheckCircle2 size={24} color="var(--success)" />
-                    ) : (
-                      <Clock size={24} color="var(--warning)" />
-                    )}
-                  </button>
-                  <div>
-                    <div style={{ fontWeight: 700, color: '#fff', fontSize: '1rem' }}>{bill.name}</div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', gap: '0.75rem', marginTop: '0.2rem' }}>
-                      <span>Due: {bill.dueDay}th of month</span>
-                      <span>•</span>
-                      <span>Category: {bill.category}</span>
-                      <span>•</span>
-                      <span style={{ textTransform: 'capitalize' }}>Assigned: {bill.paidBy}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div style={{ textAlign: 'right' }}>
-                  <div className="font-mono" style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff' }}>
-                    {fmt(bill.amount)}
-                  </div>
-                  <span className={`badge ${isPaid ? 'badge-success' : 'badge-warning'}`} style={{ marginTop: '0.25rem' }}>
-                    {isPaid ? 'Paid' : 'Upcoming'}
-                  </span>
+          {data.bills.map((bill, i) => (
+            <div key={i} style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '0.85rem 1rem',
+              background: 'rgba(0,0,0,0.25)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-color)'
+            }}>
+              <div>
+                <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>{bill.item || bill.name}</div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                  {bill.member} • {bill.category} • Frequency: {bill.frequency || 'Monthly'}
                 </div>
               </div>
-            );
-          })}
+
+              <div className="font-mono" style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--danger)' }}>
+                {fmt(bill.amount)} / mo
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
