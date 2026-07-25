@@ -177,29 +177,34 @@ export const PlayerProfilePage = ({ player, onBack }) => {
   // Itemized checklist slots with individual upload targets
   const personChecklists = {
     chris: [
+      { slotId: 'auto_reg', title: 'NC DMV Auto Registration & Vehicle Inspection (Annual)', req: 'Annual Vehicle' },
+      { slotId: 'tax_return', title: 'Annual Tax Return Summary (Form 1040 / W-2 / 1099)', req: 'Annual Tax' },
       { slotId: 'ssn_card', title: 'Social Security Card Scan / Record', req: 'SSN' },
       { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
       { slotId: 'passport', title: 'US Passport Scan', req: 'Identity' },
-      { slotId: 'health_card', title: 'Health & Dental Insurance Card', req: 'Medical' },
+      { slotId: 'health_card', title: 'Health & Dental Insurance Card (Annual Renewal)', req: 'Medical' },
       { slotId: 'mars', title: 'NC TSERS Pension MARS Statement (orbit.myretirement.gov)', req: 'Pension' },
       { slotId: 'ssa', title: 'Social Security Administration Statement (ssa.gov)', req: 'SSA' },
       { slotId: 'empower', title: 'NC A&T 401(k) Empower Statement (myNCPlans.gov)', req: '401(k)' },
       { slotId: 'novo', title: 'Think! Design & Planning LLC Annual Tax / Financial Record', req: 'Business' }
     ],
     erin: [
+      { slotId: 'auto_reg_erin', title: 'NC DMV Auto Registration & Vehicle Inspection (Annual)', req: 'Annual Vehicle' },
+      { slotId: 'tax_return_erin', title: 'Annual Tax Return Summary (Form 1040 / W-2)', req: 'Annual Tax' },
       { slotId: 'ssn_card', title: 'Social Security Card Scan / Record', req: 'SSN' },
       { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
       { slotId: 'passport', title: 'US Passport Scan', req: 'Identity' },
-      { slotId: 'health_card', title: 'Health & Dental Insurance Card', req: 'Medical' },
+      { slotId: 'health_card', title: 'Health & Dental Insurance Card (Annual Renewal)', req: 'Medical' },
       { slotId: 'mars_erin', title: 'NC Educator TSERS Pension MARS Statement (ORBIT)', req: 'Pension' },
       { slotId: 'empower_erin', title: 'NC Educator 401(k) Empower Statement', req: '401(k)' },
       { slotId: 'cd_erin', title: 'Wells Fargo / Credit Union 5.15% High-Yield CD Record', req: 'Investment' }
     ],
     barbara: [
+      { slotId: 'tax_return_barb', title: 'Annual Tax Return & OPM 1099-R Summary', req: 'Annual Tax' },
       { slotId: 'ssn_card', title: 'Social Security Card Scan / Record', req: 'SSN' },
       { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
       { slotId: 'passport', title: 'US Passport Scan', req: 'Identity' },
-      { slotId: 'health_card', title: 'Medicare & Health Insurance Card', req: 'Medical' },
+      { slotId: 'health_card', title: 'Medicare & Health Insurance Card (Annual Renewal)', req: 'Medical' },
       { slotId: 'opm', title: 'OPM Federal Civil Service Pension Statement', req: 'Pension' },
       { slotId: 'penfed', title: 'PenFed / BoA Reserve Account Statement', req: 'Reserve' },
       { slotId: 'estate', title: 'Healthcare Proxy & Will Directive Records', req: 'Legal' }
@@ -208,14 +213,14 @@ export const PlayerProfilePage = ({ player, onBack }) => {
       { slotId: 'ssn_card', title: 'Social Security Card Scan / Record', req: 'SSN' },
       { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
       { slotId: 'passport', title: 'US Passport Scan / ID', req: 'Identity' },
-      { slotId: 'health_card', title: 'Pediatric Health Insurance Card', req: 'Medical' },
+      { slotId: 'health_card', title: 'Pediatric Health Insurance Card (Annual Renewal)', req: 'Medical' },
       { slotId: 'savings_hayden', title: 'Hayden $30,000 College Savings Goal Progress Statement', req: 'Goal Tracker' }
     ],
     ava: [
       { slotId: 'ssn_card', title: 'Social Security Card Scan / Record', req: 'SSN' },
       { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
       { slotId: 'passport', title: 'US Passport Scan / ID', req: 'Identity' },
-      { slotId: 'health_card', title: 'Pediatric Health Insurance Card', req: 'Medical' },
+      { slotId: 'health_card', title: 'Pediatric Health Insurance Card (Annual Renewal)', req: 'Medical' },
       { slotId: 'savings_ava', title: 'Ava $30,000 College Savings Goal Progress Statement', req: 'Goal Tracker' }
     ]
   };
@@ -659,6 +664,30 @@ export const PlayerProfilePage = ({ player, onBack }) => {
             </h3>
             <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
               Upload or update individual items one-by-one anytime. Each item links directly to your encrypted vault!
+            </p>
+          </div>
+        </div>
+
+        {/* 🗓️ ANNUAL RENEWAL REMINDER BANNER */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(253, 185, 39, 0.15), rgba(0, 70, 132, 0.3))',
+          border: '1.5px solid #FDB927',
+          borderRadius: '16px',
+          padding: '1.1rem 1.25rem',
+          marginBottom: '1.25rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem'
+        }}>
+          <div style={{ width: '42px', height: '42px', borderRadius: '50%', background: '#FDB927', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Calendar size={22} color="#004684" />
+          </div>
+          <div>
+            <h4 style={{ fontWeight: 900, color: '#fff', fontSize: '1rem' }}>
+              🗓️ Annual Document Renewal Schedule & Tax Reminder
+            </h4>
+            <p style={{ fontSize: '0.82rem', color: '#cbd5e1', marginTop: '0.15rem' }}>
+              <strong>Items requiring annual updates:</strong> NC DMV Auto Registrations, Form 1040 Tax Returns, TSERS MARS Statements, and Health Insurance Renewal Cards.
             </p>
           </div>
         </div>
