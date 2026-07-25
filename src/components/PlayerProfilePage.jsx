@@ -37,7 +37,7 @@ import {
 } from 'lucide-react';
 
 export const PlayerProfilePage = ({ player, onBack }) => {
-  const { data, removeAccount, novoBusinessChecking, capitalOneSavings, barbaraCheckingAccount, advPlusBanking, advantageSavings } = useFinance();
+  const { data, removeAccount, reassignAccountOwner, novoBusinessChecking, capitalOneSavings, barbaraCheckingAccount, advPlusBanking, advantageSavings } = useFinance();
   const [showSensitive, setShowSensitive] = useState(false);
   const [lastUploadedItem, setLastUploadedItem] = useState('');
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
@@ -460,14 +460,38 @@ export const PlayerProfilePage = ({ player, onBack }) => {
                 {acc.institution}
               </div>
 
-              {/* Edit Balance & Remove Action Buttons */}
-              <div style={{ display: 'flex', gap: '0.5rem', paddingTop: '0.6rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+              {/* Edit Balance, Reassign Owner & Remove Action Buttons */}
+              <div style={{ display: 'flex', gap: '0.4rem', paddingTop: '0.6rem', borderTop: '1px solid rgba(255,255,255,0.06)', flexWrap: 'wrap' }}>
                 <button 
                   onClick={() => setEditingAccount({ id: acc.id, name: acc.name, balance: acc.balance })}
                   className="btn btn-secondary"
                   style={{ flex: 1, padding: '4px 8px', fontSize: '0.74rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.2rem' }}
                 >
-                  <Edit3 size={12} /> Edit Balance ✏️
+                  <Edit3 size={12} /> Edit ✏️
+                </button>
+
+                <button 
+                  onClick={() => {
+                    const targetId = player.id === 'chris' ? 'barbara' : 'chris';
+                    const targetName = player.id === 'chris' ? "Mom (Barbara)" : "Chris";
+                    reassignAccountOwner(acc.id, targetId);
+                  }}
+                  className="badge"
+                  style={{
+                    background: 'rgba(253, 185, 39, 0.2)',
+                    border: '1px solid #FDB927',
+                    color: '#FDB927',
+                    padding: '4px 8px',
+                    fontSize: '0.74rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.2rem'
+                  }}
+                  title="Reassign to another family member"
+                >
+                  <Users size={12} /> Move to {player.id === 'chris' ? "Mom 👤" : "Chris 👤"}
                 </button>
 
                 <button 

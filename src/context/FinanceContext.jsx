@@ -186,6 +186,15 @@ export const FinanceProvider = ({ children }) => {
     }));
   };
 
+  // Function to reassign account ownership (e.g. move joint accounts to Mom)
+  const reassignAccountOwner = (accountId, newMemberId) => {
+    setData(prev => ({
+      ...prev,
+      accounts: (prev.accounts || []).map(a => a.id === accountId ? { ...a, memberId: newMemberId } : a),
+      boaAccounts: (prev.boaAccounts || []).map(a => a.id === accountId ? { ...a, memberId: newMemberId } : a)
+    }));
+  };
+
   // Save data state
   useEffect(() => {
     try {
@@ -235,6 +244,7 @@ export const FinanceProvider = ({ children }) => {
       setMembers,
       updateAccountBalance,
       removeAccount,
+      reassignAccountOwner,
       mergePlaidData,
       totalBaseIncome,
       barbaraTotalExpenses,
