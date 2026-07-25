@@ -5,6 +5,7 @@ import { PlayerProfilePage } from './PlayerProfilePage';
 import { FamilyProfilePortalModal } from './FamilyProfilePortalModal';
 import { AddAccountModal } from './AddAccountModal';
 import { EditAccountModal } from './EditAccountModal';
+import { AccountTroubleshooterModal } from './AccountTroubleshooterModal';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -67,10 +68,11 @@ export const Dashboard = () => {
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isFamilyPortalOpen, setIsFamilyPortalOpen] = useState(false);
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
+  const [isTroubleshooterOpen, setIsTroubleshooterOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [editingAccount, setEditingAccount] = useState(null);
 
-  // Business Growth Slider state (+ $0/mo up to + $10,000/mo)
+  // Business Growth Slider state
   const [businessGrowth, setBusinessGrowth] = useState(2500);
 
   // Allocator Action states
@@ -328,7 +330,7 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* 💳 REAL LIVE BANK ACCOUNTS WIDGET WITH DIRECT EDIT BALANCE BUTTONS */}
+      {/* 💳 REAL LIVE BANK ACCOUNTS WIDGET WITH DIAGNOSTIC TROUBLESHOOTER */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))' }}>
         <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
@@ -342,6 +344,23 @@ export const Dashboard = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button 
+              className="btn btn-secondary"
+              onClick={() => setIsTroubleshooterOpen(true)}
+              style={{
+                fontSize: '0.84rem',
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                border: '1px solid #FDB927',
+                color: '#FDB927'
+              }}
+            >
+              <AlertTriangle size={15} />
+              <span>Connection Audit 🔍</span>
+            </button>
+
             <button 
               className="btn btn-primary"
               onClick={() => setIsAddAccountOpen(true)}
@@ -700,6 +719,7 @@ export const Dashboard = () => {
       <FamilyProfilePortalModal isOpen={isFamilyPortalOpen} onClose={() => setIsFamilyPortalOpen(false)} />
       <AddAccountModal isOpen={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} />
       <EditAccountModal isOpen={!!editingAccount} onClose={() => setEditingAccount(null)} account={editingAccount} />
+      <AccountTroubleshooterModal isOpen={isTroubleshooterOpen} onClose={() => setIsTroubleshooterOpen(false)} />
 
     </div>
   );
