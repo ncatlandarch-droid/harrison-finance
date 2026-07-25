@@ -35,11 +35,52 @@ import {
 } from 'lucide-react';
 
 export const PlayerProfilePage = ({ player, onBack }) => {
-  const { data, totalCombinedSurplus, novoBusinessChecking, capitalOneSavings, barbaraCheckingAccount, advPlusBanking, advantageSavings } = useFinance();
+  const { data, removeAccount, novoBusinessChecking, capitalOneSavings, barbaraCheckingAccount, advPlusBanking, advantageSavings } = useFinance();
   const [showSensitive, setShowSensitive] = useState(false);
   const [lastUploadedItem, setLastUploadedItem] = useState('');
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   
+  // Custom accounts added per member profile stored in localStorage
+  const [profileAccounts, setProfileAccounts] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`harrison_profile_accounts_${player?.id}`);
+      if (saved) return JSON.parse(saved);
+
+      const defaultMap = {
+        chris: [
+          { id: 'acc_novo', name: 'Novo Business Checking', institution: 'Novo Bank', balance: novoBusinessChecking.balance, status: '🟢 Live Sync' },
+          { id: 'adv_plus', name: 'BoA Adv Plus Checking - 4717', institution: 'Bank of America', balance: advPlusBanking.balance, status: '🟢 Live Sync' },
+          { id: 'acc_capone', name: 'Capital One 360 HYSA', institution: 'Capital One 360', balance: capitalOneSavings.balance, status: '🟢 Live Sync' }
+        ],
+        erin: [
+          { id: 'acc_wf_erin', name: 'Wells Fargo Educator Checking & CD', institution: 'Wells Fargo', balance: 12500.00, status: '🟢 Connected' }
+        ],
+        barbara: [
+          { id: 'acc_barbara_penfed', name: "Mom's PenFed Reserve Account", institution: 'PenFed Credit Union', balance: barbaraCheckingAccount.balance, status: '🟢 Connected' }
+        ],
+        hayden: [
+          { id: 'acc_hayden_hysa', name: 'Hayden $30k College Reserve', institution: 'High-Yield Savings', balance: 4500.00, status: '🟢 Auto-Funded' }
+        ],
+        ava: [
+          { id: 'acc_ava_hysa', name: 'Ava $30k College Reserve', institution: 'High-Yield Savings', balance: 2100.00, status: '🟢 Auto-Funded' }
+        ]
+      };
+      return defaultMap[player?.id] || defaultMap.chris;
+    } catch (e) {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    if (player?.id) {
+      try {
+        localStorage.setItem(`harrison_profile_accounts_${player.id}`, JSON.stringify(profileAccounts));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [profileAccounts, player]);
+
   // Local state for uploaded documents per player
   const [userDocs, setUserDocs] = useState(() => {
     try {
@@ -80,30 +121,11 @@ export const PlayerProfilePage = ({ player, onBack }) => {
   };
 
   const currentAge = getAge(player.birthday);
-  const isYouth = player.id === 'hayden' || player.id === 'ava';
 
-  // Member connected accounts map
-  const memberAccountsMap = {
-    chris: [
-      { id: 'acc_novo', name: 'Novo Business Checking', institution: 'Novo Bank', balance: novoBusinessChecking.balance, status: '🟢 Live Sync' },
-      { id: 'adv_plus', name: 'BoA Adv Plus Checking - 4717', institution: 'Bank of America', balance: advPlusBanking.balance, status: '🟢 Live Sync' },
-      { id: 'acc_capone', name: 'Capital One 360 HYSA', institution: 'Capital One 360', balance: capitalOneSavings.balance, status: '🟢 Live Sync' }
-    ],
-    erin: [
-      { id: 'acc_wf_erin', name: 'Wells Fargo Educator Checking & CD', institution: 'Wells Fargo', balance: 12500.00, status: '🟢 Connected' }
-    ],
-    barbara: [
-      { id: 'acc_barbara_penfed', name: "Mom's PenFed Reserve Account", institution: 'PenFed Credit Union', balance: barbaraCheckingAccount.balance, status: '🟢 Connected' }
-    ],
-    hayden: [
-      { id: 'acc_hayden_hysa', name: 'Hayden $30k College Reserve', institution: 'High-Yield Savings', balance: 4500.00, status: '🟢 Auto-Funded' }
-    ],
-    ava: [
-      { id: 'acc_ava_hysa', name: 'Ava $30k College Reserve', institution: 'High-Yield Savings', balance: 2100.00, status: '🟢 Auto-Funded' }
-    ]
+  const handleRemoveProfileAccount = (accId) => {
+    setProfileAccounts(prev => prev.filter(a => a.id !== accId));
+    removeAccount(accId);
   };
-
-  const memberAccounts = memberAccountsMap[player.id] || memberAccountsMap.chris;
 
   // Itemized checklist slots with individual upload targets
   const personChecklists = {
@@ -148,7 +170,6 @@ export const PlayerProfilePage = ({ player, onBack }) => {
 
   const currentChecklist = personChecklists[player.id] || personChecklists.chris;
 
-  // Handle individual slot file upload
   const handleItemizedFileUpload = (slotId, itemTitle, file) => {
     if (!file) return;
 
@@ -288,7 +309,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
               <div>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>CONNECTED ACCOUNTS</span>
                 <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem' }}>
-                  {memberAccounts.length} Active Accounts
+                  {profileAccounts.length} Active Accounts
                 </div>
               </div>
             </div>
@@ -306,8 +327,11 @@ export const PlayerProfilePage = ({ player, onBack }) => {
             </span>
             <h3 style={{ fontSize: '1.3rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <Building2 size={22} color={player.color} />
-              <span>{player.name}'s Financial Accounts ({memberAccounts.length})</span>
+              <span>{player.name}'s Financial Accounts ({profileAccounts.length})</span>
             </h3>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Directly link or remove accounts for {player.name}!
+            </p>
           </div>
 
           <button 
@@ -329,8 +353,8 @@ export const PlayerProfilePage = ({ player, onBack }) => {
         </div>
 
         <div className="grid-3" style={{ gap: '1.25rem' }}>
-          {memberAccounts.map(acc => (
-            <div key={acc.id} style={{ background: 'rgba(0,0,0,0.35)', border: `1.5px solid ${player.color}60`, borderRadius: '16px', padding: '1.25rem' }}>
+          {profileAccounts.map(acc => (
+            <div key={acc.id} style={{ background: 'rgba(0,0,0,0.35)', border: `1.5px solid ${player.color}60`, borderRadius: '16px', padding: '1.25rem', position: 'relative' }}>
               <div className="flex-between" style={{ marginBottom: '0.6rem' }}>
                 <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#fff' }}>{acc.name}</span>
                 <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>{acc.status}</span>
@@ -338,7 +362,27 @@ export const PlayerProfilePage = ({ player, onBack }) => {
               <div className="font-mono" style={{ fontSize: '1.6rem', fontWeight: 900, color: player.color }}>
                 {fmt(acc.balance)}
               </div>
-              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>{acc.institution}</div>
+              <div className="flex-between" style={{ marginTop: '0.75rem', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>{acc.institution}</span>
+                <button 
+                  onClick={() => handleRemoveProfileAccount(acc.id)}
+                  style={{
+                    background: 'rgba(239, 68, 68, 0.15)',
+                    border: '1px solid var(--danger)',
+                    color: 'var(--danger)',
+                    borderRadius: '8px',
+                    padding: '3px 8px',
+                    fontSize: '0.72rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.2rem'
+                  }}
+                >
+                  <Trash2 size={12} /> Remove
+                </button>
+              </div>
             </div>
           ))}
         </div>

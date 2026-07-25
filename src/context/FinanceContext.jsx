@@ -43,7 +43,7 @@ export const FinanceProvider = ({ children }) => {
     }
   });
 
-  // Dynamic Family Roster
+  // Dynamic Family Roster with Exact Birthdays
   const [members, setMembers] = useState(() => {
     return [
       {
@@ -52,8 +52,8 @@ export const FinanceProvider = ({ children }) => {
         title: 'Efficiency Specialist & Educator',
         image: '/avatars/erin.png',
         color: '#ec4899',
-        role: 'Adult Earner',
-        birthday: '1988-04-12',
+        role: 'Adult Earner (Age 39)',
+        birthday: '1987-05-06',
         income: 2500.00,
         badge: '👑 MVP LEADER',
         level: 'LVL 99 BUDGET NINJA',
@@ -65,8 +65,8 @@ export const FinanceProvider = ({ children }) => {
         title: 'Operating Lead & Tech Architect',
         image: '/avatars/chris.jpg',
         color: '#6366f1',
-        role: 'Adult Earner',
-        birthday: '1984-08-24',
+        role: 'Adult Earner (Age 46)',
+        birthday: '1980-04-12',
         income: 9309.36,
         badge: '🚀 REVENUE ENGINE',
         level: 'LVL 95 TECH ARCHITECT',
@@ -78,8 +78,8 @@ export const FinanceProvider = ({ children }) => {
         title: 'Family Pillar & Reserve Guardian',
         image: '/avatars/barbara.png',
         color: '#a855f7',
-        role: 'Senior Pillar (Age 75)',
-        birthday: '1951-03-15',
+        role: 'Senior Pillar (Age 74)',
+        birthday: '1952-01-17',
         income: 5645.84,
         badge: '🛡️ CAPITAL SHIELD',
         level: 'LVL 99 WEALTH GUARDIAN',
@@ -117,7 +117,6 @@ export const FinanceProvider = ({ children }) => {
   // Function to update any account balance (Novo, Capital One, BoA, PenFed)
   const updateAccountBalance = (accountId, newBalance) => {
     setData(prev => {
-      // Check in boaAccounts first
       if (prev.boaAccounts && prev.boaAccounts.some(a => a.id === accountId)) {
         return {
           ...prev,
@@ -125,7 +124,6 @@ export const FinanceProvider = ({ children }) => {
         };
       }
 
-      // Check in accounts array
       if (prev.accounts && prev.accounts.some(a => a.id === accountId)) {
         return {
           ...prev,
@@ -133,7 +131,6 @@ export const FinanceProvider = ({ children }) => {
         };
       }
 
-      // Default fallback: append or update in accounts
       const existing = prev.accounts || [];
       const updated = existing.map(a => a.id === accountId ? { ...a, balance: Number(newBalance) } : a);
       if (!existing.some(a => a.id === accountId)) {
@@ -141,6 +138,15 @@ export const FinanceProvider = ({ children }) => {
       }
       return { ...prev, accounts: updated };
     });
+  };
+
+  // Function to remove/unlink an account from user profiles
+  const removeAccount = (accountId) => {
+    setData(prev => ({
+      ...prev,
+      accounts: (prev.accounts || []).filter(a => a.id !== accountId),
+      boaAccounts: (prev.boaAccounts || []).filter(a => a.id !== accountId)
+    }));
   };
 
   // Save data state
@@ -191,6 +197,7 @@ export const FinanceProvider = ({ children }) => {
       members,
       setMembers,
       updateAccountBalance,
+      removeAccount,
       totalBaseIncome,
       barbaraTotalExpenses,
       erinTotalExpenses,
