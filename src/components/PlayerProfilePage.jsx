@@ -32,6 +32,8 @@ import {
 export const PlayerProfilePage = ({ player, onBack }) => {
   const { data, totalCombinedSurplus } = useFinance();
   const [showSensitive, setShowSensitive] = useState(false);
+  const [questCompleted, setQuestCompleted] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
   
   // Local state for uploaded documents per player
   const [userDocs, setUserDocs] = useState(() => {
@@ -88,44 +90,58 @@ export const PlayerProfilePage = ({ player, onBack }) => {
   const yearsRemaining = Math.max(0, targetAge - (typeof currentAge === 'number' ? currentAge : 10));
   const monthsRemaining = yearsRemaining * 12;
   
-  // Required monthly payment to hit $30,000
   let requiredMonthlySavings = 0;
-  if (player.id === 'hayden') requiredMonthlySavings = 331.00; // 6 years (72 mos) @ 5%
-  else if (player.id === 'ava') requiredMonthlySavings = 172.00; // 11 years (132 mos) @ 5%
+  if (player.id === 'hayden') requiredMonthlySavings = 331.00;
+  else if (player.id === 'ava') requiredMonthlySavings = 172.00;
 
-  // Get itemized bills for this player
+  // Itemized bills for this player
   let playerBills = [];
   if (player.id === 'barbara') playerBills = data?.barbaraExpenses || [];
   else if (player.id === 'erin') playerBills = data?.erinExpenses || [];
   else if (player.id === 'chris') playerBills = data?.chrisExpenses || [];
 
-  // Universal Gamified Quests for EVERYONE (+250 XP each)
-  const quests = player.id === 'isla' ? [
-    { title: "Rabies & Vaccine Records Verified", points: 250, icon: "💉", desc: "Up-to-date vet vaccination records" },
-    { title: "Microchip Registration Linked", points: 250, icon: "🏷️", desc: "AKC microchip pet identification" },
-    { title: "Pet Insurance Coverage Active", points: 250, icon: "🛡️", desc: "Emergency medical insurance linked" },
-    { title: "Family Financial Wizard Badge", points: 250, icon: "🐶", desc: "Official mascot AI wealth guide" }
-  ] : [
-    { title: "Birth Certificate Secured", points: 250, icon: "📜", desc: "Official birth record copy saved in vault" },
-    { title: "US Passport Scan Uploaded", points: 250, icon: "🛂", desc: "Government identity passport scan" },
-    { title: "Health & Dental Insurance Linked", points: 250, icon: "🏥", desc: "Medical policy & emergency card" },
-    { title: isYouth ? "$30,000 By Age 18 Plan Active" : "Estate Directive / Savings Milestone", points: 250, icon: "🛡️", desc: isYouth ? `$30k goal (${player.id === 'hayden' ? '$331/mo' : '$172/mo'})` : "Will, POA, or Investment Plan" }
-  ];
+  // Person-specific annual checkup document checklists
+  const personChecklists = {
+    chris: [
+      { id: 'mars', title: 'NC TSERS Pension MARS Statement (orbit.myretirement.gov)', status: 'Verified' },
+      { id: 'ssa', title: 'Social Security Administration Statement (ssa.gov)', status: 'Verified' },
+      { id: 'empower', title: 'NC A&T 401(k) Empower Statement (myNCPlans.gov)', status: 'Pending Upload' },
+      { id: 'novo', title: 'Think! Design & Planning LLC Annual Financial Record', status: 'Active' }
+    ],
+    erin: [
+      { id: 'mars_erin', title: 'NC Educator TSERS Pension MARS Statement (ORBIT)', status: 'Pending Upload' },
+      { id: 'empower_erin', title: 'NC Educator 401(k) Empower Statement', status: 'Pending Upload' },
+      { id: 'cd_erin', title: 'Wells Fargo / Credit Union 5.15% High-Yield CD Record', status: 'Verified' }
+    ],
+    barbara: [
+      { id: 'penfed', title: 'PenFed / BoA Reserve Account Statement', status: 'Verified' },
+      { id: 'estate', title: 'Healthcare Proxy & Will Directive Records', status: 'Verified' }
+    ],
+    hayden: [
+      { id: 'savings_hayden', title: 'Hayden $30,000 College Savings Goal Progress Statement', status: 'Active Goal' }
+    ],
+    ava: [
+      { id: 'savings_ava', title: 'Ava $30,000 College Savings Goal Progress Statement', status: 'Active Goal' }
+    ]
+  };
+
+  const currentChecklist = personChecklists[player.id] || personChecklists.chris;
 
   // Handle File Upload
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    if (!files.length) return;
 
-    const newDoc = {
-      id: 'doc_' + Date.now(),
+    const newDocs = files.map(file => ({
+      id: 'doc_' + Date.now() + Math.random().toString(36).substr(2, 4),
       name: file.name,
       size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
       date: new Date().toISOString().split('T')[0],
-      type: 'Family Document'
-    };
+      type: 'Annual Checkup Document'
+    }));
 
-    setUserDocs(prev => [newDoc, ...prev]);
+    setUserDocs(prev => [...newDocs, ...prev]);
+    setQuestCompleted(true);
   };
 
   const handleDeleteDoc = (id) => {
@@ -167,7 +183,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
         </div>
       </div>
 
-      {/* 🌟 GIANT HERO PROFILE BANNER (200px Portrait!) */}
+      {/* 🌟 GIANT HERO PROFILE BANNER */}
       <div className="card card-glow" style={{
         background: `linear-gradient(135deg, ${player.color}35, rgba(15, 23, 42, 0.98))`,
         border: `3px solid ${player.color}`,
@@ -198,267 +214,171 @@ export const PlayerProfilePage = ({ player, onBack }) => {
 
           <div style={{ flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-              <h2 style={{ fontSize: '2rem', fontWeight: 900, color: '#fff' }}>{player.name}</h2>
-              <span className="badge" style={{ background: `${player.color}30`, color: player.color, border: `1.5px solid ${player.color}`, fontWeight: 800, fontSize: '0.85rem', padding: '4px 12px' }}>
-                {player.badge}
+              <h2 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff' }}>{player.name}</h2>
+              <span className="badge badge-primary" style={{ background: player.color, color: '#fff', fontWeight: 800, padding: '4px 12px', fontSize: '0.85rem' }}>
+                {player.title}
+              </span>
+              <span className="badge badge-success" style={{ padding: '4px 12px', fontSize: '0.85rem' }}>
+                Level 5 Financial MVP (+1,000 XP)
               </span>
             </div>
 
-            <p style={{ fontSize: '1rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
-              {player.title} • Birthday: <strong>{player.birthday || 'N/A'}</strong> (Age {currentAge})
+            <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginTop: '0.4rem', maxWidth: '650px' }}>
+              {player.bio || `${player.name}'s dedicated personal workspace, encrypted document repository, and gamified wealth tracker.`}
             </p>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '1rem' }}>
-              <div className="badge badge-success" style={{ fontSize: '0.85rem', padding: '6px 14px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <Trophy size={16} color="#FDB927" />
-                <span>Guardian Rating: 1,000 / 1,000 XP (Master Status 🏆)</span>
+            {/* Quick Profile Identifiers */}
+            <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.25rem', flexWrap: 'wrap' }}>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>AGE / BIRTHDAY</span>
+                <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem' }}>
+                  {currentAge} Years Old ({player.birthday || 'N/A'})
+                </div>
               </div>
 
-              <span className="badge" style={{ background: 'rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.82rem' }}>
-                {player.level}
-              </span>
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>EMPLOYER / INSTITUTION</span>
+                <div style={{ fontWeight: 800, color: player.color, fontSize: '1rem' }}>
+                  {player.employer || 'Harrison Family Household'}
+                </div>
+              </div>
+
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>PERSONAL VAULT DOCS</span>
+                <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem' }}>
+                  {userDocs.length} Verified Files
+                </div>
+              </div>
             </div>
           </div>
 
         </div>
       </div>
 
-      {/* 🎯 $30,000 BY AGE 18 SAVINGS GOAL CALCULATOR FOR HAYDEN & AVA */}
-      {isYouth && (
-        <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.15))', border: '2px solid #3b82f6' }}>
-          <div className="flex-between" style={{ marginBottom: '1rem', borderBottom: '1px solid rgba(59, 130, 246, 0.3)', paddingBottom: '0.85rem' }}>
-            <div>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <Target size={24} color="#3b82f6" />
-                <span>Erin's $30,000 By Age 18 College & Future Savings Goal</span>
-              </h3>
-              <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                Guaranteed cash wealth milestone calculator for {player.name}
-              </p>
-            </div>
-            <span className="badge badge-success" style={{ fontSize: '0.8rem' }}>
-              Target: $30,000.00 at Age 18
+      {/* 🎯 PERSON-SPECIFIC ANNUAL CHECKUP QUEST CARD (GAMIFIED ACCOUNTABILITY!) */}
+      <div className="card card-glow" style={{ background: `linear-gradient(135deg, ${player.color}25, rgba(15, 23, 42, 0.98))`, border: `2.5px solid ${player.color}` }}>
+        <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
+          <div>
+            <span className="badge badge-primary" style={{ background: player.color, color: '#fff', fontWeight: 900, padding: '4px 12px' }}>
+              🎯 PERSONAL ANNUAL CHECKUP QUEST (+1,000 XP)
+            </span>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <Calendar size={24} color={player.color} />
+              <span>{player.name}'s Annual Financial Checkup & Statement Refresh</span>
+            </h3>
+            <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Refresh your annual statements to level up your character status and keep your net worth 100% accurate!
+            </p>
+          </div>
+
+          <div style={{ textAlign: 'right' }}>
+            <span className="badge badge-success" style={{ fontSize: '0.82rem', padding: '6px 14px', fontWeight: 900 }}>
+              {questCompleted ? '✓ 2026 QUEST COMPLETED (+1,000 XP)' : '⏳ ANNUAL CHECKUP READY'}
             </span>
           </div>
-
-          <div className="grid-4" style={{ gap: '1rem' }}>
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '10px' }}>
-              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>CURRENT AGE</div>
-              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fff', marginTop: '0.2rem' }}>
-                Age {currentAge}
-              </div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>{yearsRemaining} Years Remaining</div>
-            </div>
-
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '10px' }}>
-              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>TIME UNTIL AGE 18</div>
-              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary-light)', marginTop: '0.2rem' }}>
-                {monthsRemaining} Months
-              </div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Target Date: {2026 + yearsRemaining}</div>
-            </div>
-
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '10px' }}>
-              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>REQUIRED MONTHLY CONTRIBUTION</div>
-              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--success)', marginTop: '0.2rem' }}>
-                {fmt(requiredMonthlySavings)} / mo
-              </div>
-              <div style={{ fontSize: '0.72rem', color: 'var(--success)', marginTop: '0.2rem', fontWeight: 700 }}>
-                ✓ Allocated from +$5.0k Surplus
-              </div>
-            </div>
-
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '10px' }}>
-              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>TOTAL CASH AT AGE 18</div>
-              <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FDB927', marginTop: '0.2rem' }}>
-                $30,000.00
-              </div>
-              <div style={{ fontSize: '0.72rem', color: '#FDB927', marginTop: '0.2rem', fontWeight: 700 }}>
-                🎓 100% Fully Funded
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 2-COLUMN MAIN WORKSPACE GRID */}
-      <div className="grid-2" style={{ gap: '1.75rem' }}>
-        
-        {/* LEFT COLUMN: FINANCIAL ALLOCATION & DOCTORS DIRECTORY */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-          
-          {/* Financial Breakdown */}
-          <div className="card">
-            <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.15rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <CreditCard size={20} color="var(--primary-light)" />
-              <span>Financial Inflow & Expense Allocations</span>
-            </h4>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                <div>
-                  <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>GROSS MONTHLY INFLOW</div>
-                  <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--success)', marginTop: '0.1rem' }}>
-                    {fmt(player.income)}
-                  </div>
-                  {player.id === 'chris' && (
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                      Base Salary ($6,309.36) + Household Transfer ($3,000)
-                    </div>
-                  )}
-                </div>
-                <span className="badge badge-success" style={{ alignSelf: 'flex-start' }}>Monthly Inflow</span>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '12px', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
-                <div>
-                  <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>ASSIGNED EXPENSES</div>
-                  <div className="font-mono" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--danger)', marginTop: '0.1rem' }}>
-                    {fmt(player.expenses || 0)}
-                  </div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                    {playerBills.length} Itemized Commitments
-                  </div>
-                </div>
-                <span className="badge badge-danger" style={{ alignSelf: 'flex-start' }}>Fixed Outflow</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 🏥 DOCTORS & HEALTHCARE DIRECTORY */}
-          <div className="card">
-            <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.15rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Stethoscope size={20} color="#ec4899" />
-              <span>Doctors, Medical & Insurance Contacts</span>
-            </h4>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-              <div style={{ padding: '0.9rem 1.1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-                <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>Primary Care Physician</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                  Dr. Cone Health Medical Center • Greensboro, NC<br />
-                  📞 <strong>336-832-7000</strong> • Patient Portal Connected
-                </div>
-              </div>
-
-              <div style={{ padding: '0.9rem 1.1rem', background: 'rgba(0,0,0,0.3)', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-                <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>Health & Dental Insurance</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                  State Health Plan / BCBS NC<br />
-                  Policy #: <span className="font-mono" style={{ color: '#fff' }}>{showSensitive ? 'NC-88192049' : 'NC-••••••••'}</span> • Group #: 33901
-                </div>
-              </div>
-
-              {player.id === 'barbara' && (
-                <div style={{ padding: '0.9rem 1.1rem', background: 'rgba(168, 85, 247, 0.1)', borderRadius: '10px', border: '1px solid rgba(168, 85, 247, 0.3)' }}>
-                  <div style={{ fontWeight: 700, color: '#c084fc', fontSize: '0.92rem' }}>Life Insurance Lockbox ($144,000 Coverage)</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                    Americo ($90k) + Lumico + Primerica<br />
-                    Designated Beneficiary: Chris Harrison & Family
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
         </div>
 
-        {/* RIGHT COLUMN: DOCUMENT LOCKBOX & GAMIFIED XP QUESTS */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-          
-          {/* 📂 DOCUMENT REPOSITORY LOCKBOX */}
-          <div className="card">
-            <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
-              <div>
-                <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.15rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Upload size={20} color="var(--primary-light)" />
-                  <span>{player.name}'s Family Document Repository</span>
-                </h4>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
-                  Upload & manage birth certificates, passports, health cards & legal files
-                </p>
+        {/* Member Specific Checklist */}
+        <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)', marginBottom: '1.25rem' }}>
+          <div style={{ fontWeight: 800, color: '#fff', fontSize: '0.95rem', marginBottom: '0.75rem' }}>
+            📋 {player.name}'s Annual Document Checklist:
+          </div>
+
+          <div className="grid-2" style={{ gap: '0.85rem' }}>
+            {currentChecklist.map((item, idx) => (
+              <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', padding: '0.85rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ color: '#cbd5e1', fontWeight: 600, fontSize: '0.84rem' }}>• {item.title}</div>
+                <span className="badge" style={{ background: `${player.color}25`, color: player.color, border: `1px solid ${player.color}50`, fontWeight: 800, fontSize: '0.72rem' }}>
+                  {item.status}
+                </span>
               </div>
-
-              <label className="btn btn-primary" style={{ background: 'linear-gradient(135deg, #004684, #4f46e5)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}>
-                <Upload size={16} />
-                <span>Upload File</span>
-                <input type="file" onChange={handleFileUpload} style={{ display: 'none' }} accept=".pdf,.png,.jpg,.jpeg,.doc,.docx" />
-              </label>
-            </div>
-
-            {/* Document List */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {userDocs.map(doc => (
-                <div key={doc.id} style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '0.9rem 1.1rem',
-                  background: 'rgba(0,0,0,0.3)',
-                  borderRadius: '10px',
-                  border: '1px solid var(--border-color)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-                    <FileText size={22} color={player.color} />
-                    <div>
-                      <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>{doc.name}</div>
-                      <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>
-                        Uploaded {doc.date} • {doc.size}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span className="badge badge-success" style={{ fontSize: '0.72rem' }}>Saved in Vault</span>
-                    <button 
-                      onClick={() => handleDeleteDoc(doc.id)} 
-                      style={{ background: 'rgba(239,68,68,0.2)', border: 'none', color: 'var(--danger)', padding: '5px 10px', borderRadius: '6px', cursor: 'pointer' }}
-                      title="Delete Document"
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
-
-          {/* 🏆 GAMIFIED XP QUEST CHECKPOINTS (+1,000 XP) */}
-          <div className="card">
-            <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.15rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Award size={22} color="#FDB927" />
-              <span>Gamified Guardian Checkpoints (+1,000 XP Goal)</span>
-            </h4>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {quests.map((q, idx) => (
-                <div key={idx} style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '0.9rem 1.1rem',
-                  background: 'rgba(0,0,0,0.3)',
-                  borderRadius: '10px',
-                  border: '1px solid var(--border-color)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <span style={{ fontSize: '1.4rem' }}>{q.icon}</span>
-                    <div>
-                      <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.92rem' }}>{q.title}</div>
-                      <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>{q.desc}</div>
-                    </div>
-                  </div>
-
-                  <span className="badge badge-success" style={{ fontSize: '0.74rem' }}>
-                    +{q.points} XP ✓
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
 
+        {/* Uploader Box */}
+        <div 
+          style={{
+            border: `2px dashed ${player.color}`,
+            borderRadius: '16px',
+            padding: '1.75rem',
+            textAlign: 'center',
+            background: 'rgba(0,0,0,0.3)',
+            cursor: 'pointer'
+          }}
+          onClick={() => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = '.pdf,.png,.jpg,.csv';
+            input.onchange = handleFileUpload;
+            input.click();
+          }}
+        >
+          <Upload size={38} color={player.color} style={{ marginBottom: '0.5rem' }} />
+          <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#fff' }}>
+            Upload {player.name}'s New Annual Statement PDF / Screenshot
+          </h4>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+            Saves directly to {player.name}'s encrypted lockbox • Unlocks <strong>+1,000 Family XP</strong>
+          </p>
+        </div>
+
+        {questCompleted && (
+          <div style={{ marginTop: '1rem', background: 'rgba(16, 185, 129, 0.15)', border: '1.5px solid #10b981', padding: '1rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <CheckCircle2 size={24} color="var(--success)" />
+            <div>
+              <div style={{ fontWeight: 900, color: '#fff', fontSize: '0.95rem' }}>🎉 CONGRATULATIONS {player.name.toUpperCase()}!</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                You have completed your 2026 Annual Financial Checkup! +1,000 XP has been added to your profile level.
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
+
+      {/* 📁 ENCRYPTED PERSONAL DOCUMENT REPOSITORY */}
+      <div className="card">
+        <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Lock size={22} color={player.color} />
+              <span>{player.name}'s Encrypted Document Repository</span>
+            </h3>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+              AES-256 Encrypted Private Storage for Passports, Certificates, and Statements
+            </p>
+          </div>
+
+          <label className="btn btn-primary" style={{ cursor: 'pointer', background: player.color, color: '#fff', fontWeight: 800, fontSize: '0.84rem' }}>
+            <Upload size={16} />
+            <span>Upload Document</span>
+            <input type="file" onChange={handleFileUpload} style={{ display: 'none' }} />
+          </label>
+        </div>
+
+        <div className="grid-3" style={{ gap: '1rem' }}>
+          {userDocs.map((doc) => (
+            <div key={doc.id} style={{ background: 'rgba(30, 41, 59, 0.5)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.25rem' }}>
+              <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
+                <span className="badge" style={{ background: `${player.color}25`, color: player.color, fontSize: '0.72rem' }}>
+                  {doc.type}
+                </span>
+                <button onClick={() => handleDeleteDoc(doc.id)} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer' }}>
+                  <Trash2 size={14} />
+                </button>
+              </div>
+
+              <div style={{ fontWeight: 800, color: '#fff', fontSize: '0.92rem', wordBreak: 'break-word' }}>
+                {doc.name}
+              </div>
+              <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
+                Size: {doc.size} • Saved: {doc.date}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
     </div>

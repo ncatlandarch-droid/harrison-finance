@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { useFinance } from '../context/FinanceContext';
 import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
-import { AnnualStatementRefreshQuestModal } from './AnnualStatementRefreshQuestModal';
-import { Plus, FileText, Sparkles, RefreshCw, CheckCircle2, Calendar } from 'lucide-react';
+import { Plus, FileText, Sparkles, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 export const Header = ({ onOpenAddModal }) => {
   const { totalCombinedSurplus, activeTab } = useFinance();
   const [isReportOpen, setIsReportOpen] = useState(false);
-  const [isAnnualQuestOpen, setIsAnnualQuestOpen] = useState(false);
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -42,16 +40,6 @@ export const Header = ({ onOpenAddModal }) => {
         {/* Right Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           
-          {/* Person-Specific Annual Checkup Quest Button */}
-          <button 
-            className="btn btn-secondary"
-            onClick={() => setIsAnnualQuestOpen(true)}
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid rgba(253, 185, 39, 0.4)', color: '#FDB927', fontWeight: 700 }}
-          >
-            <Calendar size={16} />
-            <span>Annual Checkup 🗓️</span>
-          </button>
-
           {/* Real Talk Strategy Report PDF Modal Button */}
           <button 
             className="btn btn-secondary"
@@ -85,7 +73,6 @@ export const Header = ({ onOpenAddModal }) => {
 
       {/* Modals */}
       <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
-      <AnnualStatementRefreshQuestModal isOpen={isAnnualQuestOpen} onClose={() => setIsAnnualQuestOpen(false)} />
     </>
   );
 };
