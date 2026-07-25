@@ -7,7 +7,13 @@ export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
       const saved = localStorage.getItem('harrison_finance_v4_data');
-      return saved ? JSON.parse(saved) : INITIAL_DATA;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.boaAccounts && parsed.accounts) {
+          return parsed;
+        }
+      }
+      return INITIAL_DATA;
     } catch (e) {
       return INITIAL_DATA;
     }
@@ -137,20 +143,27 @@ export const FinanceProvider = ({ children }) => {
     }]);
   };
 
+  // Safe Arrays with Fallbacks to prevent undefined .find crashes
+  const boaAccounts = data?.boaAccounts || INITIAL_DATA.boaAccounts || [];
+  const accounts = data?.accounts || INITIAL_DATA.accounts || [];
+  const barbaraExpenses = data?.barbaraExpenses || INITIAL_DATA.barbaraExpenses || [];
+  const erinExpenses = data?.erinExpenses || INITIAL_DATA.erinExpenses || [];
+  const chrisExpenses = data?.chrisExpenses || INITIAL_DATA.chrisExpenses || [];
+
   // Financial Computations
   const totalBaseIncome = 5645.84 + 6309.36 + 2500.00; // $14,455.20 / mo
-  const barbaraTotalExpenses = data.barbaraExpenses.reduce((sum, item) => sum + item.amount, 0);
-  const erinTotalExpenses = data.erinExpenses.reduce((sum, item) => sum + item.amount, 0);
-  const chrisTotalExpenses = data.chrisExpenses.reduce((sum, item) => sum + item.amount, 0);
+  const barbaraTotalExpenses = barbaraExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
+  const erinTotalExpenses = erinExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
+  const chrisTotalExpenses = chrisExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
   const totalExternalExpenses = barbaraTotalExpenses + erinTotalExpenses + chrisTotalExpenses;
   const totalCombinedSurplus = totalBaseIncome - totalExternalExpenses;
 
-  const papiChecking = data.boaAccounts.find(a => a.mask === '7333') || { balance: -36.00 };
-  const spendingMoney = data.boaAccounts.find(a => a.mask === '4866') || { balance: 468.24 };
-  const advPlusBanking = data.boaAccounts.find(a => a.mask === '4717') || { balance: 443.12 };
-  const advantageSavings = data.boaAccounts.find(a => a.mask === '0495') || { balance: 2392.91 };
-  const bankAmericardCreditCard = data.boaAccounts.find(a => a.mask === '6343') || { balance: 4500.00 };
-  const barbaraCheckingAccount = data.accounts.find(a => a.id === 'acc_barbara_checking') || { balance: 76155.00 };
+  const papiChecking = boaAccounts.find(a => a.mask === '7333') || { balance: -36.00 };
+  const spendingMoney = boaAccounts.find(a => a.mask === '4866') || { balance: 468.24 };
+  const advPlusBanking = boaAccounts.find(a => a.mask === '4717') || { balance: 443.12 };
+  const advantageSavings = boaAccounts.find(a => a.mask === '0495') || { balance: 2392.91 };
+  const bankAmericardCreditCard = boaAccounts.find(a => a.mask === '6343') || { balance: 4500.00 };
+  const barbaraCheckingAccount = accounts.find(a => a.id === 'acc_barbara_checking') || { balance: 76155.00 };
 
   const totalCheckingCash = (papiChecking.balance || 0) + (spendingMoney.balance || 0) + (advPlusBanking.balance || 0);
   const totalBoACash = totalCheckingCash + (advantageSavings.balance || 0);
