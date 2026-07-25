@@ -26,28 +26,21 @@ import {
   Users,
   MapPin,
   TrendingUp,
-  Target
+  Target,
+  DollarSign,
+  Wallet
 } from 'lucide-react';
 
 export const PlayerProfilePage = ({ player, onBack }) => {
-  const { data, totalCombinedSurplus } = useFinance();
+  const { data, totalCombinedSurplus, novoBusinessChecking, capitalOneSavings, barbaraCheckingAccount } = useFinance();
   const [showSensitive, setShowSensitive] = useState(false);
   const [questCompleted, setQuestCompleted] = useState(false);
-  const [dragActive, setDragActive] = useState(false);
   
   // Local state for uploaded documents per player
   const [userDocs, setUserDocs] = useState(() => {
     try {
       const saved = localStorage.getItem(`harrison_vault_docs_${player?.id}`);
       if (saved) return JSON.parse(saved);
-      
-      if (player?.id === 'isla') {
-        return [
-          { id: 'd1', name: 'ISLA Rabies Vaccine Certificate.pdf', size: '1.1 MB', date: '2026-06-10', type: 'Pet Health' },
-          { id: 'd2', name: 'AKC Microchip Registration.pdf', size: '850 KB', date: '2026-06-10', type: 'Pet ID' },
-          { id: 'd3', name: 'Pet Insurance Policy Certificate.pdf', size: '1.9 MB', date: '2026-06-12', type: 'Pet Insurance' }
-        ];
-      }
 
       return [
         { id: 'd1', name: 'Birth Certificate Copy.pdf', size: '1.1 MB', date: '2026-07-20', type: 'Birth Certificate' },
@@ -84,21 +77,6 @@ export const PlayerProfilePage = ({ player, onBack }) => {
 
   const currentAge = getAge(player.birthday);
   const isYouth = player.id === 'hayden' || player.id === 'ava';
-
-  // $30,000 By Age 18 Savings Computation
-  const targetAge = 18;
-  const yearsRemaining = Math.max(0, targetAge - (typeof currentAge === 'number' ? currentAge : 10));
-  const monthsRemaining = yearsRemaining * 12;
-  
-  let requiredMonthlySavings = 0;
-  if (player.id === 'hayden') requiredMonthlySavings = 331.00;
-  else if (player.id === 'ava') requiredMonthlySavings = 172.00;
-
-  // Itemized bills for this player
-  let playerBills = [];
-  if (player.id === 'barbara') playerBills = data?.barbaraExpenses || [];
-  else if (player.id === 'erin') playerBills = data?.erinExpenses || [];
-  else if (player.id === 'chris') playerBills = data?.chrisExpenses || [];
 
   // Person-specific annual checkup document checklists
   const personChecklists = {
@@ -276,7 +254,103 @@ export const PlayerProfilePage = ({ player, onBack }) => {
         </div>
       </div>
 
-      {/* 🎯 PERSON-SPECIFIC ANNUAL CHECKUP QUEST CARD (GAMIFIED ACCOUNTABILITY!) */}
+      {/* 💎 PERSON-SPECIFIC RETIREMENT & WEALTH ASSETS BREAKDOWN CARD */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.9))', border: `2px solid ${player.color}` }}>
+        <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
+          <div>
+            <span className="badge badge-primary" style={{ background: player.color, color: '#fff', fontWeight: 900, padding: '4px 12px' }}>
+              INDIVIDUAL RETIREMENT & WEALTH PORTFOLIO
+            </span>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <Award size={24} color="#FDB927" />
+              <span>{player.name}'s Personal Wealth & Pension Portfolio</span>
+            </h3>
+          </div>
+        </div>
+
+        {/* Customized Wealth Display per Member */}
+        {player.id === 'chris' && (
+          <div className="grid-2" style={{ gap: '1.25rem' }}>
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.35rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '0.8rem', color: '#FDB927', fontWeight: 800, marginBottom: '0.3rem' }}>NC TSERS PENSION ESTIMATE (MAY 2040 - AGE 60)</div>
+              <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: '#fff' }}>$1,803.55 / mo (Max)</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--success)', marginTop: '0.4rem', fontWeight: 800 }}>
+                🛡️ Option 2 Survivorship: $1,682.89/mo to Erin Harrison for life!
+              </div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
+                Creditable Service: 22.00 Years • AFC: $63,591.24
+              </div>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.35rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--primary-light)', fontWeight: 800, marginBottom: '0.3rem' }}>SOCIAL SECURITY STATEMENT (SSA.GOV)</div>
+              <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: '#fff' }}>$3,058.00 / mo (Age 67)</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--success)', marginTop: '0.4rem', fontWeight: 800 }}>
+                ✓ 40 / 40 Work Credits • Disability Protection: $2,543.00/mo
+              </div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>
+                Combined Lifetime Government Inflow: $4,861.55 / month!
+              </div>
+            </div>
+          </div>
+        )}
+
+        {player.id === 'erin' && (
+          <div className="grid-2" style={{ gap: '1.25rem' }}>
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.35rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '0.8rem', color: '#ec4899', fontWeight: 800, marginBottom: '0.3rem' }}>NC EDUCATOR TSERS PENSION</div>
+              <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: '#fff' }}>Educator Pension Vested</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
+                NC Educator Retirement System (ORBIT Portal Linked)
+              </div>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.35rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '0.8rem', color: 'var(--success)', fontWeight: 800, marginBottom: '0.3rem' }}>WELLS FARGO / CREDIT UNION HIGH-YIELD CD</div>
+              <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--success)' }}>$12,500.00 (5.15% APY)</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
+                Guaranteed Fixed High-Yield Savings Reserve
+              </div>
+            </div>
+          </div>
+        )}
+
+        {player.id === 'barbara' && (
+          <div className="grid-2" style={{ gap: '1.25rem' }}>
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.35rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '0.8rem', color: '#a855f7', fontWeight: 800, marginBottom: '0.3rem' }}>OPM FEDERAL CIVIL SERVICE PENSION</div>
+              <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: '#fff' }}>$5,645.84 / mo</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--success)', marginTop: '0.4rem', fontWeight: 800 }}>
+                Guaranteed Lifetime Federal Pension Inflow
+              </div>
+            </div>
+
+            <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.35rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+              <div style={{ fontSize: '0.8rem', color: '#c084fc', fontWeight: 800, marginBottom: '0.3rem' }}>PENFED / BOA ESTATE RESERVE ACCOUNT</div>
+              <div className="font-mono" style={{ fontSize: '1.8rem', fontWeight: 900, color: '#c084fc' }}>{fmt(barbaraCheckingAccount.balance)}</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
+                Liquid Estate & Healthcare Capital Reserve
+              </div>
+            </div>
+          </div>
+        )}
+
+        {(player.id === 'hayden' || player.id === 'ava') && (
+          <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontSize: '0.8rem', color: player.color, fontWeight: 800, marginBottom: '0.3rem' }}>
+              $30,000 BY AGE 18 COLLEGE & LIFE SAVINGS GOAL
+            </div>
+            <div className="font-mono" style={{ fontSize: '2rem', fontWeight: 900, color: '#fff' }}>
+              Target: $30,000.00 Cash by Age 18
+            </div>
+            <div style={{ fontSize: '0.9rem', color: 'var(--success)', fontWeight: 800, marginTop: '0.5rem' }}>
+              🚀 Monthly Auto-Allocation: ${player.id === 'hayden' ? '331.00' : '172.00'} / mo ({yearsRemaining} Years Remaining!)
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* 🎯 PERSON-SPECIFIC ANNUAL CHECKUP QUEST CARD */}
       <div id="personal-annual-quest-card" className="card card-glow" style={{ background: `linear-gradient(135deg, ${player.color}25, rgba(15, 23, 42, 0.98))`, border: `2.5px solid ${player.color}` }}>
         <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
           <div>
