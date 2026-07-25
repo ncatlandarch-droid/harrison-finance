@@ -43,6 +43,52 @@ export const PlayerProfilePage = ({ player, onBack }) => {
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   
+  // Custom insurance policies state stored per member
+  const [insurancePolicies, setInsurancePolicies] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`harrison_insurance_policies_${player?.id}`);
+      if (saved) return JSON.parse(saved);
+
+      const defaultPolicies = {
+        chris: [
+          { id: 'pol_p1', provider: 'Primerica Life Insurance', policyNum: 'POL-PRM-8841', type: 'Term Life', benefit: '$250,000.00 Death Benefit', beneficiary: 'Erin Harrison (Primary)', premium: '$206.45 / mo', status: '🟢 Active' },
+          { id: 'pol_p2', provider: 'Progressive Auto Insurance', policyNum: 'POL-PRG-9841', type: 'Auto Liability & Comprehensive', benefit: 'Full Vehicle Coverage', beneficiary: 'Chris & Erin Harrison', premium: '$199.93 / mo', status: '🟢 Active' },
+          { id: 'pol_p3', provider: 'NC State Employee Health Plan', policyNum: 'SHP-99214-NC', type: 'Health & Medical', benefit: 'In-Network Medical & Prescription', beneficiary: 'Chris Harrison & Family', premium: 'Payroll Deduction', status: '🟢 Active' }
+        ],
+        erin: [
+          { id: 'pol_p4', provider: 'NC Educator Life Insurance', policyNum: 'POL-EDU-3391', type: 'Term Life', benefit: '$150,000.00 Death Benefit', beneficiary: 'Chris Harrison (Primary)', premium: 'State Educator Benefit', status: '🟢 Active' },
+          { id: 'pol_p5', provider: 'Auto Insurance Policy', policyNum: 'POL-AUTO-882', type: 'Auto Insurance', benefit: 'Full Vehicle Liability', beneficiary: 'Erin Harrison', premium: '$62.00 / mo', status: '🟢 Active' },
+          { id: 'pol_p6', provider: 'Pet / Dog Health Insurance', policyNum: 'POL-PET-1142', type: 'Pet Healthcare', benefit: 'Veterinary Emergency Coverage', beneficiary: 'Harrison Household Dog', premium: '$52.00 / mo', status: '🟢 Active' }
+        ],
+        barbara: [
+          { id: 'pol_p7', provider: 'Americo Life Insurance', policyNum: 'POL-AMR-44109', type: 'Whole Life Policy', benefit: '$90,000.00 Guaranteed Benefit', beneficiary: 'Chris Harrison (Primary)', premium: '$73.94 / mo', status: '🟢 Active' },
+          { id: 'pol_p8', provider: 'Lumico Life Insurance', policyNum: 'POL-LUM-88214', type: 'Life Insurance', benefit: 'Guaranteed Death Benefit', beneficiary: 'Chris Harrison (Primary)', premium: '$54.14 / mo', status: '🟢 Active' },
+          { id: 'pol_p9', provider: 'Medicare & Supplemental Plan', policyNum: 'MED-1952-BH-NC', type: 'Medical & Healthcare', benefit: 'Full Hospital & Prescription Care', beneficiary: 'Barbara Harrison', premium: 'Federal Benefit', status: '🟢 Active' }
+        ],
+        hayden: [
+          { id: 'pol_p10', provider: 'Pediatric Health Insurance', policyNum: 'POL-PED-7731', type: 'Health & Dental', benefit: 'Comprehensive Pediatric Care', beneficiary: 'Hayden Harrison', premium: 'Covered under Family Plan', status: '🟢 Active' }
+        ],
+        ava: [
+          { id: 'pol_p11', provider: 'Pediatric Health Insurance', policyNum: 'POL-PED-7732', type: 'Health & Dental', benefit: 'Comprehensive Infant Care', beneficiary: 'Ava Harrison', premium: 'Covered under Family Plan', status: '🟢 Active' }
+        ]
+      };
+
+      return defaultPolicies[player?.id] || defaultPolicies.chris;
+    } catch (e) {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    if (player?.id) {
+      try {
+        localStorage.setItem(`harrison_insurance_policies_${player.id}`, JSON.stringify(insurancePolicies));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, [insurancePolicies, player]);
+
   // Member accounts dynamically computed with live balances from FinanceContext
   const memberAccountsMap = {
     chris: [
@@ -308,9 +354,9 @@ export const PlayerProfilePage = ({ player, onBack }) => {
               </div>
 
               <div>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>CONNECTED ACCOUNTS</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ACTIVE POLICIES</span>
                 <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem' }}>
-                  {activeMemberAccounts.length} Active Accounts
+                  {insurancePolicies.length} Insurance Policies
                 </div>
               </div>
             </div>
@@ -319,7 +365,52 @@ export const PlayerProfilePage = ({ player, onBack }) => {
         </div>
       </div>
 
-      {/* 💳 PERSONAL CONNECTED BANK ACCOUNTS & CARDS (WITH LIVE EDIT BALANCE & REMOVE BUTTONS!) */}
+      {/* 🛡️ INSURANCE POLICIES & BENEFICIARY LOCKBOX */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.9))', border: `2px solid ${player.color}` }}>
+        <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
+          <div>
+            <span className="badge badge-primary" style={{ background: player.color, color: '#fff', fontWeight: 900, padding: '4px 12px' }}>
+              🛡️ LIFE & HEALTH INSURANCE VAULT
+            </span>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <Shield size={24} color="#FDB927" />
+              <span>{player.name}'s Active Insurance Policies & Designated Beneficiaries</span>
+            </h3>
+            <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              Instant emergency access to policy numbers, coverage amounts, and beneficiary allocations.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid-3" style={{ gap: '1.25rem' }}>
+          {insurancePolicies.map(pol => (
+            <div key={pol.id} style={{ background: 'rgba(0,0,0,0.35)', border: `1.5px solid ${player.color}60`, borderRadius: '16px', padding: '1.25rem' }}>
+              <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
+                <span className="badge" style={{ background: `${player.color}25`, color: player.color, border: `1px solid ${player.color}50`, fontWeight: 800, fontSize: '0.72rem' }}>
+                  {pol.type}
+                </span>
+                <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>{pol.status}</span>
+              </div>
+
+              <div style={{ fontWeight: 900, color: '#fff', fontSize: '1.1rem', margin: '0.3rem 0' }}>
+                {pol.provider}
+              </div>
+
+              <div style={{ fontSize: '0.82rem', color: '#FDB927', fontWeight: 800 }}>
+                {pol.benefit}
+              </div>
+
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                <div>• Policy #: <strong style={{ color: '#fff' }}>{pol.policyNum}</strong></div>
+                <div>• Beneficiary: <strong style={{ color: 'var(--success)' }}>{pol.beneficiary}</strong></div>
+                <div>• Premium: <strong style={{ color: '#fff' }}>{pol.premium}</strong></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 💳 PERSONAL CONNECTED BANK ACCOUNTS & CARDS */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9))', border: `2px solid ${player.color}` }}>
         <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
