@@ -8,6 +8,7 @@ import { EditAccountModal } from './EditAccountModal';
 import { AccountTroubleshooterModal } from './AccountTroubleshooterModal';
 import { RetirementSimulatorModal } from './RetirementSimulatorModal';
 import { BeneficiaryAuditModal } from './BeneficiaryAuditModal';
+import { SundayHuddleCard } from './SundayHuddleCard';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -188,6 +189,9 @@ export const Dashboard = () => {
 
         </div>
       </div>
+
+      {/* 🤝 SUNDAY 5-MINUTE FAMILY HUDDLE & EMERGENCY RED FOLDER CARD */}
+      <SundayHuddleCard />
 
       {/* 🎮 FAMILY ROSTER HEADER WITH LOCATION BADGE & ADD MEMBER BUTTON */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(7, 10, 18, 0.98), rgba(15, 23, 42, 0.95))', padding: '1.75rem' }}>
