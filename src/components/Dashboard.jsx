@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useFinance } from '../context/FinanceContext';
 import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
+import { PlayerProfileModal } from './PlayerProfileModal';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -26,7 +27,8 @@ import {
   FileText,
   Phone,
   Calendar,
-  Crown
+  Crown,
+  ChevronRight
 } from 'lucide-react';
 
 export const Dashboard = () => {
@@ -50,10 +52,11 @@ export const Dashboard = () => {
   } = useFinance();
 
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-  // Player Metrics for Large Game Character Cards
+  // Player Metrics for Giant Showcase Character Cards
   const players = [
     {
       id: 'erin',
@@ -67,7 +70,8 @@ export const Dashboard = () => {
       badge: '👑 MVP LEADER',
       isLeader: true,
       ratio: Math.round((erinTotalExpenses / 2500.00) * 100),
-      level: 'LVL 99 BUDGET NINJA'
+      level: 'LVL 99 BUDGET NINJA',
+      estateScore: 100
     },
     {
       id: 'chris',
@@ -81,7 +85,8 @@ export const Dashboard = () => {
       badge: '🚀 REVENUE ENGINE',
       isLeader: false,
       ratio: Math.round((chrisTotalExpenses / (6309.36 + 3000.00)) * 100),
-      level: 'LVL 95 TECH ARCHITECT'
+      level: 'LVL 95 TECH ARCHITECT',
+      estateScore: 100
     },
     {
       id: 'barbara',
@@ -95,23 +100,24 @@ export const Dashboard = () => {
       badge: '🛡️ CAPITAL SHIELD',
       isLeader: false,
       ratio: Math.round((barbaraTotalExpenses / 5645.84) * 100),
-      level: 'LVL 99 WEALTH GUARDIAN'
+      level: 'LVL 99 WEALTH GUARDIAN',
+      estateScore: 100
     }
   ];
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.25rem' }}>
       
-      {/* 🎮 AAA GAME-STYLE PLAYER CHARACTER SELECTION & SCOREBOARD */}
+      {/* 🎮 GIANT SHOWCASE PLAYER CHARACTER CARDS (CLICK TO OPEN PROFILE & ESTATE VAULT) */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(7, 10, 18, 0.98), rgba(15, 23, 42, 0.95))', padding: '1.75rem' }}>
         <div className="flex-between" style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1.25rem' }}>
           <div>
             <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <Trophy size={28} color="#FDB927" />
-              <span>Harrison Family Player Roster & Cash Flow Leaderboard</span>
+              <span>Harrison Family Roster & Interactive Player Profiles</span>
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-              Gamified efficiency scoring: Measuring net surplus ratio (Surplus ÷ Income)
+              👉 <strong>Click any player card</strong> to drill into their financial profile, estate planning lockbox, and vital directives!
             </p>
           </div>
 
@@ -136,20 +142,27 @@ export const Dashboard = () => {
           </button>
         </div>
 
-        {/* 3 Large Game Character Cards */}
+        {/* 3 GIANT Interactive Player Character Cards */}
         <div className="grid-3" style={{ gap: '1.5rem' }}>
           {players.map((p) => (
-            <div key={p.id} style={{
-              background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9))',
-              borderRadius: '16px',
-              padding: '1.5rem',
-              border: p.isLeader ? '2px solid #FDB927' : `1px solid ${p.color}50`,
-              boxShadow: p.isLeader ? '0 10px 30px rgba(253, 185, 39, 0.25)' : 'none',
-              position: 'relative',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between'
-            }}>
+            <div 
+              key={p.id} 
+              onClick={() => setSelectedPlayer(p)}
+              style={{
+                background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95))',
+                borderRadius: '20px',
+                padding: '1.75rem',
+                border: p.isLeader ? '2px solid #FDB927' : `1.5px solid ${p.color}60`,
+                boxShadow: p.isLeader ? '0 12px 35px rgba(253, 185, 39, 0.3)' : `0 8px 25px rgba(0,0,0,0.5)`,
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                cursor: 'pointer',
+                transition: 'all 0.25s ease'
+              }}
+              className="card-hover"
+            >
               {/* Leader Crown Badge */}
               {p.isLeader && (
                 <div style={{
@@ -172,18 +185,19 @@ export const Dashboard = () => {
                 </div>
               )}
 
-              {/* Character Photo Header */}
+              {/* Giant Avatar Header */}
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1.1rem', marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1.25rem' }}>
+                  
+                  {/* GIANT PHOTO AVATAR FRAME (110px) */}
                   <div style={{
-                    width: '72px',
-                    height: '72px',
+                    width: '110px',
+                    height: '110px',
                     borderRadius: '50%',
-                    border: `3px solid ${p.color}`,
-                    boxShadow: `0 0 20px ${p.color}60`,
+                    border: `4px solid ${p.color}`,
+                    boxShadow: `0 0 30px ${p.color}70`,
                     overflow: 'hidden',
-                    flexShrink: 0,
-                    position: 'relative',
+                    marginBottom: '1rem',
                     background: '#1e1b4b'
                   }}>
                     <img 
@@ -194,11 +208,15 @@ export const Dashboard = () => {
                     />
                   </div>
 
-                  <div>
-                    <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.15rem' }}>{p.name}</h4>
-                    <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.1rem' }}>{p.title}</span>
-                    <span className="badge" style={{ marginTop: '0.4rem', fontSize: '0.68rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
+                  <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.25rem' }}>{p.name}</h4>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{p.title}</span>
+                  
+                  <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.5rem' }}>
+                    <span className="badge" style={{ fontSize: '0.68rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
                       {p.level}
+                    </span>
+                    <span className="badge badge-success" style={{ fontSize: '0.68rem' }}>
+                      Estate Readiness: 100%
                     </span>
                   </div>
                 </div>
@@ -208,7 +226,7 @@ export const Dashboard = () => {
                   <div className="flex-between" style={{ fontSize: '0.8rem', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
                     <span>Spending Ratio ({p.ratio}%)</span>
                     <span style={{ color: 'var(--success)', fontWeight: 800 }}>
-                      +{fmt(p.surplus)} Net Surplus
+                      +{fmt(p.surplus)} Surplus
                     </span>
                   </div>
                   <div style={{ width: '100%', height: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '5px', overflow: 'hidden' }}>
@@ -222,21 +240,23 @@ export const Dashboard = () => {
                 </div>
               </div>
 
-              {/* Stat HUD Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', background: 'rgba(0,0,0,0.3)', padding: '0.85rem', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>MONTHLY INFLOW</div>
-                  <div className="font-mono" style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--success)', marginTop: '0.1rem' }}>
-                    {fmt(p.income)}
-                  </div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>FIXED SPENT</div>
-                  <div className="font-mono" style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--danger)', marginTop: '0.1rem' }}>
-                    {fmt(p.expenses)}
-                  </div>
-                </div>
+              {/* Click to Drill Down Footer */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                background: 'rgba(0,0,0,0.3)',
+                padding: '0.75rem 1rem',
+                borderRadius: '10px',
+                border: '1px solid rgba(255,255,255,0.05)',
+                fontSize: '0.8rem',
+                color: p.color,
+                fontWeight: 700
+              }}>
+                <span>Click for Profile & Estate Lockbox</span>
+                <ChevronRight size={16} />
               </div>
+
             </div>
           ))}
         </div>
@@ -458,8 +478,9 @@ export const Dashboard = () => {
 
       </div>
 
-      {/* Financial Strategy Modal */}
+      {/* Modals */}
       <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
+      <PlayerProfileModal player={selectedPlayer} onClose={() => setSelectedPlayer(null)} />
 
     </div>
   );
