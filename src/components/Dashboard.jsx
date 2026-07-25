@@ -6,6 +6,7 @@ import { FamilyProfilePortalModal } from './FamilyProfilePortalModal';
 import { AddAccountModal } from './AddAccountModal';
 import { EditAccountModal } from './EditAccountModal';
 import { AccountTroubleshooterModal } from './AccountTroubleshooterModal';
+import { RetirementSimulatorModal } from './RetirementSimulatorModal';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -69,6 +70,7 @@ export const Dashboard = () => {
   const [isFamilyPortalOpen, setIsFamilyPortalOpen] = useState(false);
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   const [isTroubleshooterOpen, setIsTroubleshooterOpen] = useState(false);
+  const [isRetirementSimOpen, setIsRetirementSimOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [editingAccount, setEditingAccount] = useState(null);
 
@@ -129,7 +131,13 @@ export const Dashboard = () => {
                 <span className="badge badge-success" style={{ background: '#10b981', color: '#fff', fontWeight: 900, fontSize: '0.78rem' }}>
                   {collectiveGrade}
                 </span>
-                <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Updated July 2026</span>
+                <button 
+                  onClick={() => setIsRetirementSimOpen(true)}
+                  className="badge" 
+                  style={{ background: '#004684', color: '#FDB927', fontWeight: 900, fontSize: '0.78rem', border: '1px solid #FDB927', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+                >
+                  <TrendingUp size={12} /> 2040 Retirement Simulator 🔮
+                </button>
               </div>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#fff', marginTop: '0.2rem' }}>
                 Harrison Family Collective Wealth & Health Score
@@ -327,7 +335,7 @@ export const Dashboard = () => {
       </div>
 
       {/* ⚡ 1-CLICK CASH SURPLUS ALLOCATOR & BUSINESS GROWTH SLIDER */}
-      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(15, 23, 42, 0.98))', border: '2px solid var(--primary-light)' }}>
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(15, 23, 42, 0.98))', border: '2.5px solid var(--primary-light)' }}>
         <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1.25rem', marginBottom: '1.5rem' }}>
           <div>
             <span className="badge badge-primary" style={{ background: '#4f46e5', color: '#fff', fontWeight: 800, padding: '4px 10px' }}>
@@ -515,6 +523,7 @@ export const Dashboard = () => {
       <AddAccountModal isOpen={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} />
       <EditAccountModal isOpen={!!editingAccount} onClose={() => setEditingAccount(null)} account={editingAccount} />
       <AccountTroubleshooterModal isOpen={isTroubleshooterOpen} onClose={() => setIsTroubleshooterOpen(false)} />
+      <RetirementSimulatorModal isOpen={isRetirementSimOpen} onClose={() => setIsRetirementSimOpen(false)} />
 
     </div>
   );
