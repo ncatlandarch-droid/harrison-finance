@@ -13,8 +13,7 @@ import {
   Flame,
   Bot,
   RefreshCw,
-  Sparkles,
-  Dog
+  Sparkles
 } from 'lucide-react';
 
 export const Sidebar = () => {
@@ -55,19 +54,19 @@ export const Sidebar = () => {
               width: '40px',
               height: '40px',
               borderRadius: '12px',
-              background: 'linear-gradient(135deg, var(--primary), var(--accent-purple))',
+              background: 'linear-gradient(135deg, #004684, #4f46e5)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               boxShadow: '0 4px 14px var(--primary-glow)'
             }}>
-              <Building2 size={22} color="#fff" />
+              <Building2 size={22} color="#FDB927" />
             </div>
             <div>
               <h1 style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '-0.02em', background: 'linear-gradient(135deg, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 Harrison Finance
               </h1>
-              <span className="badge badge-primary" style={{ fontSize: '0.68rem', padding: '2px 6px' }}>FAMILY PLATFORM v3.4</span>
+              <span className="badge badge-primary" style={{ fontSize: '0.68rem', padding: '2px 6px', background: '#004684', color: '#FDB927' }}>PLATFORM v3.4</span>
             </div>
           </div>
 
@@ -87,7 +86,7 @@ export const Sidebar = () => {
                     padding: '0.75rem 1rem',
                     borderRadius: 'var(--radius-md)',
                     border: 'none',
-                    background: isActive ? 'linear-gradient(135deg, var(--primary), #4f46e5)' : 'transparent',
+                    background: isActive ? 'linear-gradient(135deg, #004684, #4f46e5)' : 'transparent',
                     color: isActive ? '#fff' : 'var(--text-muted)',
                     fontWeight: isActive ? 700 : 500,
                     fontSize: '0.9rem',
@@ -97,7 +96,7 @@ export const Sidebar = () => {
                     boxShadow: isActive ? '0 4px 14px var(--primary-glow)' : 'none'
                   }}
                 >
-                  <Icon size={18} color={isActive ? '#fff' : 'var(--text-muted)'} />
+                  <Icon size={18} color={isActive ? '#FDB927' : 'var(--text-muted)'} />
                   <span>{item.label}</span>
                 </button>
               );
@@ -105,14 +104,14 @@ export const Sidebar = () => {
           </nav>
         </div>
 
-        {/* 🐶 ISLA DOG AVATAR FINANCIAL ASSISTANT WIDGET (LEFT SIDEBAR) */}
+        {/* 🤖 COACH PERRY AI ASSISTANT WIDGET (LEFT SIDEBAR) */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
           
           <button
             onClick={() => setIsAiModalOpen(true)}
             style={{
-              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.15))',
-              border: '1px solid rgba(99, 102, 241, 0.4)',
+              background: 'linear-gradient(135deg, rgba(0, 70, 132, 0.4), rgba(79, 70, 229, 0.3))',
+              border: '1px solid rgba(253, 185, 39, 0.4)',
               borderRadius: 'var(--radius-md)',
               padding: '0.85rem',
               cursor: 'pointer',
@@ -121,7 +120,7 @@ export const Sidebar = () => {
               gap: '0.75rem',
               textAlign: 'left',
               transition: 'all 0.2s ease',
-              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.2)'
+              boxShadow: '0 4px 14px rgba(0, 70, 132, 0.3)'
             }}
           >
             <div style={{
@@ -129,14 +128,14 @@ export const Sidebar = () => {
               width: '42px',
               height: '42px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #f59e0b, #ec4899)',
+              background: '#FDB927',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               flexShrink: 0,
-              boxShadow: '0 0 12px rgba(245, 158, 11, 0.5)'
+              boxShadow: '0 0 12px rgba(253, 185, 39, 0.5)'
             }}>
-              <Dog size={24} color="#fff" />
+              <Bot size={24} color="#004684" />
               <span style={{
                 position: 'absolute',
                 bottom: 0,
@@ -151,11 +150,11 @@ export const Sidebar = () => {
 
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <span style={{ fontWeight: 800, color: '#fff', fontSize: '0.88rem' }}>ISLA AI Helper</span>
-                <Sparkles size={12} color="var(--warning)" />
+                <span style={{ fontWeight: 800, color: '#fff', fontSize: '0.88rem' }}>Coach Perry AI</span>
+                <Sparkles size={12} color="#FDB927" />
               </div>
-              <p style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
-                Click to ask about cash, loans & bills
+              <p style={{ fontSize: '0.74rem', color: '#94a3b8', marginTop: '0.1rem' }}>
+                Click for deep financial strategy
               </p>
             </div>
           </button>

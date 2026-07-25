@@ -7,7 +7,7 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([
     {
       sender: 'ai',
-      text: "Hello Chris! I'm **Coach Harrison**, your AI Financial Assistant. I have analyzed all your family data, Bank of America statements, credit card balances, and 34 itemized bills. Ask me anything about your cash flow, debt payoff, or spending!"
+      text: "Hello Chris! I'm **Coach Perry**, your AI Financial Strategy Advisor. I have completed a full audit of your family data, Bank of America statements, 5 live accounts, and 34 itemized bills.\n\nAsk me anything about your cash flow, Barbara's Figure loan, or monthly transfer strategy!"
     }
   ]);
   const [input, setInput] = useState('');
@@ -31,7 +31,6 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
     const textToSend = queryText || input;
     if (!textToSend.trim()) return;
 
-    // Add user message
     setMessages(prev => [...prev, { sender: 'user', text: textToSend }]);
     if (!queryText) setInput('');
     setIsTyping(true);
@@ -43,7 +42,7 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
       if (q.includes("low") || q.includes("broke") || q.includes("why")) {
         aiResponse = "Based on your 3-month Bank of America statement audit, your accounts dropped in July due to **3 specific expenses totalling $10,419.61**:\n\n1. **$2,000 Lump Credit Card Payment:** Paid off BoA Card #6343 on July 1st.\n2. **$1,732.88 Google Cloud Charges:** (Now stopped! $0/mo going forward).\n3. **Paycheck Timing:** Your NC A&T paycheck posted on June 30th ($7,195) instead of July 1st.\n\nStopping the Google Cloud charges recovers **+$2,285/month** in cash starting right now!";
       } else if (q.includes("figure") || q.includes("loan") || q.includes("15.3") || q.includes("barbara")) {
-        aiResponse = "Barbara's Figure Room Addition loan currently has a **$1,000/month payment at 9.75%**. In **August 2029**, the rate adjusts up to **15.30%**, driving total 30-year interest from $140,000 up to **$227,000**!\n\n**Recommended Strategy:** Allocate $500/month from your $4,974 net monthly family surplus toward extra principal payoff, or refinance into a fixed-rate loan before 2029 to save $87,000 in interest!";
+        aiResponse = "Barbara's Figure Room Addition loan currently has a **$1,000/month payment at 9.75%**. In **August 2029**, the rate adjusts up to **15.30%**, driving total 30-year interest from $140,000 up to **$227,000**!\n\n**Recommended Strategy:** Allocate $500/month from your $5,078 net monthly family surplus toward extra principal payoff, or refinance into a fixed-rate loan before 2029 to save $87,000 in interest!";
       } else if (q.includes("doordash") || q.includes("food") || q.includes("dining")) {
         aiResponse = "Over the last 3 months, your Bank of America statement shows **$3,745.58 spent on Restaurants & Dining across 64 orders** (~$1,248.53/month).\n\n**Top Merchants:** DoorDash ($150 Upper Crust, $147 Da Reggae Cafe, $139 Paris Banh Mi, Outback Steakhouse) and Toast Bar & Grille.\n\nSetting a **$500/month dining budget** will instantly save your family **+$748.53/month** in real cash!";
       } else if (q.includes("transfer") || q.includes("1st") || q.includes("zelle")) {
@@ -64,7 +63,7 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
       left: 0,
       right: 0,
       bottom: 0,
-      background: 'rgba(0, 0, 0, 0.75)',
+      background: 'rgba(0, 0, 0, 0.78)',
       backdropFilter: 'blur(8px)',
       zIndex: 9999,
       display: 'flex',
@@ -74,7 +73,7 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
     }}>
       <div className="animate-scale-up" style={{
         width: '100%',
-        maxWidth: '720px',
+        maxWidth: '740px',
         height: '85vh',
         background: 'var(--bg-surface)',
         borderRadius: 'var(--radius-lg)',
@@ -88,7 +87,7 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
         {/* Modal Header */}
         <div style={{
           padding: '1.25rem 1.5rem',
-          background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.15))',
+          background: 'linear-gradient(135deg, #004684, #00335f)',
           borderBottom: '1px solid var(--border-color)',
           display: 'flex',
           justifyContent: 'space-between',
@@ -99,21 +98,21 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
               width: '42px',
               height: '42px',
               borderRadius: '12px',
-              background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+              background: '#FDB927',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.4)'
+              boxShadow: '0 4px 14px rgba(253, 185, 39, 0.4)'
             }}>
-              <Bot size={24} color="#fff" />
+              <Bot size={26} color="#004684" />
             </div>
             <div>
               <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <span>Coach Harrison AI Assistant</span>
-                <Sparkles size={16} color="var(--warning)" />
+                <span>Coach Perry AI Advisor</span>
+                <Sparkles size={16} color="#FDB927" />
               </h3>
-              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                Trained on your 463 BoA transactions, 5 bank balances & family financial plan.
+              <p style={{ fontSize: '0.78rem', color: '#94a3b8' }}>
+                Financial Strategy Engine • Trained on 463 BoA transactions & family plan.
               </p>
             </div>
           </div>
@@ -121,7 +120,7 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
           <button 
             onClick={onClose}
             style={{
-              background: 'rgba(255,255,255,0.08)',
+              background: 'rgba(255,255,255,0.1)',
               border: 'none',
               color: '#fff',
               width: '36px',
@@ -145,9 +144,9 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
               onClick={() => handleSend(qp)}
               style={{
                 whiteSpace: 'nowrap',
-                background: 'rgba(99, 102, 241, 0.15)',
-                border: '1px solid rgba(99, 102, 241, 0.3)',
-                color: 'var(--primary-light)',
+                background: 'rgba(0, 70, 132, 0.3)',
+                border: '1px solid rgba(253, 185, 39, 0.4)',
+                color: '#FDB927',
                 padding: '0.4rem 0.75rem',
                 borderRadius: '20px',
                 fontSize: '0.78rem',
@@ -172,15 +171,15 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
                 gap: '0.75rem'
               }}>
                 {isAi && (
-                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#6366f1', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Bot size={18} color="#fff" />
+                  <div style={{ width: '34px', height: '34px', borderRadius: '50%', background: '#FDB927', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Bot size={20} color="#004684" />
                   </div>
                 )}
                 <div style={{
                   maxWidth: '82%',
                   padding: '1rem 1.15rem',
                   borderRadius: isAi ? '4px 16px 16px 16px' : '16px 4px 16px 16px',
-                  background: isAi ? 'rgba(30, 41, 59, 0.9)' : 'linear-gradient(135deg, #6366f1, #4f46e5)',
+                  background: isAi ? 'rgba(30, 41, 59, 0.9)' : 'linear-gradient(135deg, #004684, #00335f)',
                   border: isAi ? '1px solid var(--border-color)' : 'none',
                   color: '#fff',
                   fontSize: '0.92rem',
@@ -195,8 +194,8 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
 
           {isTyping && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              <Bot size={18} color="#6366f1" className="animate-spin" />
-              <span>Coach Harrison is analyzing your Bank of America data...</span>
+              <Bot size={18} color="#FDB927" className="animate-spin" />
+              <span>Coach Perry is analyzing your Bank of America data...</span>
             </div>
           )}
 
@@ -208,16 +207,16 @@ export const CoachHarrisonModal = ({ isOpen, onClose }) => {
           <input 
             type="text"
             className="input"
-            placeholder="Ask Coach Harrison about your bills, savings, loan interest, or cash flow..."
+            placeholder="Ask Coach Perry about your bills, savings, loan interest, or cash flow..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
             style={{ flex: 1, fontSize: '0.92rem' }}
           />
           <button 
-            className="btn btn-primary"
+            className="btn"
             onClick={() => handleSend()}
-            style={{ background: 'linear-gradient(135deg, #6366f1, #a855f7)', padding: '0 1.25rem' }}
+            style={{ background: 'linear-gradient(135deg, #004684, #00335f)', color: '#FDB927', fontWeight: 700, padding: '0 1.25rem' }}
           >
             <Send size={18} />
           </button>
