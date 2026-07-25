@@ -9,6 +9,7 @@ import { AccountTroubleshooterModal } from './AccountTroubleshooterModal';
 import { RetirementSimulatorModal } from './RetirementSimulatorModal';
 import { BeneficiaryAuditModal } from './BeneficiaryAuditModal';
 import { SundayHuddleCard } from './SundayHuddleCard';
+import { PrintableRedFolderModal } from './PrintableRedFolderModal';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -74,6 +75,7 @@ export const Dashboard = () => {
   const [isTroubleshooterOpen, setIsTroubleshooterOpen] = useState(false);
   const [isRetirementSimOpen, setIsRetirementSimOpen] = useState(false);
   const [isBeneficiaryOpen, setIsBeneficiaryOpen] = useState(false);
+  const [isRedFolderOpen, setIsRedFolderOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [editingAccount, setEditingAccount] = useState(null);
 
@@ -191,7 +193,7 @@ export const Dashboard = () => {
       </div>
 
       {/* 🤝 SUNDAY 5-MINUTE FAMILY HUDDLE & EMERGENCY RED FOLDER CARD */}
-      <SundayHuddleCard />
+      <SundayHuddleCard onOpenRedFolder={() => setIsRedFolderOpen(true)} />
 
       {/* 🎮 FAMILY ROSTER HEADER WITH LOCATION BADGE & ADD MEMBER BUTTON */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(7, 10, 18, 0.98), rgba(15, 23, 42, 0.95))', padding: '1.75rem' }}>
@@ -540,6 +542,7 @@ export const Dashboard = () => {
       <AccountTroubleshooterModal isOpen={isTroubleshooterOpen} onClose={() => setIsTroubleshooterOpen(false)} />
       <RetirementSimulatorModal isOpen={isRetirementSimOpen} onClose={() => setIsRetirementSimOpen(false)} />
       <BeneficiaryAuditModal isOpen={isBeneficiaryOpen} onClose={() => setIsBeneficiaryOpen(false)} />
+      <PrintableRedFolderModal isOpen={isRedFolderOpen} onClose={() => setIsRedFolderOpen(false)} />
 
     </div>
   );

@@ -15,7 +15,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 
-export const SundayHuddleCard = () => {
+export const SundayHuddleCard = ({ onOpenRedFolder }) => {
   const { totalCombinedSurplus, totalLiquidityBalance } = useFinance();
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -52,12 +52,12 @@ export const SundayHuddleCard = () => {
 
         <div style={{ display: 'flex', gap: '0.6rem' }}>
           <button 
-            onClick={() => window.print()}
+            onClick={onOpenRedFolder}
             className="btn btn-secondary"
             style={{ fontSize: '0.82rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid #FDB927', color: '#FDB927' }}
           >
             <Printer size={15} />
-            <span>Print Emergency Red Folder 📁</span>
+            <span>Open Emergency Red Folder 📁</span>
           </button>
         </div>
       </div>
