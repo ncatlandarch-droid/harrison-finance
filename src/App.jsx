@@ -14,10 +14,14 @@ import { TransactionsSection } from './components/TransactionsSection';
 import { NetWorthSection } from './components/NetWorthSection';
 import { SettingsSection } from './components/SettingsSection';
 import { AddTransactionModal } from './components/AddTransactionModal';
+import { MasterPasscodeModal } from './components/MasterPasscodeModal';
 
 const AppContent = () => {
   const { activeTab } = useFinance();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(() => {
+    return localStorage.getItem('harrison_unlocked') === 'true';
+  });
 
   const renderActiveSection = () => {
     switch (activeTab) {
@@ -50,6 +54,7 @@ const AppContent = () => {
 
   return (
     <div className="app-container">
+      {!isUnlocked && <MasterPasscodeModal onUnlock={() => setIsUnlocked(true)} />}
       <Sidebar />
       <div className="main-wrapper">
         <Header onOpenAddModal={() => setIsAddModalOpen(true)} />
