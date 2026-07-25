@@ -4,7 +4,6 @@ import { FinancialStrategyReportModal } from './FinancialStrategyReportModal';
 import { PlayerProfilePage } from './PlayerProfilePage';
 import { FamilyProfilePortalModal } from './FamilyProfilePortalModal';
 import { AddAccountModal } from './AddAccountModal';
-import { ISLAFloatingBar } from './ISLAFloatingBar';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -578,9 +577,6 @@ export const Dashboard = () => {
         </div>
 
       </div>
-
-      {/* Persistent Floating ISLA AI Assistant Bar */}
-      <ISLAFloatingBar />
 
       {/* Modals */}
       <FinancialStrategyReportModal isOpen={isReportOpen} onClose={() => setIsReportOpen(false)} />
