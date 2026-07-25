@@ -16,68 +16,94 @@ import {
   Sparkles,
   Lock,
   MapPin,
-  Trophy
+  Trophy,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 export const Sidebar = () => {
   const { activeTab, setActiveTab, totalBoACash } = useFinance();
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const fmt = (val) => '$' + Math.abs(val || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+  // Streamlined 7 Core Non-Redundant Navigation Items
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard & MVP', icon: LayoutDashboard },
+    { id: 'dashboard', label: 'Dashboard & Roster', icon: LayoutDashboard },
     { id: 'familyvault', label: 'Encrypted Family Vault', icon: Lock },
     { id: 'thinkeco', label: 'Think! Ecosystem Hub', icon: Building2 },
     { id: 'strategy', label: 'Debt & HELOC Payoff', icon: Flame },
-    { id: 'recurring', label: 'Recurring Subscriptions', icon: RefreshCw },
-    { id: 'bills', label: 'Bills & Transfer Guide', icon: Receipt },
-    { id: 'budget', label: 'Budget Tracker', icon: Wallet },
-    { id: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
+    { id: 'recurring', label: 'Subscriptions & Bills', icon: RefreshCw },
     { id: 'localres', label: 'Local NC Resources', icon: MapPin },
-    { id: 'networth', label: 'Net Worth & Freedom', icon: Target },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (
     <>
       <aside style={{
-        width: '260px',
+        width: isCollapsed ? '78px' : '260px',
         background: 'var(--bg-surface)',
         borderRight: '1px solid var(--border-color)',
-        padding: '1.25rem 1rem',
+        padding: isCollapsed ? '1.25rem 0.5rem' : '1.25rem 1rem',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         height: '100vh',
         position: 'sticky',
-        top: 0
+        top: 0,
+        transition: 'all 0.25s ease'
       }}>
         <div>
-          {/* Brand Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', padding: '0 0.5rem' }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '12px',
-              background: 'linear-gradient(135deg, #004684, #4f46e5)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 14px var(--primary-glow)'
-            }}>
-              <Building2 size={22} color="#FDB927" />
+          {/* Brand Logo & Collapse Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: isCollapsed ? 'center' : 'space-between', marginBottom: '1.5rem', padding: '0 0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #004684, #4f46e5)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 14px var(--primary-glow)',
+                flexShrink: 0
+              }}>
+                <Building2 size={22} color="#FDB927" />
+              </div>
+              {!isCollapsed && (
+                <div>
+                  <h1 style={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: '-0.02em', background: 'linear-gradient(135deg, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                    Harrison Finance
+                  </h1>
+                  <span className="badge badge-primary" style={{ fontSize: '0.66rem', padding: '2px 6px', background: '#004684', color: '#FDB927' }}>PLATFORM v4.0</span>
+                </div>
+              )}
             </div>
-            <div>
-              <h1 style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '-0.02em', background: 'linear-gradient(135deg, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                Harrison Finance
-              </h1>
-              <span className="badge badge-primary" style={{ fontSize: '0.68rem', padding: '2px 6px', background: '#004684', color: '#FDB927' }}>PLATFORM v4.0</span>
-            </div>
+
+            {/* Collapse Toggle Button */}
+            <button 
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              style={{
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid var(--border-color)',
+                color: 'var(--text-muted)',
+                width: '28px',
+                height: '28px',
+                borderRadius: '50%',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            >
+              {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            </button>
           </div>
 
           {/* Navigation Items */}
-          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+          <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -85,11 +111,13 @@ export const Sidebar = () => {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
+                  title={isCollapsed ? item.label : ''}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
+                    justifyContent: isCollapsed ? 'center' : 'flex-start',
                     gap: '0.85rem',
-                    padding: '0.65rem 0.85rem',
+                    padding: isCollapsed ? '0.75rem' : '0.65rem 0.85rem',
                     borderRadius: 'var(--radius-md)',
                     border: 'none',
                     background: isActive ? 'linear-gradient(135deg, #004684, #4f46e5)' : 'transparent',
@@ -102,46 +130,53 @@ export const Sidebar = () => {
                     boxShadow: isActive ? '0 4px 14px var(--primary-glow)' : 'none'
                   }}
                 >
-                  <Icon size={17} color={isActive ? '#FDB927' : 'var(--text-muted)'} />
-                  <span>{item.label}</span>
+                  <Icon size={18} color={isActive ? '#FDB927' : 'var(--text-muted)'} />
+                  {!isCollapsed && <span>{item.label}</span>}
                 </button>
               );
             })}
           </nav>
         </div>
 
-        {/* 🤖 COACH PERRY AI ASSISTANT WIDGET */}
+        {/* 🐶 ISLA BULLDOG FINANCIAL WIZARD ASSISTANT WIDGET */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
           
           <button
             onClick={() => setIsAiModalOpen(true)}
             style={{
-              background: 'linear-gradient(135deg, rgba(0, 70, 132, 0.4), rgba(79, 70, 229, 0.3))',
-              border: '1px solid rgba(253, 185, 39, 0.4)',
+              background: 'linear-gradient(135deg, rgba(0, 70, 132, 0.45), rgba(79, 70, 229, 0.35))',
+              border: '1.5px solid rgba(253, 185, 39, 0.5)',
               borderRadius: 'var(--radius-md)',
-              padding: '0.75rem',
+              padding: isCollapsed ? '0.6rem' : '0.75rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
+              justifyContent: isCollapsed ? 'center' : 'flex-start',
               gap: '0.75rem',
               textAlign: 'left',
               transition: 'all 0.2s ease',
-              boxShadow: '0 4px 14px rgba(0, 70, 132, 0.3)'
+              boxShadow: '0 4px 16px rgba(0, 70, 132, 0.35)'
             }}
+            title={isCollapsed ? "ISLA Bulldog Financial Wizard AI" : ""}
           >
+            {/* ISLA BULLDOG PHOTO AVATAR */}
             <div style={{
               position: 'relative',
-              width: '38px',
-              height: '38px',
+              width: '42px',
+              height: '42px',
               borderRadius: '50%',
-              background: '#FDB927',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
+              border: '2px solid #FDB927',
+              boxShadow: '0 0 12px rgba(253, 185, 39, 0.6)',
+              overflow: 'hidden',
               flexShrink: 0,
-              boxShadow: '0 0 12px rgba(253, 185, 39, 0.5)'
+              background: '#004684'
             }}>
-              <Bot size={22} color="#004684" />
+              <img 
+                src="/avatars/isla-bulldog.png" 
+                alt="ISLA Financial Bulldog Wizard"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={(e) => { e.target.style.display = 'none'; }}
+              />
               <span style={{
                 position: 'absolute',
                 bottom: 0,
@@ -154,29 +189,33 @@ export const Sidebar = () => {
               }} />
             </div>
 
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <span style={{ fontWeight: 800, color: '#fff', fontSize: '0.84rem' }}>Coach Perry AI</span>
-                <Sparkles size={12} color="#FDB927" />
+            {!isCollapsed && (
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <span style={{ fontWeight: 800, color: '#fff', fontSize: '0.86rem' }}>ISLA Bulldog AI</span>
+                  <Sparkles size={12} color="#FDB927" />
+                </div>
+                <p style={{ fontSize: '0.72rem', color: '#FDB927', marginTop: '0.1rem', fontWeight: 700 }}>
+                  Financial Wizard 🐶
+                </p>
               </div>
-              <p style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '0.1rem' }}>
-                Financial Strategy Engine
-              </p>
-            </div>
+            )}
           </button>
 
           {/* Sidebar Footer Account Balance */}
-          <div style={{
-            padding: '0.75rem 0.85rem',
-            background: 'rgba(0, 0, 0, 0.3)',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border-color)'
-          }}>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>BOA LIQUID CASH</div>
-            <div className="font-mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--success)', marginTop: '0.1rem' }}>
-              {fmt(totalBoACash)}
+          {!isCollapsed && (
+            <div style={{
+              padding: '0.75rem 0.85rem',
+              background: 'rgba(0, 0, 0, 0.3)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-color)'
+            }}>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>BOA LIQUID CASH</div>
+              <div className="font-mono" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--success)', marginTop: '0.1rem' }}>
+                {fmt(totalBoACash)}
+              </div>
             </div>
-          </div>
+          )}
 
         </div>
       </aside>

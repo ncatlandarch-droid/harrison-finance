@@ -108,16 +108,16 @@ export const Dashboard = () => {
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2.25rem' }}>
       
-      {/* 🎮 GIANT SHOWCASE PLAYER CHARACTER CARDS (CLICK TO OPEN PROFILE & ESTATE VAULT) */}
+      {/* 🎮 GIANT SHOWCASE PLAYER CHARACTER CARDS */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(7, 10, 18, 0.98), rgba(15, 23, 42, 0.95))', padding: '1.75rem' }}>
         <div className="flex-between" style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1.25rem' }}>
           <div>
             <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
               <Trophy size={28} color="#FDB927" />
-              <span>Harrison Family Roster & Interactive Player Profiles</span>
+              <span>Harrison Family Roster & Interactive Document Vaults</span>
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-              👉 <strong>Click any player card</strong> to drill into their financial profile, estate planning lockbox, and vital directives!
+              👉 <strong>Click any avatar card below</strong> to open their document lockbox and upload legal estate files!
             </p>
           </div>
 
@@ -142,18 +142,18 @@ export const Dashboard = () => {
           </button>
         </div>
 
-        {/* 3 GIANT Interactive Player Character Cards */}
+        {/* 3 GIANT Interactive Player Character Cards (140px Avatars) */}
         <div className="grid-3" style={{ gap: '1.5rem' }}>
           {players.map((p) => (
             <div 
               key={p.id} 
               onClick={() => setSelectedPlayer(p)}
               style={{
-                background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.95))',
-                borderRadius: '20px',
-                padding: '1.75rem',
-                border: p.isLeader ? '2px solid #FDB927' : `1.5px solid ${p.color}60`,
-                boxShadow: p.isLeader ? '0 12px 35px rgba(253, 185, 39, 0.3)' : `0 8px 25px rgba(0,0,0,0.5)`,
+                background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.98))',
+                borderRadius: '24px',
+                padding: '2rem 1.5rem',
+                border: p.isLeader ? '2.5px solid #FDB927' : `1.5px solid ${p.color}60`,
+                boxShadow: p.isLeader ? '0 12px 40px rgba(253, 185, 39, 0.35)' : `0 8px 25px rgba(0,0,0,0.5)`,
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
@@ -171,7 +171,7 @@ export const Dashboard = () => {
                   right: '20px',
                   background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
                   color: '#004684',
-                  padding: '4px 12px',
+                  padding: '4px 14px',
                   borderRadius: '20px',
                   fontWeight: 900,
                   fontSize: '0.74rem',
@@ -189,13 +189,13 @@ export const Dashboard = () => {
               <div>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1.25rem' }}>
                   
-                  {/* GIANT PHOTO AVATAR FRAME (110px) */}
+                  {/* LARGER PHOTO AVATAR FRAME (135px) WITH MATCHED HEAD ZOOM */}
                   <div style={{
-                    width: '110px',
-                    height: '110px',
+                    width: '135px',
+                    height: '135px',
                     borderRadius: '50%',
                     border: `4px solid ${p.color}`,
-                    boxShadow: `0 0 30px ${p.color}70`,
+                    boxShadow: `0 0 35px ${p.color}70`,
                     overflow: 'hidden',
                     marginBottom: '1rem',
                     background: '#1e1b4b'
@@ -203,20 +203,20 @@ export const Dashboard = () => {
                     <img 
                       src={p.image} 
                       alt={p.name}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%' }}
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
                   </div>
 
-                  <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.25rem' }}>{p.name}</h4>
+                  <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.3rem' }}>{p.name}</h4>
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{p.title}</span>
                   
-                  <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.5rem' }}>
-                    <span className="badge" style={{ fontSize: '0.68rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
+                  <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem' }}>
+                    <span className="badge" style={{ fontSize: '0.7rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
                       {p.level}
                     </span>
-                    <span className="badge badge-success" style={{ fontSize: '0.68rem' }}>
-                      Estate Readiness: 100%
+                    <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
+                      Repository: 100%
                     </span>
                   </div>
                 </div>
@@ -249,12 +249,12 @@ export const Dashboard = () => {
                 padding: '0.75rem 1rem',
                 borderRadius: '10px',
                 border: '1px solid rgba(255,255,255,0.05)',
-                fontSize: '0.8rem',
+                fontSize: '0.82rem',
                 color: p.color,
-                fontWeight: 700
+                fontWeight: 800
               }}>
-                <span>Click for Profile & Estate Lockbox</span>
-                <ChevronRight size={16} />
+                <span>Click to Upload & View Repository</span>
+                <ChevronRight size={18} />
               </div>
 
             </div>
