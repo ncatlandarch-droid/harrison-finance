@@ -177,6 +177,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
   // Itemized checklist slots with individual upload targets
   const personChecklists = {
     chris: [
+      { slotId: 'ssn_card', title: 'Social Security Card Scan / Record', req: 'SSN' },
       { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
       { slotId: 'passport', title: 'US Passport Scan', req: 'Identity' },
       { slotId: 'health_card', title: 'Health & Dental Insurance Card', req: 'Medical' },
@@ -186,6 +187,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
       { slotId: 'novo', title: 'Think! Design & Planning LLC Annual Tax / Financial Record', req: 'Business' }
     ],
     erin: [
+      { slotId: 'ssn_card', title: 'Social Security Card Scan / Record', req: 'SSN' },
       { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
       { slotId: 'passport', title: 'US Passport Scan', req: 'Identity' },
       { slotId: 'health_card', title: 'Health & Dental Insurance Card', req: 'Medical' },
@@ -194,6 +196,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
       { slotId: 'cd_erin', title: 'Wells Fargo / Credit Union 5.15% High-Yield CD Record', req: 'Investment' }
     ],
     barbara: [
+      { slotId: 'ssn_card', title: 'Social Security Card Scan / Record', req: 'SSN' },
       { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
       { slotId: 'passport', title: 'US Passport Scan', req: 'Identity' },
       { slotId: 'health_card', title: 'Medicare & Health Insurance Card', req: 'Medical' },
@@ -202,12 +205,14 @@ export const PlayerProfilePage = ({ player, onBack }) => {
       { slotId: 'estate', title: 'Healthcare Proxy & Will Directive Records', req: 'Legal' }
     ],
     hayden: [
+      { slotId: 'ssn_card', title: 'Social Security Card Scan / Record', req: 'SSN' },
       { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
       { slotId: 'passport', title: 'US Passport Scan / ID', req: 'Identity' },
       { slotId: 'health_card', title: 'Pediatric Health Insurance Card', req: 'Medical' },
       { slotId: 'savings_hayden', title: 'Hayden $30,000 College Savings Goal Progress Statement', req: 'Goal Tracker' }
     ],
     ava: [
+      { slotId: 'ssn_card', title: 'Social Security Card Scan / Record', req: 'SSN' },
       { slotId: 'birth_cert', title: 'Birth Certificate Copy', req: 'Identity' },
       { slotId: 'passport', title: 'US Passport Scan / ID', req: 'Identity' },
       { slotId: 'health_card', title: 'Pediatric Health Insurance Card', req: 'Medical' },
@@ -337,12 +342,38 @@ export const PlayerProfilePage = ({ player, onBack }) => {
               {player.bio || `${player.name}'s dedicated personal workspace, encrypted document repository, and gamified wealth tracker.`}
             </p>
 
-            {/* Quick Profile Identifiers */}
+            {/* Quick Profile Identifiers including SSN */}
             <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.25rem', flexWrap: 'wrap' }}>
               <div>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>AGE / BIRTHDAY</span>
                 <div style={{ fontWeight: 800, color: '#fff', fontSize: '1rem' }}>
                   {currentAge} Years Old ({player.birthday || 'N/A'})
+                </div>
+              </div>
+
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>SOCIAL SECURITY NUMBER (SSN)</span>
+                <div style={{ fontWeight: 800, color: showSensitive ? 'var(--warning)' : '#fff', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Lock size={14} color={showSensitive ? '#FDB927' : 'var(--text-muted)'} />
+                  <span>
+                    {showSensitive 
+                      ? (localStorage.getItem(`harrison_ssn_${player.id}`) || `999-00-1234`)
+                      : `***-**-${(localStorage.getItem(`harrison_ssn_${player.id}`) || '6789').slice(-4)}`
+                    }
+                  </span>
+                  <button 
+                    onClick={() => {
+                      const currentSsn = localStorage.getItem(`harrison_ssn_${player.id}`) || '';
+                      const newSsn = prompt(`Enter Social Security Number (SSN) for ${player.name}:`, currentSsn);
+                      if (newSsn !== null) {
+                        localStorage.setItem(`harrison_ssn_${player.id}`, newSsn.trim());
+                        window.location.reload();
+                      }
+                    }}
+                    style={{ background: 'none', border: 'none', color: '#FDB927', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 800, textDecoration: 'underline' }}
+                  >
+                    Edit ✏️
+                  </button>
                 </div>
               </div>
 
