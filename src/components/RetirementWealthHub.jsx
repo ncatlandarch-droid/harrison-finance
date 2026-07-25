@@ -15,7 +15,10 @@ import {
   Target,
   RefreshCw,
   ExternalLink,
-  Info
+  Info,
+  Heart,
+  UserCheck,
+  Mail
 } from 'lucide-react';
 
 export const RetirementWealthHub = () => {
@@ -54,7 +57,7 @@ export const RetirementWealthHub = () => {
               The Harrison Family Complete Net Worth
             </h2>
             <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)' }}>
-              Combines Liquid Cash + NC 401(k) Retirement + CDs + Business Checking
+              Combines Liquid Cash + NC Pension ($3.1k/mo) + NC 401(k) + CDs + Business Assets
             </p>
           </div>
 
@@ -78,27 +81,96 @@ export const RetirementWealthHub = () => {
           </div>
 
           <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>2. NC RETIREMENT (401K/PENSION)</div>
+            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>2. NC PENSION (TSERS)</div>
+            <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FDB927', marginTop: '0.2rem' }}>
+              $3,117.50 / mo
+            </div>
+            <div style={{ fontSize: '0.74rem', color: '#FDB927', marginTop: '0.3rem', fontWeight: 700 }}>Guaranteed Lifetime Benefit</div>
+          </div>
+
+          <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>3. NC 401(K) RETIREMENT</div>
             <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary-light)', marginTop: '0.2rem' }}>
               {fmt(totalRetirementAssets)}
             </div>
-            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Empower NC State & TSERS</div>
+            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Empower NC State & Educator</div>
           </div>
 
           <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>3. ERIN'S CERTIFICATES OF DEPOSIT</div>
+            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>4. ERIN'S CDs (5.15% APY)</div>
             <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#c084fc', marginTop: '0.2rem' }}>
               {fmt(totalCDAssets)}
             </div>
-            <div style={{ fontSize: '0.74rem', color: '#c084fc', marginTop: '0.3rem', fontWeight: 700 }}>5.15% APY High-Yield Yield</div>
+            <div style={{ fontSize: '0.74rem', color: '#c084fc', marginTop: '0.3rem', fontWeight: 700 }}>Fixed High-Yield CD</div>
           </div>
 
-          <div style={{ background: 'rgba(0,0,0,0.35)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>4. NOVO BUSINESS CHECKING</div>
-            <div className="font-mono" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#3b82f6', marginTop: '0.2rem' }}>
-              {fmt(novoBusinessChecking.balance)}
+        </div>
+      </div>
+
+      {/* 🏛️ CHRIS'S OFFICIAL NC MARS PENSION STATEMENT SUMMARY */}
+      <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(0, 70, 132, 0.35), rgba(79, 70, 229, 0.2))', border: '2px solid #FDB927' }}>
+        <div className="flex-between" style={{ borderBottom: '1px solid rgba(253, 185, 39, 0.3)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
+          <div>
+            <span className="badge badge-primary" style={{ background: '#004684', color: '#FDB927', fontWeight: 900, padding: '4px 12px' }}>
+              OFFICIAL NC MARS STATEMENT • VERIFIED 07/25/2026
+            </span>
+            <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <Award size={26} color="#FDB927" />
+              <span>William (Chris) Harrison — NC TSERS State Pension Record</span>
+            </h3>
+            <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+              NC A&T State University • Member ID: <strong>1875708</strong> • 4306 Goldenrod Dr, Greensboro NC 27455
+            </p>
+          </div>
+
+          <a 
+            href="https://orbit.nc-retire.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="btn btn-primary"
+            style={{ background: 'linear-gradient(135deg, #FDB927, #f59e0b)', color: '#004684', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.88rem' }}
+          >
+            <span>Open ORBIT Portal</span>
+            <ExternalLink size={16} />
+          </a>
+        </div>
+
+        <div className="grid-3" style={{ gap: '1.25rem' }}>
+          
+          {/* Lifetime Pension Card */}
+          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1.25rem', borderRadius: '16px', border: '1.5px solid #FDB927' }}>
+            <div style={{ fontSize: '0.76rem', color: '#FDB927', fontWeight: 800 }}>PROJECTED MONTHLY PENSION</div>
+            <div className="font-mono" style={{ fontSize: '2rem', fontWeight: 900, color: '#fff', marginTop: '0.2rem' }}>
+              $3,117.50 / mo
             </div>
-            <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', marginTop: '0.3rem' }}>Think! Design & Planning LLC</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--success)', marginTop: '0.4rem', fontWeight: 700 }}>
+              ✓ Guaranteed Monthly Lifetime Income
+            </div>
+          </div>
+
+          {/* Contribution Rate */}
+          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1.25rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', fontWeight: 800 }}>MONTHLY CONTRIBUTION RATE</div>
+            <div className="font-mono" style={{ fontSize: '2rem', fontWeight: 900, color: 'var(--primary-light)', marginTop: '0.2rem' }}>
+              6.00% Salary
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
+              Matched by NC State Employer Contribution
+            </div>
+          </div>
+
+          {/* Designated Beneficiary */}
+          <div style={{ background: 'rgba(236, 72, 153, 0.15)', padding: '1.25rem', borderRadius: '16px', border: '1.5px solid #ec4899' }}>
+            <div style={{ fontSize: '0.76rem', color: '#f472b6', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <Heart size={14} fill="#ec4899" />
+              <span>PRINCIPAL BENEFICIARY</span>
+            </div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#fff', marginTop: '0.2rem' }}>
+              ERIN HARRISON
+            </div>
+            <div style={{ fontSize: '0.76rem', color: '#f472b6', marginTop: '0.4rem', fontWeight: 700 }}>
+              ✓ 100% Beneficiary for Death & Contributions
+            </div>
           </div>
 
         </div>
@@ -140,34 +212,23 @@ export const RetirementWealthHub = () => {
         )}
       </div>
 
-      {/* 🏛️ NC STATE EMPLOYEE RETIREMENT & PENSION MATRIX */}
+      {/* 🏛️ NC STATE EMPLOYEE 401(K) MATRIX */}
       <div className="card card-glow">
         <div className="flex-between" style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
           <div>
             <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
               <Award size={24} color="#FDB927" />
-              <span>NC State Employee Retirement & TSERS Pension Matrix</span>
+              <span>NC Supplemental 401(k) & 403(b) Retirement Plans</span>
             </h3>
             <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-              Empower NC 401(k) / 403(b) Plans & Orbit Pension Service Credits
+              Empower NC 401(k) / 403(b) Account Balances
             </p>
           </div>
-
-          <a 
-            href="https://orbit.nc-retire.com" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="btn btn-secondary"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.84rem' }}
-          >
-            <span>NC Orbit Pension Portal</span>
-            <ExternalLink size={14} />
-          </a>
         </div>
 
         <div className="grid-2" style={{ gap: '1.5rem' }}>
           
-          {/* Chris NC A&T Retirement Card */}
+          {/* Chris NC A&T 401k Card */}
           <div style={{ background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.3)', borderRadius: '16px', padding: '1.5rem' }}>
             <div className="flex-between" style={{ marginBottom: '0.85rem' }}>
               <span className="badge badge-primary">Chris • NC A&T State University</span>
@@ -180,11 +241,11 @@ export const RetirementWealthHub = () => {
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
               • Institution: Empower / NC State Retirement System<br />
               • Monthly Contribution: 6.00% State Match<br />
-              • TSERS Pension Orbit Credits: Active
+              • Email on Record: wcharris@ncat.edu
             </div>
           </div>
 
-          {/* Erin NC Educator Retirement Card */}
+          {/* Erin NC Educator 401k Card */}
           <div style={{ background: 'rgba(236, 72, 153, 0.1)', border: '1px solid rgba(236, 72, 153, 0.3)', borderRadius: '16px', padding: '1.5rem' }}>
             <div className="flex-between" style={{ marginBottom: '0.85rem' }}>
               <span className="badge" style={{ background: '#ec4899', color: '#fff' }}>Erin • NC Educator</span>
