@@ -14,11 +14,13 @@ import { TransactionsSection } from './components/TransactionsSection';
 import { NetWorthSection } from './components/NetWorthSection';
 import { SettingsSection } from './components/SettingsSection';
 import { AddTransactionModal } from './components/AddTransactionModal';
+import { AddAccountModal } from './components/AddAccountModal';
 import { MasterPasscodeModal } from './components/MasterPasscodeModal';
 
 const AppContent = () => {
   const { activeTab } = useFinance();
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAddTransactionOpen, setIsAddTransactionOpen] = useState(false);
+  const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
   const [isUnlocked, setIsUnlocked] = useState(() => {
     return localStorage.getItem('harrison_unlocked') === 'true';
   });
@@ -57,12 +59,13 @@ const AppContent = () => {
       {!isUnlocked && <MasterPasscodeModal onUnlock={() => setIsUnlocked(true)} />}
       <Sidebar />
       <div className="main-wrapper">
-        <Header onOpenAddModal={() => setIsAddModalOpen(true)} />
+        <Header onOpenAddModal={() => setIsAddAccountOpen(true)} />
         <main className="page-content">
           {renderActiveSection()}
         </main>
       </div>
-      <AddTransactionModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
+      <AddTransactionModal isOpen={isAddTransactionOpen} onClose={() => setIsAddTransactionOpen(false)} />
+      <AddAccountModal isOpen={isAddAccountOpen} onClose={() => setIsAddAccountOpen(false)} />
     </div>
   );
 };
