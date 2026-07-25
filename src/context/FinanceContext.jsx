@@ -6,7 +6,7 @@ const FinanceContext = createContext();
 export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('harrison_finance_v3.2');
+      const saved = localStorage.getItem('harrison_finance_v3.3');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.version === INITIAL_DATA.version) {
@@ -23,7 +23,7 @@ export const FinanceProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('harrison_finance_v3.2', JSON.stringify(data));
+      localStorage.setItem('harrison_finance_v3.3', JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save to local storage:', e);
     }
@@ -53,15 +53,15 @@ export const FinanceProvider = ({ children }) => {
   const totalScrapedBankSpending = scrapedPlaidTxns.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
   
   // EXACT 5 REAL BANK OF AMERICA ACCOUNTS FROM YOUR LIVE SCREENSHOT
-  const papiChecking = data.accounts.find(a => a.id === 'boa_7333') || { name: 'Papi Checking - 7333', balance: -36.00 };
-  const spendingMoney = data.accounts.find(a => a.id === 'boa_4866') || { name: 'Spending Money - 4866', balance: 468.24 };
-  const advPlusBanking = data.accounts.find(a => a.id === 'boa_4717') || { name: 'Adv Plus Banking - 4717', balance: 443.12 };
-  const advantageSavings = data.accounts.find(a => a.id === 'boa_0495') || { name: 'Advantage Savings - 0495', balance: 2392.91 };
-  const bankAmericardCreditCard = data.accounts.find(a => a.id === 'boa_6343') || { name: 'BankAmericard Visa - 6343', balance: 4560.47 };
+  const papiChecking = data.accounts.find(a => a.id === 'boa_7333' || a.name.includes('7333')) || { name: 'Papi Checking - 7333', balance: -36.00 };
+  const spendingMoney = data.accounts.find(a => a.id === 'boa_4866' || a.name.includes('4866')) || { name: 'Spending Money - 4866', balance: 468.24 };
+  const advPlusBanking = data.accounts.find(a => a.id === 'boa_4717' || a.name.includes('4717')) || { name: 'Adv Plus Banking - 4717', balance: 443.12 };
+  const advantageSavings = data.accounts.find(a => a.id === 'boa_0495' || a.name.includes('0495')) || { name: 'Advantage Savings - 0495', balance: 2392.91 };
+  const bankAmericardCreditCard = data.accounts.find(a => a.id === 'boa_6343' || a.name.includes('6343')) || { name: 'BankAmericard Visa - 6343', balance: 4560.47 };
   const barbaraCheckingAccount = data.accounts.find(a => a.memberId === 'barbara' || a.id === 'penfed_savings') || { name: "Mom's PenFed Savings", balance: 76155.00 };
 
   // Total Real BoA Cash Balance (Liquid Cash across Checking & Savings)
-  const totalBoACash = (-36.00) + 468.24 + 443.12 + 2392.91; // $3,268.27
+  const totalBoACash = (papiChecking.balance) + (spendingMoney.balance) + (advPlusBanking.balance) + (advantageSavings.balance);
   const totalLiquidityBalance = totalBoACash + barbaraCheckingAccount.balance;
 
   // Derived Combined Bills Array for BillsSection
@@ -91,25 +91,36 @@ export const FinanceProvider = ({ children }) => {
     console.log('Update bill status:', billId, status);
   };
 
+  // Ultra-precise Plaid Account Matching by Last 4 Digits (Mask)
   const mergePlaidData = (plaidAccounts = [], plaidTxns = []) => {
     setData(prev => {
       const updatedAccounts = [...prev.accounts];
+
       plaidAccounts.forEach(pa => {
-        const existingIdx = updatedAccounts.findIndex(a => a.name.toLowerCase().includes(pa.name.toLowerCase()) || a.institution.toLowerCase().includes(pa.name.toLowerCase()));
+        const mask = pa.mask || '';
         const liveBal = pa.balances.current ?? pa.balances.available ?? 0;
+
+        // Find existing account by mask (e.g. 7333, 4866, 4717, 0495, 6343) or name
+        const existingIdx = updatedAccounts.findIndex(a => 
+          (mask && (a.id.includes(mask) || a.name.includes(mask))) ||
+          a.name.toLowerCase().includes(pa.name.toLowerCase())
+        );
+
         if (existingIdx >= 0) {
           updatedAccounts[existingIdx] = {
             ...updatedAccounts[existingIdx],
-            balance: liveBal
+            balance: liveBal,
+            lastSynced: new Date().toLocaleTimeString()
           };
         } else {
           updatedAccounts.unshift({
-            id: 'plaid_' + pa.account_id,
-            name: pa.official_name || pa.name,
+            id: 'plaid_' + (pa.account_id || mask),
+            name: pa.official_name || pa.name + (mask ? ` - ${mask}` : ''),
             type: pa.type === 'depository' ? 'Checking' : pa.type,
             memberId: 'chris',
-            institution: pa.subtype || 'Connected Bank',
-            balance: liveBal
+            institution: 'Bank of America',
+            balance: liveBal,
+            lastSynced: new Date().toLocaleTimeString()
           });
         }
       });
