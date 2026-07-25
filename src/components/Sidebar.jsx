@@ -195,17 +195,18 @@ export const Sidebar = () => {
         gap: '0.65rem',
         boxShadow: '0 8px 25px rgba(253, 185, 39, 0.25)'
       }}>
-        {/* ISLA 175px Portrait Frame */}
+        {/* ISLA 185px Giant Portrait Frame */}
         <div style={{
           position: 'relative',
-          width: isCollapsed ? '58px' : '150px',
-          height: isCollapsed ? '58px' : '150px',
+          width: isCollapsed ? '64px' : '185px',
+          height: isCollapsed ? '64px' : '185px',
           borderRadius: '50%',
-          border: '4px solid #FDB927',
-          boxShadow: '0 0 30px rgba(253, 185, 39, 0.75)',
+          border: '5px solid #FDB927',
+          boxShadow: '0 0 45px rgba(253, 185, 39, 0.95)',
           overflow: 'hidden',
           flexShrink: 0,
-          background: '#004684'
+          background: '#004684',
+          transition: 'all 0.3s ease'
         }}>
           <img 
             src="/avatars/isla-bulldog.jpg" 
