@@ -43,7 +43,7 @@ export const FinanceProvider = ({ children }) => {
     }
   });
 
-  // Dynamic Family Roster (Includes Hayden & Ava with custom photos)
+  // Dynamic Family Roster (Includes ISLA Bulldog as 6th Official Family Member!)
   const [members, setMembers] = useState(() => {
     try {
       const saved = localStorage.getItem('harrison_members_list');
@@ -95,7 +95,7 @@ export const FinanceProvider = ({ children }) => {
           color: '#3b82f6',
           role: 'Youth Dependent',
           birthday: '2014-06-18',
-          income: 50.00, // Allowance / Savings
+          income: 50.00,
           badge: '🌟 FUTURE INVESTOR',
           level: 'LVL 15 SAVINGS CHAMP',
           isLeader: false
@@ -108,9 +108,22 @@ export const FinanceProvider = ({ children }) => {
           color: '#10b981',
           role: 'Youth Dependent',
           birthday: '2018-09-05',
-          income: 30.00, // Allowance / Savings
+          income: 30.00,
           badge: '🎨 CREATIVE INVESTOR',
           level: 'LVL 10 SAVINGS STAR',
+          isLeader: false
+        },
+        {
+          id: 'isla',
+          name: 'ISLA Harrison 🐶',
+          title: 'Financial Wizard & Family Mascot',
+          image: '/avatars/isla-bulldog.jpg',
+          color: '#f59e0b',
+          role: 'Family Mascot & AI Guide',
+          birthday: '2021-05-10',
+          income: 0.00,
+          badge: '🐶 FINANCIAL WIZARD',
+          level: 'LVL 99 GOOD BOY',
           isLeader: false
         }
       ];

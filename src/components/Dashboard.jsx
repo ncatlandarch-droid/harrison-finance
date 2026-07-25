@@ -72,7 +72,7 @@ export const Dashboard = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
                 <Trophy size={28} color="#FDB927" />
-                <span>{householdProfile.familyName} Player Roster ({members.length} Members)</span>
+                <span>{householdProfile.familyName} Official Roster ({members.length} Members)</span>
               </h3>
               <button 
                 onClick={() => setIsFamilyPortalOpen(true)}
@@ -84,7 +84,7 @@ export const Dashboard = () => {
               </button>
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-              👉 <strong>Click any player avatar</strong> to open their document vault (Birth Certificates, Passports, Insurance) & Gamified XP!
+              👉 <strong>Click any player avatar</strong> to open their document vault (Birth Certificates, Passports, Pet Records) & Gamified XP!
             </p>
           </div>
 
@@ -120,18 +120,18 @@ export const Dashboard = () => {
           </div>
         </div>
 
-        {/* 5 Dynamic Family Character Cards (Includes Hayden & Ava!) */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+        {/* 6 GIANT Family Character Cards in a Clean 3-Column Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
           {members.map((p) => (
             <div 
               key={p.id} 
               onClick={() => setSelectedPlayer(p)}
               style={{
                 background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.98))',
-                borderRadius: '20px',
-                padding: '1.5rem 1.25rem',
+                borderRadius: '24px',
+                padding: '1.75rem 1.5rem',
                 border: p.isLeader ? '2.5px solid #FDB927' : `1.5px solid ${p.color}60`,
-                boxShadow: p.isLeader ? '0 12px 35px rgba(253, 185, 39, 0.3)' : `0 8px 25px rgba(0,0,0,0.5)`,
+                boxShadow: p.isLeader ? '0 12px 35px rgba(253, 185, 39, 0.35)' : `0 8px 25px rgba(0,0,0,0.5)`,
                 position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
@@ -145,37 +145,37 @@ export const Dashboard = () => {
               {p.isLeader && (
                 <div style={{
                   position: 'absolute',
-                  top: '-12px',
-                  right: '15px',
+                  top: '-14px',
+                  right: '20px',
                   background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
                   color: '#004684',
-                  padding: '3px 10px',
+                  padding: '4px 12px',
                   borderRadius: '20px',
                   fontWeight: 900,
-                  fontSize: '0.7rem',
+                  fontSize: '0.74rem',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.3rem',
                   boxShadow: '0 4px 12px rgba(253, 185, 39, 0.5)'
                 }}>
-                  <Crown size={12} fill="#004684" />
+                  <Crown size={14} fill="#004684" />
                   <span>MVP #1 LEADER</span>
                 </div>
               )}
 
-              {/* Giant Avatar Header */}
+              {/* GIANT AVATAR HEADER (150px Frames!) */}
               <div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1.25rem' }}>
                   
-                  {/* PHOTO AVATAR FRAME (110px) */}
+                  {/* GIANT PHOTO AVATAR FRAME (145px) */}
                   <div style={{
-                    width: '110px',
-                    height: '110px',
+                    width: '145px',
+                    height: '145px',
                     borderRadius: '50%',
-                    border: `4px solid ${p.color}`,
-                    boxShadow: `0 0 25px ${p.color}70`,
+                    border: `4.5px solid ${p.color}`,
+                    boxShadow: `0 0 35px ${p.color}70`,
                     overflow: 'hidden',
-                    marginBottom: '0.75rem',
+                    marginBottom: '1rem',
                     background: '#1e1b4b'
                   }}>
                     <img 
@@ -186,14 +186,14 @@ export const Dashboard = () => {
                     />
                   </div>
 
-                  <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.15rem' }}>{p.name}</h4>
-                  <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>{p.title}</span>
+                  <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.3rem' }}>{p.name}</h4>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{p.title}</span>
                   
-                  <div style={{ display: 'flex', gap: '0.3rem', marginTop: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <span className="badge" style={{ fontSize: '0.66rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
+                  <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                    <span className="badge" style={{ fontSize: '0.7rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
                       {p.level}
                     </span>
-                    <span className="badge badge-success" style={{ fontSize: '0.66rem' }}>
+                    <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
                       1,000 XP ✓
                     </span>
                   </div>
@@ -206,15 +206,15 @@ export const Dashboard = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 background: 'rgba(0,0,0,0.3)',
-                padding: '0.65rem 0.85rem',
+                padding: '0.75rem 1rem',
                 borderRadius: '10px',
                 border: '1px solid rgba(255,255,255,0.05)',
-                fontSize: '0.78rem',
+                fontSize: '0.82rem',
                 color: p.color,
                 fontWeight: 800
               }}>
                 <span>Open Passport & Vault</span>
-                <ChevronRight size={16} />
+                <ChevronRight size={18} />
               </div>
 
             </div>
