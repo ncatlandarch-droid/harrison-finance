@@ -22,12 +22,14 @@ export const PlaidLinkButton = () => {
       const data = await response.json();
       if (data.link_token) {
         setToken(data.link_token);
+        return data.link_token;
       }
     } catch (err) {
       console.error('Plaid Link Token fetch error:', err);
     } finally {
       setLoading(false);
     }
+    return null;
   };
 
   useEffect(() => {
@@ -45,7 +47,6 @@ export const PlaidLinkButton = () => {
       
       const bankName = metadata.institution ? metadata.institution.name : 'Bank Account';
 
-      // Live update dashboard with real bank accounts and scraped transactions
       if (result.accounts || result.transactions) {
         mergePlaidData(result.accounts || [], result.transactions || []);
       }
@@ -56,10 +57,9 @@ export const PlaidLinkButton = () => {
         return updated;
       });
 
-      alert(`Successfully connected ${bankName}! Live balances and transactions updated on your dashboard.`);
+      alert(`Successfully connected ${bankName}! Live balances updated.`);
     } catch (e) {
       console.error('Failed to exchange Plaid token:', e);
-      alert('Connected bank account!');
     }
   }, [mergePlaidData]);
 
@@ -70,38 +70,49 @@ export const PlaidLinkButton = () => {
 
   const { open, ready } = usePlaidLink(config);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (ready && token) {
       open();
     } else {
-      alert('Plaid link token is ready. Opening Plaid connection...');
+      const newToken = await createLinkToken();
+      if (newToken && ready) {
+        open();
+      } else {
+        alert("Initializing Plaid secure link... Please try clicking once more in 2 seconds.");
+      }
     }
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', width: '100%' }}>
       <button 
         className="btn btn-primary"
         onClick={handleClick}
         disabled={loading}
         style={{
+          width: '100%',
+          padding: '0.85rem 1.25rem',
+          fontSize: '0.95rem',
+          fontWeight: 800,
           background: 'linear-gradient(135deg, #10b981, #059669)',
-          boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)',
+          boxShadow: '0 4px 18px rgba(16, 185, 129, 0.4)',
           display: 'flex',
           alignItems: 'center',
-          gap: '0.5rem'
+          justifyContent: 'center',
+          gap: '0.5rem',
+          borderRadius: '12px'
         }}
       >
         {loading ? (
-          <Loader2 className="animate-spin" size={16} />
+          <Loader2 className="animate-spin" size={18} />
         ) : (
-          <Building2 size={16} />
+          <Building2 size={18} />
         )}
-        <span>{connectedBanks.length > 0 ? `Connected (${connectedBanks.length})` : 'Connect Bank Account'}</span>
+        <span>{connectedBanks.length > 0 ? `Connected Banks (${connectedBanks.length}) — Click to Add Bank` : '🚀 Connect Bank Account via Plaid'}</span>
       </button>
 
       {connectedBanks.length > 0 && (
-        <span className="badge badge-success" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+        <span className="badge badge-success" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', padding: '6px 12px' }}>
           <ShieldCheck size={14} />
           <span>Plaid Active</span>
         </span>
