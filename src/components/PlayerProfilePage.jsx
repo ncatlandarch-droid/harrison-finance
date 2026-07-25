@@ -165,6 +165,27 @@ export const PlayerProfilePage = ({ player, onBack }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <button 
             className="btn"
+            style={{
+              background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
+              color: '#004684',
+              fontWeight: 800,
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              boxShadow: '0 4px 14px rgba(253, 185, 39, 0.3)'
+            }}
+            onClick={() => {
+              const questElement = document.getElementById('personal-annual-quest-card');
+              if (questElement) questElement.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            <Calendar size={16} />
+            <span>{player.name}'s Annual Checkup 🗓️</span>
+          </button>
+
+          <button 
+            className="btn"
             onClick={() => setShowSensitive(!showSensitive)}
             style={{
               background: showSensitive ? 'rgba(239, 68, 68, 0.2)' : 'rgba(16, 185, 129, 0.2)',
@@ -256,7 +277,7 @@ export const PlayerProfilePage = ({ player, onBack }) => {
       </div>
 
       {/* 🎯 PERSON-SPECIFIC ANNUAL CHECKUP QUEST CARD (GAMIFIED ACCOUNTABILITY!) */}
-      <div className="card card-glow" style={{ background: `linear-gradient(135deg, ${player.color}25, rgba(15, 23, 42, 0.98))`, border: `2.5px solid ${player.color}` }}>
+      <div id="personal-annual-quest-card" className="card card-glow" style={{ background: `linear-gradient(135deg, ${player.color}25, rgba(15, 23, 42, 0.98))`, border: `2.5px solid ${player.color}` }}>
         <div className="flex-between" style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
           <div>
             <span className="badge badge-primary" style={{ background: player.color, color: '#fff', fontWeight: 900, padding: '4px 12px' }}>
