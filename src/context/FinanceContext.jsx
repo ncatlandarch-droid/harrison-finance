@@ -6,7 +6,7 @@ const FinanceContext = createContext();
 export const FinanceProvider = ({ children }) => {
   const [data, setData] = useState(() => {
     try {
-      const saved = localStorage.getItem('harrison_finance_v3.5_boa_live_direct');
+      const saved = localStorage.getItem('harrison_finance_v3.6_accurate_cash');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.version === INITIAL_DATA.version) {
@@ -23,7 +23,7 @@ export const FinanceProvider = ({ children }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem('harrison_finance_v3.5_boa_live_direct', JSON.stringify(data));
+      localStorage.setItem('harrison_finance_v3.6_accurate_cash', JSON.stringify(data));
     } catch (e) {
       console.error('Failed to save to local storage:', e);
     }
@@ -60,9 +60,11 @@ export const FinanceProvider = ({ children }) => {
   const bankAmericardCreditCard = data.accounts.find(a => a.id === 'boa_6343' || a.name.includes('6343')) || { name: 'BankAmericard Visa - 6343', balance: 4560.47 };
   const barbaraCheckingAccount = data.accounts.find(a => a.memberId === 'barbara' || a.id === 'penfed_savings') || { name: "Mom's PenFed Savings", balance: 76155.00 };
 
-  // Total Real BoA Cash Balance (Liquid Cash across Checking & Savings)
-  const totalBoACash = (papiChecking.balance) + (spendingMoney.balance) + (advPlusBanking.balance) + (advantageSavings.balance);
-  const totalLiquidityBalance = totalBoACash + barbaraCheckingAccount.balance;
+  // 🎯 STRICT SEPARATION: CHECKING CASH VS SAVINGS RESERVES
+  // Total Active Checking Cash (Papi -$36 + Spending $468.24 + Adv Plus $443.12 = $875.36)
+  const totalCheckingCash = (papiChecking.balance) + (spendingMoney.balance) + (advPlusBanking.balance); // $875.36
+  const totalBoACash = totalCheckingCash + advantageSavings.balance; // $3,268.27
+  const totalLiquidityBalance = totalBoACash + barbaraCheckingAccount.balance; // $79,423.27
 
   // Derived Combined Bills Array for BillsSection
   const combinedBills = [
@@ -192,6 +194,8 @@ export const FinanceProvider = ({ children }) => {
       erinNetRemaining,
       chrisNetRemaining,
       totalCombinedSurplus,
+      totalCheckingCash,
+      totalBoACash,
       totalLiquidityBalance,
       papiChecking,
       spendingMoney,
@@ -199,7 +203,6 @@ export const FinanceProvider = ({ children }) => {
       advantageSavings,
       bankAmericardCreditCard,
       barbaraCheckingAccount,
-      totalBoACash,
       billAllocations,
       updateBillStatus,
       mergePlaidData,
