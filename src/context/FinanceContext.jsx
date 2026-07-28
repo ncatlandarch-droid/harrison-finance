@@ -204,6 +204,40 @@ export const FinanceProvider = ({ children }) => {
     });
   };
 
+  // Function to calculate individual member document vault completion & XP points
+  const calculateMemberDocs = (memberId) => {
+    const requiredDocKeys = [
+      `doc_birth_cert_${memberId}`,
+      `doc_passport_${memberId}`,
+      `doc_ssn_card_${memberId}`,
+      `doc_drivers_license_${memberId}`,
+      `doc_auto_reg_${memberId}`,
+      `doc_tax_return_${memberId}`
+    ];
+    let uploadedCount = 0;
+    const docStatus = {};
+
+    requiredDocKeys.forEach(k => {
+      const isUploaded = !!localStorage.getItem(k);
+      docStatus[k] = isUploaded;
+      if (isUploaded) uploadedCount++;
+    });
+
+    const percent = Math.round((uploadedCount / requiredDocKeys.length) * 100);
+    return { uploadedCount, totalDocs: requiredDocKeys.length, percent, docStatus };
+  };
+
+  const calculateMemberXP = (memberId) => {
+    const { uploadedCount } = calculateMemberDocs(memberId);
+    const hasSsn = !!localStorage.getItem(`harrison_ssn_${memberId}`);
+    
+    // Member account count bonus
+    const linkedAccountsCount = (data?.accounts || []).filter(a => a.memberId === memberId).length + 1;
+
+    const baseXP = (uploadedCount * 150) + (hasSsn ? 100 : 0) + (linkedAccountsCount * 100);
+    return Math.min(baseXP, 1250);
+  };
+
   // Save data state
   useEffect(() => {
     try {
@@ -253,6 +287,8 @@ export const FinanceProvider = ({ children }) => {
       setMembers,
       updateAccountBalance,
       updateMemberDetails,
+      calculateMemberXP,
+      calculateMemberDocs,
       removeAccount,
       reassignAccountOwner,
       mergePlaidData,

@@ -252,102 +252,128 @@ export const Dashboard = () => {
 
         {/* 5 GIANT Family Character Cards in a Clean Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem' }}>
-          {members.map((p) => (
-            <div 
-              key={p.id} 
-              onClick={() => setSelectedPlayer(p)}
-              style={{
-                background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.98))',
-                borderRadius: '24px',
-                padding: '1.75rem 1.5rem',
-                border: p.isLeader ? '2.5px solid #FDB927' : `1.5px solid ${p.color}60`,
-                boxShadow: p.isLeader ? '0 12px 35px rgba(253, 185, 39, 0.35)' : `0 8px 25px rgba(0,0,0,0.5)`,
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                transition: 'all 0.25s ease'
-              }}
-              className="card-hover"
-            >
-              {/* Leader Crown Badge */}
-              {p.isLeader && (
-                <div style={{
-                  position: 'absolute',
-                  top: '-14px',
-                  right: '20px',
-                  background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
-                  color: '#004684',
-                  padding: '4px 12px',
-                  borderRadius: '20px',
-                  fontWeight: 900,
-                  fontSize: '0.74rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.3rem',
-                  boxShadow: '0 4px 12px rgba(253, 185, 39, 0.5)'
-                }}>
-                  <Crown size={14} fill="#004684" />
-                  <span>MVP #1 LEADER</span>
-                </div>
-              )}
+          {(() => {
+            // Find max XP score across all members
+            const memberScores = members.map(m => ({
+              ...m,
+              xp: calculateMemberXP ? calculateMemberXP(m.id) : 1000,
+              docs: calculateMemberDocs ? calculateMemberDocs(m.id) : { uploadedCount: 5, totalDocs: 6, percent: 83 }
+            }));
+            const maxXP = Math.max(...memberScores.map(m => m.xp));
 
-              {/* GIANT AVATAR HEADER */}
-              <div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1.25rem' }}>
-                  
+            return memberScores.map((p) => {
+              const isDynamicLeader = p.xp === maxXP && p.xp > 0;
+              return (
+                <div 
+                  key={p.id} 
+                  onClick={() => setSelectedPlayer(p)}
+                  style={{
+                    background: 'linear-gradient(180deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.98))',
+                    borderRadius: '24px',
+                    padding: '1.75rem 1.5rem',
+                    border: isDynamicLeader ? '2.5px solid #FDB927' : `1.5px solid ${p.color}60`,
+                    boxShadow: isDynamicLeader ? '0 12px 35px rgba(253, 185, 39, 0.35)' : `0 8px 25px rgba(0,0,0,0.5)`,
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    cursor: 'pointer',
+                    transition: 'all 0.25s ease'
+                  }}
+                  className="card-hover"
+                >
+                  {/* Leader Crown Badge */}
+                  {isDynamicLeader && (
+                    <div style={{
+                      position: 'absolute',
+                      top: '-14px',
+                      right: '20px',
+                      background: 'linear-gradient(135deg, #FDB927, #f59e0b)',
+                      color: '#004684',
+                      padding: '4px 12px',
+                      borderRadius: '20px',
+                      fontWeight: 900,
+                      fontSize: '0.74rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.3rem',
+                      boxShadow: '0 4px 12px rgba(253, 185, 39, 0.5)'
+                    }}>
+                      <Crown size={14} fill="#004684" />
+                      <span>MVP #1 LEADER</span>
+                    </div>
+                  )}
+
+                  {/* GIANT AVATAR HEADER */}
+                  <div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '1.25rem' }}>
+                      
+                      <div style={{
+                        width: '145px',
+                        height: '145px',
+                        borderRadius: '50%',
+                        border: `4.5px solid ${p.color}`,
+                        boxShadow: `0 0 35px ${p.color}70`,
+                        overflow: 'hidden',
+                        marginBottom: '1rem',
+                        background: '#1e1b4b'
+                      }}>
+                        <img 
+                          src={p.image} 
+                          alt={p.name}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%' }}
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                      </div>
+
+                      <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.3rem' }}>{p.name}</h4>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{p.title}</span>
+                      
+                      <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        <span className="badge" style={{ fontSize: '0.7rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
+                          {p.level}
+                        </span>
+                        <span className="badge badge-success" style={{ fontSize: '0.7rem', fontWeight: 900 }}>
+                          {p.xp} XP ★
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 📄 DOCUMENT VAULT UPLOAD PROGRESS BAR */}
+                    <div style={{ background: 'rgba(0,0,0,0.4)', padding: '0.85rem 1rem', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.06)', marginBottom: '1.25rem' }}>
+                      <div className="flex-between" style={{ fontSize: '0.76rem', marginBottom: '0.35rem' }}>
+                        <span style={{ color: 'var(--text-muted)', fontWeight: 700 }}>Document Lockbox Vault:</span>
+                        <strong style={{ color: p.docs.percent === 100 ? 'var(--success)' : '#FDB927' }}>
+                          {p.docs.percent}% ({p.docs.uploadedCount}/{p.docs.totalDocs} Docs)
+                        </strong>
+                      </div>
+                      <div style={{ height: '7px', width: '100%', background: 'rgba(255,255,255,0.1)', borderRadius: '10px', overflow: 'hidden' }}>
+                        <div style={{ height: '100%', width: `${p.docs.percent}%`, background: p.docs.percent === 100 ? 'linear-gradient(90deg, #10b981, #059669)' : `linear-gradient(90deg, ${p.color}, #FDB927)`, transition: 'width 0.4s ease' }} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Click to Open Full Page Workspace */}
                   <div style={{
-                    width: '145px',
-                    height: '145px',
-                    borderRadius: '50%',
-                    border: `4.5px solid ${p.color}`,
-                    boxShadow: `0 0 35px ${p.color}70`,
-                    overflow: 'hidden',
-                    marginBottom: '1rem',
-                    background: '#1e1b4b'
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    background: 'rgba(0,0,0,0.3)',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '10px',
+                    border: '1px solid rgba(255,255,255,0.05)',
+                    fontSize: '0.82rem',
+                    color: p.color,
+                    fontWeight: 800
                   }}>
-                    <img 
-                      src={p.image} 
-                      alt={p.name}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 15%' }}
-                      onError={(e) => { e.target.style.display = 'none'; }}
-                    />
+                    <span>Open Full Page Workspace</span>
+                    <ChevronRight size={18} />
                   </div>
 
-                  <h4 style={{ fontWeight: 800, color: '#fff', fontSize: '1.3rem' }}>{p.name}</h4>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>{p.title}</span>
-                  
-                  <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.6rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    <span className="badge" style={{ fontSize: '0.7rem', background: `${p.color}25`, color: p.color, border: `1px solid ${p.color}50`, fontWeight: 800 }}>
-                      {p.level}
-                    </span>
-                    <span className="badge badge-success" style={{ fontSize: '0.7rem' }}>
-                      1,000 XP ✓
-                    </span>
-                  </div>
                 </div>
-              </div>
-
-              {/* Click to Open Full Page Workspace */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                background: 'rgba(0,0,0,0.3)',
-                padding: '0.75rem 1rem',
-                borderRadius: '10px',
-                border: '1px solid rgba(255,255,255,0.05)',
-                fontSize: '0.82rem',
-                color: p.color,
-                fontWeight: 800
-              }}>
-                <span>Open Full Page Workspace</span>
-                <ChevronRight size={18} />
-              </div>
-
-            </div>
-          ))}
+              );
+            });
+          })()}
         </div>
       </div>
 
