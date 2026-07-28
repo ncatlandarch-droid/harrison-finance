@@ -257,7 +257,8 @@ export const Dashboard = () => {
             const memberScores = members.map(m => ({
               ...m,
               xp: calculateMemberXP ? calculateMemberXP(m.id) : 1000,
-              docs: calculateMemberDocs ? calculateMemberDocs(m.id) : { uploadedCount: 5, totalDocs: 6, percent: 83 }
+              docs: calculateMemberDocs ? calculateMemberDocs(m.id) : { uploadedCount: 5, totalDocs: 6, percent: 83 },
+              dti: calculateMemberDTI ? calculateMemberDTI(m.id) : { dtiRatio: '22.0', dtiGrade: 'A+ ELITE', dtiColor: '#10b981' }
             }));
             const maxXP = Math.max(...memberScores.map(m => m.xp));
 
@@ -335,6 +336,9 @@ export const Dashboard = () => {
                         </span>
                         <span className="badge badge-success" style={{ fontSize: '0.7rem', fontWeight: 900 }}>
                           {p.xp} XP ★
+                        </span>
+                        <span className="badge" style={{ fontSize: '0.7rem', background: `${p.dti.dtiColor}20`, color: p.dti.dtiColor, border: `1px solid ${p.dti.dtiColor}60`, fontWeight: 900 }}>
+                          DTI: {p.dti.dtiRatio}% ({p.dti.dtiGrade.split(' ')[0]})
                         </span>
                       </div>
                     </div>

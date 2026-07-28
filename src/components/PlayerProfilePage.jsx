@@ -37,7 +37,7 @@ import {
 } from 'lucide-react';
 
 export const PlayerProfilePage = ({ player, onBack }) => {
-  const { data, removeAccount, reassignAccountOwner, novoBusinessChecking, capitalOneSavings, barbaraCheckingAccount, advPlusBanking, advantageSavings } = useFinance();
+  const { data, removeAccount, reassignAccountOwner, calculateMemberDTI, calculateMemberXP, calculateMemberDocs, novoBusinessChecking, capitalOneSavings, barbaraCheckingAccount, advPlusBanking, advantageSavings } = useFinance();
   const [showSensitive, setShowSensitive] = useState(false);
   const [lastUploadedItem, setLastUploadedItem] = useState('');
   const [isAddAccountOpen, setIsAddAccountOpen] = useState(false);
@@ -431,6 +431,50 @@ export const PlayerProfilePage = ({ player, onBack }) => {
 
         </div>
       </div>
+
+      {/* 📊 PERSONAL DEBT-TO-INCOME (DTI) RATIO & SCORE BREAKDOWN */}
+      {(() => {
+        const dtiData = calculateMemberDTI ? calculateMemberDTI(player.id) : { income: 9309.36, debtMonthly: 2032.81, dtiRatio: '21.8', dtiGrade: 'A+ ELITE', dtiXpBonus: 300, dtiColor: '#10b981' };
+        const xpScore = calculateMemberXP ? calculateMemberXP(player.id) : 1000;
+        return (
+          <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.9))', border: `2px solid ${dtiData.dtiColor}` }}>
+            <div className="flex-between" style={{ flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <span className="badge" style={{ background: dtiData.dtiColor, color: '#fff', fontWeight: 900, padding: '4px 12px' }}>
+                  📊 INDIVIDUAL DEBT-TO-INCOME (DTI) METRIC
+                </span>
+                <h3 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#fff', marginTop: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <TrendingUp size={24} color={dtiData.dtiColor} />
+                  <span>{player.name}'s Personal DTI: {dtiData.dtiRatio}% ({dtiData.dtiGrade})</span>
+                </h3>
+                <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                  Measures monthly debt obligations vs total base income. Contributes <strong>+{dtiData.dtiXpBonus} XP</strong> toward MVP Leader ranking!
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>MONTHLY BASE INCOME</span>
+                  <div className="font-mono" style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--success)' }}>
+                    ${(dtiData.income || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  </div>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>MONTHLY DEBT OBLIGATIONS</span>
+                  <div className="font-mono" style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--danger)' }}>
+                    ${(dtiData.debtMonthly || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  </div>
+                </div>
+
+                <span className="badge badge-success" style={{ padding: '8px 14px', fontSize: '0.85rem', fontWeight: 900 }}>
+                  {xpScore} XP TOTAL ★
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* 🛡️ INSURANCE POLICIES & BENEFICIARY LOCKBOX */}
       <div className="card card-glow" style={{ background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.9))', border: `2px solid ${player.color}` }}>

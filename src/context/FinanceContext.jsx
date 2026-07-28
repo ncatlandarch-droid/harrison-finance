@@ -227,15 +227,64 @@ export const FinanceProvider = ({ children }) => {
     return { uploadedCount, totalDocs: requiredDocKeys.length, percent, docStatus };
   };
 
+  // Function to calculate individual member Debt-to-Income (DTI) ratio & XP
+  const calculateMemberDTI = (memberId) => {
+    let income = 0;
+    let debtMonthly = 0;
+
+    if (memberId === 'chris') {
+      income = 9309.36;
+      debtMonthly = 1200.00 + 426.43 + 206.45 + 199.93; // Mortgage, Health, Primerica, Auto
+    } else if (memberId === 'erin') {
+      income = 2500.00;
+      debtMonthly = 500.00 + 200.00 + 62.00; // Car payment, Hayden Transport, Auto Ins
+    } else if (memberId === 'barbara') {
+      income = 5645.84;
+      debtMonthly = 1000.00 + 389.16 + 128.08; // HELOC, PenFed Refi, Life Ins
+    } else {
+      income = 50.00;
+      debtMonthly = 0.00; // Youth members
+    }
+
+    // Read custom member income if updated
+    const memberObj = (members || []).find(m => m.id === memberId);
+    if (memberObj && memberObj.income) {
+      income = memberObj.income;
+    }
+
+    const dtiRatio = income > 0 ? ((debtMonthly / income) * 100).toFixed(1) : 0;
+    
+    let dtiGrade = "A+ ELITE";
+    let dtiXpBonus = 300;
+    let dtiColor = "#10b981";
+
+    if (dtiRatio > 43) {
+      dtiGrade = "C HIGH DEBT LOAD";
+      dtiXpBonus = 50;
+      dtiColor = "#ef4444";
+    } else if (dtiRatio > 35) {
+      dtiGrade = "B CAUTION RANGE";
+      dtiXpBonus = 150;
+      dtiColor = "#f59e0b";
+    } else if (dtiRatio > 25) {
+      dtiGrade = "A HEALTHY TARGET";
+      dtiXpBonus = 250;
+      dtiColor = "#10b981";
+    }
+
+    return { income, debtMonthly, dtiRatio, dtiGrade, dtiXpBonus, dtiColor };
+  };
+
   const calculateMemberXP = (memberId) => {
     const { uploadedCount } = calculateMemberDocs(memberId);
     const hasSsn = !!localStorage.getItem(`harrison_ssn_${memberId}`);
+    const { dtiXpBonus } = calculateMemberDTI(memberId);
     
     // Member account count bonus
     const linkedAccountsCount = (data?.accounts || []).filter(a => a.memberId === memberId).length + 1;
 
-    const baseXP = (uploadedCount * 150) + (hasSsn ? 100 : 0) + (linkedAccountsCount * 100);
-    return Math.min(baseXP, 1250);
+    const baseXP = (uploadedCount * 150) + (hasSsn ? 100 : 0) + (linkedAccountsCount * 100) + dtiXpBonus;
+    return Math.min(baseXP, 1500);
   };
 
   // Save data state
@@ -289,6 +338,7 @@ export const FinanceProvider = ({ children }) => {
       updateMemberDetails,
       calculateMemberXP,
       calculateMemberDocs,
+      calculateMemberDTI,
       removeAccount,
       reassignAccountOwner,
       mergePlaidData,
