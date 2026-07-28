@@ -195,6 +195,15 @@ export const FinanceProvider = ({ children }) => {
     }));
   };
 
+  // Function to update member details (income, birthday, employer, etc.)
+  const updateMemberDetails = (memberId, updatedFields) => {
+    setMembers(prev => {
+      const updated = prev.map(m => m.id === memberId ? { ...m, ...updatedFields } : m);
+      localStorage.setItem('harrison_members_data', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   // Save data state
   useEffect(() => {
     try {
@@ -243,6 +252,7 @@ export const FinanceProvider = ({ children }) => {
       members,
       setMembers,
       updateAccountBalance,
+      updateMemberDetails,
       removeAccount,
       reassignAccountOwner,
       mergePlaidData,

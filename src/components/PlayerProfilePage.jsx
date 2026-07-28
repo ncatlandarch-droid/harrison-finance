@@ -384,8 +384,39 @@ export const PlayerProfilePage = ({ player, onBack }) => {
 
               <div>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>EMPLOYER / INSTITUTION</span>
-                <div style={{ fontWeight: 800, color: player.color, fontSize: '1rem' }}>
-                  {player.employer || 'Harrison Family Household'}
+                <div style={{ fontWeight: 800, color: player.color, fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span>{player.employer || 'Harrison Family Household'}</span>
+                  <button 
+                    onClick={() => {
+                      const newEmployer = prompt(`Edit Employer / Institution for ${player.name}:`, player.employer || 'Harrison Family Household');
+                      if (newEmployer !== null) {
+                        updateMemberDetails(player.id, { employer: newEmployer.trim() });
+                        window.location.reload();
+                      }
+                    }}
+                    style={{ background: 'none', border: 'none', color: '#FDB927', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 800, textDecoration: 'underline' }}
+                  >
+                    Edit ✏️
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>MONTHLY BASE INCOME ($)</span>
+                <div style={{ fontWeight: 800, color: 'var(--success)', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span>${(player.income || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })} / mo</span>
+                  <button 
+                    onClick={() => {
+                      const newIncome = prompt(`Edit Monthly Base Income for ${player.name} ($):`, player.income || 0);
+                      if (newIncome !== null && !isNaN(newIncome)) {
+                        updateMemberDetails(player.id, { income: parseFloat(newIncome) });
+                        window.location.reload();
+                      }
+                    }}
+                    style={{ background: 'none', border: 'none', color: '#FDB927', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 800, textDecoration: 'underline' }}
+                  >
+                    Edit ✏️
+                  </button>
                 </div>
               </div>
 

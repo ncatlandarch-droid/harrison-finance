@@ -40,6 +40,15 @@ export const Header = ({ onOpenAddModal }) => {
         {/* Right Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           
+          {/* Edit Live Balances Button */}
+          <button 
+            className="btn btn-secondary"
+            onClick={onOpenAddModal}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid #10b981', color: '#10b981', fontWeight: 800 }}
+          >
+            <span>Edit Live Balances ✏️</span>
+          </button>
+
           {/* Real Talk Strategy Report PDF Modal Button */}
           <button 
             className="btn btn-secondary"
